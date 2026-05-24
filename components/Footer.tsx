@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { footerCopy } from "@/lib/content";
+import { footerCopy, igPreviewCopy } from "@/lib/content";
 import { siteConfig, whatsappOrderLink } from "@/lib/site-config";
 import { NewsletterBar } from "./NewsletterBar";
 
@@ -50,7 +50,7 @@ export function Footer(): React.ReactElement {
                 alt={siteConfig.brand.name}
                 width={200}
                 height={112}
-                className="h-[64px] w-auto object-contain"
+                className="h-[64px] w-auto object-contain brightness-0 invert"
               />
             </Link>
             <p
@@ -183,6 +183,123 @@ function InstagramLink(): React.ReactElement {
         </span>
         <span>{footerCopy.instagramLabel}</span>
       </a>
+
+      <div
+        className="pointer-events-none absolute bottom-[calc(100%+12px)] left-0 z-[200] w-[240px] translate-y-2 rounded-2xl p-4 opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
+        style={{
+          background: "rgba(15,15,15,0.97)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+        }}
+      >
+        <div className="mb-3 flex items-center gap-3">
+          <span
+            className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center overflow-hidden rounded-full"
+            style={{
+              background:
+                "linear-gradient(#0f0f0f, #0f0f0f) padding-box, linear-gradient(135deg, #f09433, #dc2743, #bc1888) border-box",
+              border: "2px solid transparent",
+            }}
+          >
+            <Image
+              src="/assets/logo notregemme.png"
+              alt=""
+              width={52}
+              height={52}
+              className="h-9 w-9 object-contain brightness-0 invert"
+              aria-hidden="true"
+            />
+          </span>
+          <div>
+            <div
+              className="flex items-center gap-1"
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "var(--color-fg)",
+              }}
+            >
+              {igPreviewCopy.handle}
+              <span aria-hidden="true" style={{ color: "var(--color-green)", fontSize: 11 }}>
+                ✦
+              </span>
+            </div>
+            <div
+              className="mt-0.5"
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: 11,
+                color: "var(--color-fg-muted)",
+              }}
+            >
+              {igPreviewCopy.subhandle}
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-3 grid grid-cols-3 gap-[3px] overflow-hidden rounded-lg">
+          <span
+            className="placeholder-art relative block aspect-square overflow-hidden"
+            aria-hidden="true"
+          >
+            <Image
+              src="/assets/Product 1.jpg"
+              alt=""
+              fill
+              sizes="80px"
+              className="object-cover"
+              unoptimized
+            />
+          </span>
+          <span
+            className="placeholder-art relative block aspect-square overflow-hidden"
+            aria-hidden="true"
+          >
+            <Image
+              src="/assets/Hoodie back.png"
+              alt=""
+              fill
+              sizes="80px"
+              className="object-contain"
+              unoptimized
+            />
+          </span>
+          <span
+            className="placeholder-art relative block aspect-square overflow-hidden"
+            aria-hidden="true"
+          >
+            <Image
+              src="/assets/Product 2.jpg"
+              alt=""
+              fill
+              sizes="80px"
+              className="object-cover"
+              unoptimized
+            />
+          </span>
+        </div>
+
+        <a
+          href={siteConfig.contact.instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-lg p-2.5 text-center uppercase text-white"
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.15em",
+            background:
+              "linear-gradient(135deg, #f09433, #dc2743, #bc1888)",
+            textDecoration: "none",
+          }}
+        >
+          {igPreviewCopy.followCta}
+        </a>
+      </div>
     </div>
   );
 }

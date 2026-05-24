@@ -114,7 +114,6 @@ export const products: ReadonlyArray<Product> = [
     priceValue: 900,
     collection: "femme",
     motif: "suits",
-    tag: "Signature",
     image: "/assets/img-01.jpg",
     imageAlt: "Notre Gemme Queen of Hearts Tee — white heavyweight cotton with playing-card suits motif",
     featured: true,

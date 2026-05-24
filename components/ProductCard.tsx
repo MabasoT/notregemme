@@ -129,45 +129,14 @@ export function ProductCard({
         />
       </Link>
 
-      {/* Order / notify pill — overlays bottom of image area on hover.
-          Positioned just above the info section so it sits visually
-          inside the photo. */}
-      <a
-        href={product.orderHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute left-1/2 z-30 inline-flex items-center gap-2 whitespace-nowrap rounded-pill px-6 py-3 uppercase transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.04] active:scale-[0.98]"
-        style={{
-          // info area is ~88px tall; place pill so it overlays image bottom
-          bottom: "96px",
-          fontFamily: "var(--font-heading)",
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: "0.18em",
-          color: "var(--color-bg)",
-          background: "var(--color-fg)",
-          borderRadius: "var(--radius-pill)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-          opacity: hovered ? 1 : 0,
-          transform: hovered
-            ? "translateX(-50%) translateY(0)"
-            : "translateX(-50%) translateY(10px)",
-          pointerEvents: hovered ? "auto" : "none",
-        }}
-      >
-        <span aria-hidden="true">{isComing ? "✦" : "💬"}</span>
-        {isComing ? "Notify on WhatsApp" : "Order via WhatsApp"}
-      </a>
-
-      <div className="flex items-start justify-between gap-3 px-5 pb-5 pt-[18px]">
-        <div className="min-w-0">
+      <div className="flex items-start justify-between gap-3 px-[18px] pb-[18px] pt-[14px]">
+        <div className="flex min-w-0 flex-col gap-[3px]">
           <Link
             href={`/product/${product.slug}`}
-            className="block font-semibold transition-colors hover:text-green"
+            className="block font-semibold leading-snug tracking-[0.01em] transition-colors hover:text-green"
             style={{
               fontFamily: "var(--font-heading)",
-              fontSize: "clamp(14px, 1.2vw, 16px)",
-              letterSpacing: "-0.01em",
+              fontSize: "14px",
               color: "var(--color-fg)",
               textDecoration: "none",
             }}
@@ -175,22 +144,22 @@ export function ProductCard({
             {product.name}
           </Link>
           <div
-            className="mt-[3px] truncate"
+            className="truncate"
             style={{
               fontFamily: "var(--font-body)",
-              fontSize: 12,
+              fontSize: "12px",
               color: "var(--color-fg-muted)",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.03em",
             }}
           >
             {product.subtitle}
           </div>
         </div>
         <div
-          className="shrink-0 font-semibold"
+          className="shrink-0 self-start whitespace-nowrap pt-px font-semibold"
           style={{
             fontFamily: "var(--font-heading)",
-            fontSize: 16,
+            fontSize: "14px",
             color: "var(--color-fg)",
           }}
         >

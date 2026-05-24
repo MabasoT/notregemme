@@ -113,8 +113,8 @@ export function Header(): React.ReactElement {
             width={200}
             height={112}
             priority
-            className="h-[56px] w-auto select-none object-contain transition-transform duration-200 hover:scale-[1.04]"
-            style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.4))" }}
+            className="h-[56px] w-auto select-none object-contain brightness-0 invert transition-transform duration-200 hover:scale-[1.04]"
+            style={{ filter: "brightness(0) invert(1) drop-shadow(0 4px 12px rgba(0,0,0,0.4))" }}
           />
         </Link>
 
@@ -139,14 +139,8 @@ export function Header(): React.ReactElement {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-[7px] rounded-pill px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-[background,transform] duration-200 hover:scale-[1.04] active:scale-[0.98]"
-            style={{
-              fontFamily: "var(--font-heading)",
-              background: "var(--color-whatsapp)",
-              color: "#050505",
-            }}
+            className="nav-order-btn"
           >
-            <WhatsAppGlyph className="h-4 w-4" />
             Order
           </a>
         </nav>

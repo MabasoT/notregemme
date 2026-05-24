@@ -54,7 +54,7 @@ export function Countdown({ targetIso }: Props): React.ReactElement {
   }
 
   return (
-    <div className="mt-5 flex items-start gap-4">
+    <div className="mt-3 flex items-start" style={{ gap: "16px" }}>
       <Unit num={r.d} label="Days" />
       <Sep />
       <Unit num={r.h} label="Hrs" />
@@ -70,22 +70,26 @@ function Unit({ num, label }: { num: string; label: string }): React.ReactElemen
   return (
     <div className="text-center">
       <div
-        className="font-bold leading-none"
         style={{
           fontFamily: "var(--font-heading)",
-          fontSize: "clamp(28px, 3.5vw, 48px)",
+          fontSize: "clamp(28px, 3vw, 42px)",
+          fontWeight: 700,
           letterSpacing: "-0.03em",
+          lineHeight: 1,
+          color: "var(--color-fg)",
         }}
       >
         {num}
       </div>
       <div
-        className="mt-1 uppercase"
         style={{
-          fontFamily: "var(--font-body)",
-          fontSize: "10px",
-          letterSpacing: "0.2em",
+          fontSize: "9px",
+          letterSpacing: "0.12em",
           color: "var(--color-fg-muted)",
+          fontFamily: "var(--font-heading)",
+          fontWeight: 500,
+          marginTop: "5px",
+          textTransform: "uppercase",
         }}
       >
         {label}
@@ -99,10 +103,13 @@ function Sep(): React.ReactElement {
     <span
       aria-hidden="true"
       style={{
-        fontFamily: "var(--font-heading)",
-        fontSize: "32px",
-        color: "var(--color-fg-muted)",
-        lineHeight: 1.4,
+        display: "block",
+        alignSelf: "flex-start",
+        paddingTop: "2px",
+        fontSize: "clamp(20px, 2.5vw, 32px)",
+        fontWeight: 300,
+        lineHeight: 1,
+        color: "rgba(240, 235, 226, 0.25)",
       }}
     >
       :

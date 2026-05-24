@@ -255,8 +255,8 @@ textarea:focus-visible {
 
 /* ─── GLASS SURFACES ───────────────────────────────────────────────── */
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -336,6 +336,8 @@ textarea:focus-visible {
   border-radius: var(--radius-pill);
   text-decoration: none;
   display: inline-block;
+  text-align: center;
+  cursor: pointer;
   transition:
     transform 0.2s,
     background 0.2s;
@@ -401,9 +403,10 @@ textarea:focus-visible {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-pill);
-  padding: 13px 22px;
+  padding: 13px 20px;
   outline: none;
-  width: 260px;
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.2s;
 }
 .newsletter-input::placeholder {
@@ -411,6 +414,49 @@ textarea:focus-visible {
 }
 .newsletter-input:focus {
   border-color: var(--color-green);
+}
+
+/* ─── BENTO OVERLAY (positioning + padding for bento card text) ───── */
+.bento-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+}
+
+/* ─── NAV ORDER BUTTON (outlined green pill, hover-fills) ─────────── */
+.nav-order-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  border: 1px solid var(--color-green);
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.15s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-order-btn:hover {
+  background: var(--color-green);
+  color: var(--color-bg);
+  transform: scale(1.03);
+}
+.nav-order-btn:active {
+  transform: scale(0.97);
+  transition: transform 80ms;
 }
 
 /* ─── DIVIDER ──────────────────────────────────────────────────────── */

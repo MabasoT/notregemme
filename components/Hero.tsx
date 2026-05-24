@@ -1,5 +1,4 @@
 import { heroCopy } from "@/lib/content";
-import { ProductImage } from "./ProductImage";
 
 /**
  * Full-viewport hero. Cinematic background using Background.png with a
@@ -69,25 +68,6 @@ export function Hero(): React.ReactElement {
         {heroCopy.verticalCode}
       </div>
 
-      {/* Floating flagship product */}
-      <div
-        className="animate-hero-float pointer-events-none absolute left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-[55%]"
-        style={{
-          width: "clamp(420px, 55vw, 780px)",
-          filter:
-            "drop-shadow(0 50px 100px oklch(60% 0.18 128 / 0.35)) drop-shadow(0 20px 40px rgba(0,0,0,0.5))",
-        }}
-      >
-        <ProductImage
-          src="/assets/Hoodie back.png"
-          alt="Notre Gemme flagship Evolution hoodie — featured SS2026 piece"
-          motif="heart"
-          aspect="3/4"
-          fit="contain"
-          className="bg-transparent"
-        />
-      </div>
-
       <div className="container-page relative z-[3]">
         <div className="grid grid-cols-1 items-end gap-10 md:grid-cols-2">
           <div>
@@ -120,7 +100,7 @@ export function Hero(): React.ReactElement {
 
           <div className="flex flex-col items-start gap-5 pb-2 md:gap-7">
             <div className="flex flex-wrap items-center gap-3">
-              <a href="#homme" className="btn-primary">
+              <a href="#collection" className="btn-primary">
                 {heroCopy.ctaLabel}
               </a>
               <a href="#story" className="btn-ghost">

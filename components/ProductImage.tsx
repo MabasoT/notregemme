@@ -140,19 +140,6 @@ function MotifMark({ motif }: { motif: Motif }): React.ReactElement {
             ♠
           </text>
         </g>
-        <text
-          x="100"
-          y="60"
-          textAnchor="middle"
-          fontFamily="var(--font-heading)"
-          fontSize="14"
-          fontWeight="600"
-          letterSpacing="4"
-          fill="var(--color-green)"
-          opacity="0.55"
-        >
-          FEMME
-        </text>
       </svg>
     );
   }

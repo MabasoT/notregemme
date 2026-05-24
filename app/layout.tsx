@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { CustomCursor } from "@/components/CustomCursor";
 import { Header } from "@/components/Header";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { FloatingActions } from "@/components/FloatingActions";
 import { Footer } from "@/components/Footer";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
@@ -70,7 +69,6 @@ export default function RootLayout({
         <Header />
         <main>{children}</main>
         <Footer />
-        <FloatingActions />
       </body>
     </html>
   );

@@ -25,7 +25,7 @@ export function BentoGrid(): React.ReactElement {
         <div className="bento-grid">
           {/* 1 — Hero countdown teaser */}
           <div className="bento-card bento-1 reveal reveal-delay-1">
-            <div className="flex h-full flex-col justify-between p-9">
+            <div className="flex h-full flex-col justify-between p-8">
               <div>
                 <BentoTag>
                   <span
@@ -51,12 +51,13 @@ export function BentoGrid(): React.ReactElement {
                   ))}
                 </div>
                 <p
-                  className="mt-4 max-w-[280px]"
+                  className="mt-4"
                   style={{
                     fontFamily: "var(--font-body)",
                     fontSize: "13px",
                     color: "var(--color-fg-muted)",
-                    lineHeight: 1.6,
+                    lineHeight: 1.65,
+                    maxWidth: "360px",
                   }}
                 >
                   {upcomingCopy.hero.description}
@@ -64,11 +65,14 @@ export function BentoGrid(): React.ReactElement {
               </div>
               <div>
                 <div
-                  className="mb-4 uppercase"
                   style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.2em",
+                    fontSize: "10px",
+                    letterSpacing: "0.15em",
                     color: "var(--color-fg-muted)",
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 500,
+                    marginBottom: "12px",
+                    textTransform: "uppercase",
                   }}
                 >
                   {upcomingCopy.hero.countdownLabel}
@@ -161,18 +165,19 @@ export function BentoGrid(): React.ReactElement {
 
           {/* 6 — Notify capture */}
           <div
-            className="bento-card bento-6 reveal reveal-delay-2 flex flex-col justify-center gap-5 p-8"
+            className="bento-card bento-6 reveal reveal-delay-2 flex flex-col justify-between gap-5 p-7"
             style={{
               background: "linear-gradient(135deg, oklch(15% 0.08 128 / 0.3), transparent)",
             }}
           >
             <BentoTag>{c.notify.tag}</BentoTag>
             <div
-              className="font-bold"
               style={{
                 fontFamily: "var(--font-heading)",
                 fontSize: "clamp(18px, 2.2vw, 26px)",
+                fontWeight: 700,
                 letterSpacing: "-0.02em",
+                lineHeight: 1.15,
               }}
             >
               {c.notify.titleLines.map((l) => (
@@ -295,7 +300,7 @@ function ComingSoonBadge({ label, corner }: { label: string; corner?: boolean })
     <div
       className={
         corner
-          ? "absolute right-5 top-9"
+          ? "absolute right-6 top-6"
           : "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
       }
     >
@@ -328,7 +333,7 @@ function SketchPlaceholder({
   label: string;
 }): React.ReactElement {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 p-7">
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-7 text-center">
       {shape === "circle" ? (
         <div
           className="h-20 w-20 rounded-full"
@@ -377,8 +382,8 @@ function SketchPlaceholder({
         style={{
           fontFamily: "'Courier New', monospace",
           fontSize: "10px",
-          color: "rgba(255,255,255,0.2)",
-          letterSpacing: "0.05em",
+          color: "rgba(255,255,255,0.35)",
+          letterSpacing: "0.06em",
         }}
       >
         {label}
