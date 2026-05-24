@@ -1,0 +1,10 @@
+# Drop product images here:
+#   design-two.jpeg     — Barcode Tee I (front/back)
+#   design-latest.jpeg  — Barcode Tee II
+#   img-01.jpg          — Queen of Hearts Tee
+#   img-02.jpg          — Evolution Hoodie
+#   img-03.jpg          — Love Evolves emblem / Femme Hoodie teaser
+#   img-04.jpg          — King of Hearts Tee
+#
+# All product images render through <ProductImage>, which gracefully
+# falls back to a brand-styled SVG placeholder when an asset is missing.

@@ -1,0 +1,407 @@
+@import "tailwindcss";
+
+/* ─── DESIGN-SYSTEM TOKENS (exact values from design-system.md) ────── */
+@theme {
+  --color-bg: #050505;
+  --color-bg-2: #0b0b0b;
+  --color-bg-3: #111111;
+  --color-fg: #f0ebe2;
+  --color-fg-muted: #7a7570;
+  --color-green: oklch(68% 0.17 128);
+  --color-green-bright: oklch(75% 0.17 128);
+  --color-green-dim: oklch(50% 0.12 128);
+  --color-red: oklch(42% 0.2 25);
+  --color-red-bright: oklch(55% 0.2 25);
+  --color-navy: #1a2744;
+  --color-gold: oklch(78% 0.14 85);
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hover: #20bf5b;
+
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-body: "Archivo", sans-serif;
+
+  --radius-card: 20px;
+  --radius-pill: 100px;
+  --radius-stat: 16px;
+
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── ROOT VARIABLES (runtime usage outside Tailwind) ──────────────── */
+:root {
+  --gutter: clamp(24px, 5vw, 80px);
+  --max: 1400px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --gutter: 20px;
+  }
+}
+
+/* ─── BASE RESET ───────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+}
+
+::selection {
+  background: var(--color-green);
+  color: var(--color-bg);
+}
+
+a,
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+@media (pointer: fine) {
+  a,
+  button,
+  input,
+  textarea {
+    cursor: none;
+  }
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+/* ─── LAYOUT UTILITIES ─────────────────────────────────────────────── */
+.container-page {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* ─── SCROLL REVEAL (Intersection Observer toggles .visible) ──────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 0.9s var(--ease-spring),
+    transform 0.9s var(--ease-spring);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+.reveal-delay-3 {
+  transition-delay: 0.35s;
+}
+.reveal-delay-4 {
+  transition-delay: 0.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── DIAMOND CLIP-PATH HELPER ────────────────────────────────────── */
+.diamond-clip {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+/* ─── KEYFRAMES ────────────────────────────────────────────────────── */
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translate(-50%, -52%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -52%) translateY(-18px);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-scan {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: var(--color-green-dim);
+    box-shadow: none;
+  }
+  50% {
+    border-color: var(--color-green);
+    box-shadow: 0 0 20px oklch(68% 0.17 128 / 0.25);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.animate-hero-float {
+  animation: hero-float 6s ease-in-out infinite;
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+.animate-scroll-scan {
+  animation: scroll-scan 2s ease-in-out infinite;
+}
+.animate-pulse-border {
+  animation: pulse-border 2.5s ease-in-out infinite;
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ─── GLASS SURFACES ───────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.glass-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.glass-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ─── PRODUCT CARD MAGNETIC TILT BASE ──────────────────────────────── */
+.product-card {
+  transition: transform 0.4s var(--ease-spring);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ─── SECTION LABEL (small uppercase eyebrow with hairline) ───────── */
+.section-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-green);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--color-green);
+}
+
+/* ─── SECTION TITLE (display heading) ─────────────────────────────── */
+.section-title {
+  font-family: var(--font-heading);
+  font-size: clamp(40px, 6vw, 90px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.section-title em {
+  font-style: normal;
+  color: var(--color-green);
+}
+
+.section-body {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.3vw, 16px);
+  line-height: 1.75;
+  color: var(--color-fg-muted);
+}
+
+/* ─── BUTTONS ──────────────────────────────────────────────────────── */
+.btn-primary {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--color-green);
+  border: none;
+  padding: 14px 32px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  display: inline-block;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.btn-primary:hover {
+  transform: scale(1.04);
+  background: var(--color-green-bright);
+}
+
+.btn-ghost {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-fg);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 13px 28px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  display: inline-block;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #050505;
+  background: var(--color-whatsapp);
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.btn-whatsapp:hover {
+  transform: scale(1.04);
+  background: var(--color-whatsapp-hover);
+}
+
+/* ─── NEWSLETTER INPUT ─────────────────────────────────────────────── */
+.newsletter-input {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-fg);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-pill);
+  padding: 13px 22px;
+  outline: none;
+  width: 260px;
+  transition: border-color 0.2s;
+}
+.newsletter-input::placeholder {
+  color: var(--color-fg-muted);
+}
+.newsletter-input:focus {
+  border-color: var(--color-green);
+}
+
+/* ─── DIVIDER ──────────────────────────────────────────────────────── */
+.divider-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+}
+
+/* ─── PLACEHOLDER ART (used when no image present in public/) ─────── */
+.placeholder-art {
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 40%, oklch(20% 0.06 128 / 0.4) 0%, transparent 65%),
+    linear-gradient(180deg, #0d0d0d, #050505);
+  position: relative;
+  overflow: hidden;
+}
+.placeholder-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 6px,
+    rgba(240, 235, 226, 0.04) 6px 8px
+  );
+  mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, #000 30%, transparent 75%);
+}
