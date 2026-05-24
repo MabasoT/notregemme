@@ -50,31 +50,12 @@ export function BentoGrid(): React.ReactElement {
                     </span>
                   ))}
                 </div>
-                <p
-                  className="mt-4"
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "13px",
-                    color: "var(--color-fg-muted)",
-                    lineHeight: 1.65,
-                    maxWidth: "360px",
-                  }}
-                >
+                <p className="mt-4 max-w-[360px] font-body text-[13px] leading-[1.65] text-fg-muted">
                   {upcomingCopy.hero.description}
                 </p>
               </div>
               <div>
-                <div
-                  style={{
-                    fontSize: "10px",
-                    letterSpacing: "0.15em",
-                    color: "var(--color-fg-muted)",
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 500,
-                    marginBottom: "12px",
-                    textTransform: "uppercase",
-                  }}
-                >
+                <div className="mb-3 font-heading text-[10px] font-medium uppercase tracking-[0.15em] text-fg-muted">
                   {upcomingCopy.hero.countdownLabel}
                 </div>
                 <Countdown targetIso={siteConfig.drop.nextDropDate} />
@@ -171,15 +152,7 @@ export function BentoGrid(): React.ReactElement {
             }}
           >
             <BentoTag>{c.notify.tag}</BentoTag>
-            <div
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: "clamp(18px, 2.2vw, 26px)",
-                fontWeight: 700,
-                letterSpacing: "-0.02em",
-                lineHeight: 1.15,
-              }}
-            >
+            <div className="font-heading text-[clamp(18px,2.2vw,26px)] font-bold leading-[1.15] tracking-[-0.02em]">
               {c.notify.titleLines.map((l) => (
                 <span key={l} className="block">
                   {l}

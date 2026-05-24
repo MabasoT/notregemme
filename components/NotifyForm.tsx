@@ -19,7 +19,7 @@ export function NotifyForm(): React.ReactElement {
         type="email"
         required
         placeholder={c.placeholder}
-        className="newsletter-input"
+        className="newsletter-input w-full"
         aria-label="Email for drop notification"
       />
       <button className="btn-primary w-full" type="submit">

@@ -30,7 +30,13 @@ function computeRemaining(targetIso: string): Remaining {
  * starts ticking on the client to avoid a hydration mismatch.
  */
 export function Countdown({ targetIso }: Props): React.ReactElement {
-  const [r, setR] = useState<Remaining>({ d: "--", h: "--", m: "--", s: "--", expired: false });
+  const [r, setR] = useState<Remaining>({
+    d: "--",
+    h: "--",
+    m: "--",
+    s: "--",
+    expired: false,
+  });
 
   useEffect(() => {
     setR(computeRemaining(targetIso));
@@ -40,21 +46,14 @@ export function Countdown({ targetIso }: Props): React.ReactElement {
 
   if (r.expired) {
     return (
-      <div
-        className="font-bold"
-        style={{
-          fontFamily: "var(--font-heading)",
-          fontSize: "clamp(18px, 2vw, 28px)",
-          letterSpacing: "-0.02em",
-        }}
-      >
+      <div className="font-heading text-[clamp(18px,2vw,28px)] font-bold tracking-[-0.02em]">
         Live Now ♦
       </div>
     );
   }
 
   return (
-    <div className="mt-3 flex items-start" style={{ gap: "16px" }}>
+    <div className="mt-3 flex items-start gap-4">
       <Unit num={r.d} label="Days" />
       <Sep />
       <Unit num={r.h} label="Hrs" />
@@ -69,29 +68,10 @@ export function Countdown({ targetIso }: Props): React.ReactElement {
 function Unit({ num, label }: { num: string; label: string }): React.ReactElement {
   return (
     <div className="text-center">
-      <div
-        style={{
-          fontFamily: "var(--font-heading)",
-          fontSize: "clamp(28px, 3vw, 42px)",
-          fontWeight: 700,
-          letterSpacing: "-0.03em",
-          lineHeight: 1,
-          color: "var(--color-fg)",
-        }}
-      >
+      <div className="font-heading text-[clamp(28px,3vw,42px)] font-bold leading-none tracking-[-0.03em] text-fg">
         {num}
       </div>
-      <div
-        style={{
-          fontSize: "9px",
-          letterSpacing: "0.12em",
-          color: "var(--color-fg-muted)",
-          fontFamily: "var(--font-heading)",
-          fontWeight: 500,
-          marginTop: "5px",
-          textTransform: "uppercase",
-        }}
-      >
+      <div className="mt-[5px] font-heading text-[9px] font-medium uppercase tracking-[0.12em] text-fg-muted">
         {label}
       </div>
     </div>
@@ -102,15 +82,7 @@ function Sep(): React.ReactElement {
   return (
     <span
       aria-hidden="true"
-      style={{
-        display: "block",
-        alignSelf: "flex-start",
-        paddingTop: "2px",
-        fontSize: "clamp(20px, 2.5vw, 32px)",
-        fontWeight: 300,
-        lineHeight: 1,
-        color: "rgba(240, 235, 226, 0.25)",
-      }}
+      className="block self-start pt-0.5 text-[clamp(20px,2.5vw,32px)] font-light leading-none text-fg/25"
     >
       :
     </span>
