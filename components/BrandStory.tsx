@@ -61,13 +61,13 @@ export function BrandStory(): React.ReactElement {
               {storyCopy.stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="glass-card flex min-h-[90px] flex-col justify-between px-[22px] py-5"
+                  className="glass-card flex min-h-[100px] flex-col justify-between px-6 py-6"
                   style={{ borderRadius: "var(--radius-stat)" }}
                 >
                   <div
                     style={{
                       fontFamily: "var(--font-heading)",
-                      fontSize: "32px",
+                      fontSize: "clamp(26px, 2.6vw, 32px)",
                       fontWeight: 700,
                       letterSpacing: "-0.02em",
                       lineHeight: 1,
@@ -82,10 +82,10 @@ export function BrandStory(): React.ReactElement {
                     style={{
                       fontFamily: "var(--font-body)",
                       fontSize: "10px",
-                      letterSpacing: "0.12em",
+                      letterSpacing: "0.14em",
                       color: "var(--color-fg-muted)",
                       fontWeight: 500,
-                      marginTop: "8px",
+                      marginTop: "14px",
                       textTransform: "uppercase",
                     }}
                   >

@@ -129,38 +129,49 @@ export function ProductCard({
         />
       </Link>
 
-      <div className="flex items-start justify-between gap-3 px-[18px] pb-[18px] pt-[14px]">
-        <div className="flex min-w-0 flex-col gap-[3px]">
+      <div className="flex items-start justify-between gap-4 px-6 pb-6 pt-5">
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <Link
             href={`/product/${product.slug}`}
-            className="block font-semibold leading-snug tracking-[0.01em] transition-colors hover:text-green"
+            className="block font-semibold leading-tight tracking-[-0.005em] transition-colors hover:text-green"
             style={{
               fontFamily: "var(--font-heading)",
-              fontSize: "14px",
+              fontSize: "15px",
               color: "var(--color-fg)",
               textDecoration: "none",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              wordBreak: "break-word",
             }}
           >
             {product.name}
           </Link>
           <div
-            className="truncate"
             style={{
               fontFamily: "var(--font-body)",
               fontSize: "12px",
               color: "var(--color-fg-muted)",
               letterSpacing: "0.03em",
+              lineHeight: 1.45,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              wordBreak: "break-word",
             }}
           >
             {product.subtitle}
           </div>
         </div>
         <div
-          className="shrink-0 self-start whitespace-nowrap pt-px font-semibold"
+          className="shrink-0 self-start whitespace-nowrap font-semibold"
           style={{
             fontFamily: "var(--font-heading)",
-            fontSize: "14px",
+            fontSize: "15px",
             color: "var(--color-fg)",
+            paddingTop: "1px",
           }}
         >
           {product.price}
