@@ -5,7 +5,7 @@
  */
 import { whatsappOrderLink } from "./site-config";
 
-export type Tag = "New" | "Launch" | "Signature" | "Coming Soon";
+export type Tag = "New" | "Launch" | "Signature" | "Coming Soon" | "Unisex";
 
 export type Product = {
   slug: string;
@@ -13,11 +13,14 @@ export type Product = {
   subtitle: string;
   price: string;
   priceValue: number;
-  collection: "homme" | "femme";
+  collection: "homme" | "femme" | "unisex";
   motif: "barcode" | "suits" | "heart";
   tag?: Tag;
   image: string;
   imageAlt: string;
+  /** Optional secondary view (e.g. hoodie back). */
+  imageBack?: string;
+  imageBackAlt?: string;
   featured?: boolean;
   comingSoon?: boolean;
   /** Pre-built WhatsApp order link with item context. */
@@ -44,7 +47,7 @@ export const products: ReadonlyArray<Product> = [
     collection: "homme",
     motif: "barcode",
     tag: "New",
-    image: "/assets/design-two.jpeg",
+    image: "/assets/Product 1.jpg",
     imageAlt: "Notre Gemme Barcode Tee I — cream heavyweight cotton with navy and acid-green barcode graphic",
     featured: true,
     orderHref: order("NG Barcode Tee I"),
@@ -66,7 +69,7 @@ export const products: ReadonlyArray<Product> = [
     priceValue: 850,
     collection: "homme",
     motif: "barcode",
-    image: "/assets/design-latest.jpeg",
+    image: "/assets/Product 2.jpg",
     imageAlt: "Notre Gemme Barcode Tee II — second iteration of the barcode graphic in cream",
     orderHref: order("NG Barcode Tee II"),
     description:
@@ -88,8 +91,10 @@ export const products: ReadonlyArray<Product> = [
     collection: "homme",
     motif: "heart",
     tag: "Launch",
-    image: "/assets/img-02.jpg",
-    imageAlt: "Notre Gemme Evolution Hoodie — heather white fleece with anatomical heart graphic and 'Love Doesn't Vanish, It Evolves' text",
+    image: "/assets/Hoodie front.png",
+    imageAlt: "Notre Gemme Evolution Hoodie — front view, heather white fleece",
+    imageBack: "/assets/Hoodie back.png",
+    imageBackAlt: "Notre Gemme Evolution Hoodie — back view with circular 'Love Doesn't Vanish, It Evolves' graphic and anatomical heart",
     orderHref: order("Evolution Hoodie"),
     description:
       "Our debut hoodie. A circular composition — anatomical heart at centre, butterfly and rose flanking, 'Love doesn't vanish, it evolves' wrapping the form. Heavyweight brushed fleece interior, drop shoulder, kangaroo pocket.",
@@ -163,12 +168,64 @@ export const products: ReadonlyArray<Product> = [
     sizes: ["XS", "S", "M", "L", "XL"],
     details: ["Brushed fleece interior", "Cropped fit", "Tonal drawcords", "Embroidered NG gem"],
   },
+  {
+    slug: "archive-piece",
+    name: "The Archive Piece",
+    subtitle: "Unisex — Coming AW2026",
+    price: "—",
+    priceValue: 0,
+    collection: "unisex",
+    motif: "barcode",
+    tag: "Coming Soon",
+    image: "/assets/Product 1.jpg",
+    imageAlt: "The Archive Piece — unisex reinterpretation of the original barcode graphic",
+    comingSoon: true,
+    orderHref: whatsappOrderLink("Hi! Please notify me when The Archive Piece drops."),
+    description:
+      "A reinterpretation of the original SS2026 barcode graphic for the AW2026 season. Unisex cut, longer drape, deeper dye lot.",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+    details: [
+      "260gsm heavyweight cotton",
+      "Unisex oversized fit",
+      "Reworked back graphic",
+      "Tonal NG gem embroidery",
+    ],
+  },
+  {
+    slug: "evolution-ii",
+    name: "Evolution II",
+    subtitle: "Unisex — Coming AW2026",
+    price: "—",
+    priceValue: 0,
+    collection: "unisex",
+    motif: "heart",
+    tag: "Coming Soon",
+    image: "/assets/Hoodie back.png",
+    imageAlt: "Evolution II — sequel to the Love Evolves heart motif",
+    comingSoon: true,
+    orderHref: whatsappOrderLink("Hi! Please notify me when Evolution II drops."),
+    description:
+      "The sequel to our love motif. Same circular composition, new central icon, deeper season palette. Unisex cut.",
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    details: [
+      "400gsm brushed fleece interior",
+      "Unisex drop-shoulder fit",
+      "Discharge-print circular back graphic",
+      "Tonal flat drawcords",
+    ],
+  },
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
-export function productsByCollection(collection: "homme" | "femme"): ReadonlyArray<Product> {
+export function productsByCollection(
+  collection: "homme" | "femme" | "unisex",
+): ReadonlyArray<Product> {
   return products.filter((p) => p.collection === collection);
 }
+
+export const upcomingProducts: ReadonlyArray<Product> = products.filter(
+  (p) => p.comingSoon === true,
+);

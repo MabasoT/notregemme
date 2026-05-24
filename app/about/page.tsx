@@ -28,10 +28,11 @@ export default function AboutPage(): React.ReactElement {
               style={{ borderRadius: "var(--radius-card)" }}
             >
               <ProductImage
-                src="/assets/img-03.jpg"
+                src="/assets/Hoodie back.png"
                 alt={storyCopy.imageAlt}
                 motif="heart"
                 aspect="4/5"
+                fit="cover"
               />
             </div>
           </div>

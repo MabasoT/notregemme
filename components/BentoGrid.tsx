@@ -82,7 +82,7 @@ export function BentoGrid(): React.ReactElement {
           <div className="bento-card bento-2 reveal reveal-delay-2 relative">
             <div className="absolute inset-0">
               <ProductImage
-                src="/assets/design-two.jpeg"
+                src="/assets/Product 1.jpg"
                 alt=""
                 motif="barcode"
                 aspect="16/9"
@@ -129,7 +129,7 @@ export function BentoGrid(): React.ReactElement {
           <div className="bento-card bento-5 reveal reveal-delay-1 relative">
             <div className="absolute inset-0">
               <ProductImage
-                src="/assets/img-03.jpg"
+                src="/assets/Hoodie back.png"
                 alt=""
                 motif="heart"
                 aspect="16/9"

@@ -65,7 +65,7 @@ export default async function ProductPage({
         </nav>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
-          <div className="reveal">
+          <div className="reveal flex flex-col gap-4">
             <div
               className="rounded-card overflow-hidden"
               style={{ borderRadius: "var(--radius-card)" }}
@@ -75,8 +75,23 @@ export default async function ProductPage({
                 alt={product.imageAlt}
                 motif={product.motif}
                 aspect="3/4"
+                fit={product.image.toLowerCase().endsWith(".png") ? "contain" : "cover"}
               />
             </div>
+            {product.imageBack ? (
+              <div
+                className="rounded-card overflow-hidden"
+                style={{ borderRadius: "var(--radius-card)" }}
+              >
+                <ProductImage
+                  src={product.imageBack}
+                  alt={product.imageBackAlt ?? product.imageAlt}
+                  motif={product.motif}
+                  aspect="3/4"
+                  fit="contain"
+                />
+              </div>
+            ) : null}
           </div>
 
           <div className="reveal reveal-delay-1 flex flex-col gap-7 lg:sticky lg:top-32 lg:self-start">

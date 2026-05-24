@@ -17,8 +17,8 @@ export const siteConfig = {
       "Luxury minimalist streetwear from South Africa. Every piece is a translation of feeling into form.",
   },
   contact: {
-    whatsapp: "+27614145878",
-    whatsappE164: "27614145878",
+    whatsapp: "+27 75 276 3672",
+    whatsappE164: "27752763672",
     instagram: "notregemme",
     instagramUrl: "https://www.instagram.com/notregemme?igsh=aHMzanh6aG1zbjF1",
     email: "hello@notregemmestudios.co.za",
@@ -41,6 +41,7 @@ export const siteConfig = {
       { label: "Femme", href: "/femme" },
     ],
     right: [
+      { label: "Unisex", href: "/unisex" },
       { label: "Upcoming", href: "/#upcoming" },
       { label: "Contact", href: "/contact" },
     ],

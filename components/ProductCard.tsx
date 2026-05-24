@@ -80,6 +80,7 @@ export function ProductCard({ product, revealDelay, aspectOverride }: Props): Re
             alt={product.imageAlt}
             motif={product.motif}
             aspect={aspectOverride ?? (product.featured ? "2/3" : "3/4")}
+            fit={product.image.toLowerCase().endsWith(".png") ? "contain" : "cover"}
             className="h-full w-full transition-transform duration-700 group-hover:scale-[1.07]"
           />
           <div
@@ -108,7 +109,7 @@ export function ProductCard({ product, revealDelay, aspectOverride }: Props): Re
         }}
         data-quick-add
       >
-        Order via WhatsApp
+        {product.comingSoon ? "Notify on WhatsApp" : "Order via WhatsApp"}
       </a>
 
       <div className="flex items-start justify-between px-5 pb-5 pt-[18px]">

@@ -16,10 +16,11 @@ export function BrandStory(): React.ReactElement {
             style={{ aspectRatio: "4/5" }}
           >
             <ProductImage
-              src="/assets/img-03.jpg"
+              src="/assets/Hoodie back.png"
               alt={storyCopy.imageAlt}
               motif="heart"
               aspect="4/5"
+              fit="cover"
               className="h-full w-full"
             />
             <div

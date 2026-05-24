@@ -14,13 +14,19 @@ export function Hero(): React.ReactElement {
       <div
         aria-hidden="true"
         className="absolute inset-0 z-0"
-        style={{ background: "var(--color-bg)" }}
+        style={{
+          backgroundImage: "url('/assets/Background.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "var(--color-bg)",
+        }}
       >
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 60% 70% at 70% 40%, oklch(25% 0.10 128 / 0.18) 0%, transparent 65%), radial-gradient(ellipse 40% 50% at 20% 80%, oklch(20% 0.08 25 / 0.12) 0%, transparent 60%), linear-gradient(180deg, transparent 40%, var(--color-bg) 100%)",
+              "radial-gradient(ellipse 60% 70% at 70% 40%, oklch(25% 0.10 128 / 0.22) 0%, transparent 65%), radial-gradient(ellipse 40% 50% at 20% 80%, oklch(20% 0.08 25 / 0.16) 0%, transparent 60%), linear-gradient(180deg, rgba(5,5,5,0.35) 0%, rgba(5,5,5,0.55) 40%, var(--color-bg) 100%)",
           }}
         />
       </div>
@@ -60,10 +66,11 @@ export function Hero(): React.ReactElement {
         }}
       >
         <ProductImage
-          src="/assets/img-02.jpg"
+          src="/assets/Hoodie back.png"
           alt="Notre Gemme flagship Evolution hoodie — featured SS2026 piece"
           motif="heart"
           aspect="3/4"
+          fit="contain"
           className="rounded-[var(--radius-card)]"
         />
       </div>
