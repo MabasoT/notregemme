@@ -2,67 +2,80 @@ import { heroCopy } from "@/lib/content";
 import { ProductImage } from "./ProductImage";
 
 /**
- * Full-viewport hero. Floating product centerpiece, oversized GEMME background
- * type, vertical season code on the left edge, scroll-line hint bottom-right.
+ * Full-viewport hero. Cinematic background using Background.png with a
+ * heavy darkening overlay (the source is intentionally small, so we
+ * upscale + blur it as an ambient texture rather than a literal photo).
+ * Floating product centerpiece, oversized GEMME background type, vertical
+ * season code on the left edge, scroll-line hint bottom-right.
  */
 export function Hero(): React.ReactElement {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-20"
+      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-24 pt-32"
     >
+      {/* Background image layer — upscaled + blurred to act as ambient texture */}
       <div
         aria-hidden="true"
         className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: "url('/assets/Background.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: "var(--color-bg)",
-        }}
+        style={{ background: "var(--color-bg)" }}
       >
         <div
           className="absolute inset-0"
           style={{
+            backgroundImage: "url('/assets/Background.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            filter: "blur(2px) brightness(0.6) saturate(1.1)",
+            transform: "scale(1.05)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
             background:
-              "radial-gradient(ellipse 60% 70% at 70% 40%, oklch(25% 0.10 128 / 0.22) 0%, transparent 65%), radial-gradient(ellipse 40% 50% at 20% 80%, oklch(20% 0.08 25 / 0.16) 0%, transparent 60%), linear-gradient(180deg, rgba(5,5,5,0.35) 0%, rgba(5,5,5,0.55) 40%, var(--color-bg) 100%)",
+              "radial-gradient(ellipse 60% 70% at 70% 30%, oklch(28% 0.12 128 / 0.35) 0%, transparent 65%), radial-gradient(ellipse 40% 50% at 20% 80%, oklch(22% 0.10 25 / 0.25) 0%, transparent 60%), linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.65) 40%, var(--color-bg) 100%)",
           }}
         />
       </div>
 
+      {/* Oversized ghost wordmark */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-bold leading-none"
         style={{
           fontFamily: "var(--font-heading)",
-          fontSize: "clamp(120px, 20vw, 320px)",
+          fontSize: "clamp(140px, 22vw, 380px)",
           letterSpacing: "-0.02em",
-          color: "rgba(255,255,255,0.025)",
+          color: "rgba(255,255,255,0.03)",
         }}
       >
         {heroCopy.bgText}
       </div>
 
+      {/* Vertical season code, left edge */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-[var(--gutter)] top-1/2 z-[2] -translate-y-1/2 select-none uppercase"
+        className="pointer-events-none absolute left-[var(--gutter)] top-1/2 z-[2] hidden -translate-y-1/2 select-none uppercase md:block"
         style={{
           writingMode: "vertical-rl",
           fontFamily: "var(--font-heading)",
           fontSize: "11px",
           letterSpacing: "0.3em",
-          color: "rgba(255,255,255,0.15)",
+          color: "rgba(255,255,255,0.2)",
         }}
       >
         {heroCopy.verticalCode}
       </div>
 
+      {/* Floating flagship product */}
       <div
-        className="animate-hero-float absolute left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-[52%]"
+        className="animate-hero-float pointer-events-none absolute left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-[55%]"
         style={{
-          width: "clamp(280px, 38vw, 580px)",
-          filter: "drop-shadow(0 40px 80px oklch(50% 0.15 128 / 0.3))",
+          width: "clamp(420px, 55vw, 780px)",
+          filter:
+            "drop-shadow(0 50px 100px oklch(60% 0.18 128 / 0.35)) drop-shadow(0 20px 40px rgba(0,0,0,0.5))",
         }}
       >
         <ProductImage
@@ -71,11 +84,11 @@ export function Hero(): React.ReactElement {
           motif="heart"
           aspect="3/4"
           fit="contain"
-          className="rounded-[var(--radius-card)]"
+          className="bg-transparent"
         />
       </div>
 
-      <div className="container-page relative z-[2]">
+      <div className="container-page relative z-[3]">
         <div className="grid grid-cols-1 items-end gap-10 md:grid-cols-2">
           <div>
             <p className="section-label">{heroCopy.eyebrow}</p>
@@ -83,15 +96,18 @@ export function Hero(): React.ReactElement {
               className="text-balance font-bold"
               style={{
                 fontFamily: "var(--font-heading)",
-                fontSize: "clamp(52px, 8vw, 130px)",
-                lineHeight: 0.92,
-                letterSpacing: "-0.03em",
+                fontSize: "clamp(58px, 9vw, 150px)",
+                lineHeight: 0.9,
+                letterSpacing: "-0.035em",
               }}
             >
               {heroCopy.headlineLines.map((line, i) => (
                 <span key={line} className="block">
                   {i === heroCopy.headlineEmphasisIndex ? (
-                    <em className="not-italic" style={{ color: "var(--color-green)" }}>
+                    <em
+                      className="not-italic"
+                      style={{ color: "var(--color-green)" }}
+                    >
                       {line}
                     </em>
                   ) : (
@@ -102,14 +118,15 @@ export function Hero(): React.ReactElement {
             </h1>
           </div>
 
-          <div className="hidden flex-col items-start gap-7 pb-2 md:flex">
-            <a
-              href="#homme"
-              className="glass-ghost inline-block rounded-pill px-9 py-[15px] text-[12px] font-semibold uppercase tracking-[0.15em] text-fg"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              {heroCopy.ctaLabel}
-            </a>
+          <div className="flex flex-col items-start gap-5 pb-2 md:gap-7">
+            <div className="flex flex-wrap items-center gap-3">
+              <a href="#homme" className="btn-primary">
+                {heroCopy.ctaLabel}
+              </a>
+              <a href="#story" className="btn-ghost">
+                Our Story
+              </a>
+            </div>
             <span className="flex items-center gap-2">
               <span
                 aria-hidden="true"
@@ -128,7 +145,7 @@ export function Hero(): React.ReactElement {
       </div>
 
       <div
-        className="absolute bottom-8 right-[var(--gutter)] z-[2] flex items-center gap-2.5 uppercase"
+        className="absolute bottom-8 right-[var(--gutter)] z-[3] hidden items-center gap-2.5 uppercase md:flex"
         style={{
           fontFamily: "var(--font-body)",
           fontSize: "11px",
@@ -136,7 +153,10 @@ export function Hero(): React.ReactElement {
           color: "var(--color-fg-muted)",
         }}
       >
-        <span className="relative block h-px w-10 overflow-hidden" style={{ background: "var(--color-fg-muted)" }}>
+        <span
+          className="relative block h-px w-10 overflow-hidden"
+          style={{ background: "var(--color-fg-muted)" }}
+        >
           <span
             aria-hidden="true"
             className="animate-scroll-scan absolute top-0 h-full w-full"

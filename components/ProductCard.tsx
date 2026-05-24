@@ -1,67 +1,97 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Product } from "@/lib/products";
 import { ProductImage } from "./ProductImage";
 
 type Props = {
   product: Product;
   revealDelay?: 1 | 2 | 3 | 4;
-  /** First card in the Femme grid uses a wider image aspect. */
+  /** Override aspect ratio (e.g. the wide featured cell in Femme grid). */
   aspectOverride?: string;
 };
 
 /**
- * Glassmorphism product card with 3D magnetic tilt (±10deg max) and a
- * quick-add WhatsApp pill that slides in from below on hover.
- *
- * Magnetic tilt is implemented locally with mousemove on the card; reset
- * uses a spring transition. Skipped on touch devices (no hover trigger).
+ * Glassmorphism product card with 3D magnetic tilt (±10deg max) and an
+ * order/notify pill that slides up over the bottom of the image on hover.
+ * PNG sources auto-render with object-fit: contain so transparent-bg
+ * product photos don't get cropped.
  */
-export function ProductCard({ product, revealDelay, aspectOverride }: Props): React.ReactElement {
-  const ref = useRef<HTMLDivElement | null>(null);
+export function ProductCard({
+  product,
+  revealDelay,
+  aspectOverride,
+}: Props): React.ReactElement {
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const [hovered, setHovered] = useState<boolean>(false);
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>): void => {
-    const card = ref.current;
+    const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
     const y = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
-    card.style.transform = `translateY(-6px) rotateX(${-y}deg) rotateY(${x}deg)`;
-    card.style.perspective = "800px";
+    card.style.setProperty("--tilt-x", `${x}deg`);
+    card.style.setProperty("--tilt-y", `${-y}deg`);
   };
 
   const onLeave = (): void => {
-    const card = ref.current;
+    setHovered(false);
+    const card = cardRef.current;
     if (!card) return;
-    card.style.transform = "";
+    card.style.setProperty("--tilt-x", "0deg");
+    card.style.setProperty("--tilt-y", "0deg");
   };
+
+  const onEnter = (): void => setHovered(true);
 
   const delayClass = revealDelay ? `reveal-delay-${revealDelay}` : "";
   const isLaunch = product.tag === "Launch";
+  const isComing = product.comingSoon === true;
+  const aspect = aspectOverride ?? (product.featured ? "2/3" : "3/4");
+  const fit: "cover" | "contain" = product.image.toLowerCase().endsWith(".png")
+    ? "contain"
+    : "cover";
 
   return (
     <div
-      ref={ref}
+      ref={cardRef}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className={`product-card reveal ${delayClass} relative overflow-hidden rounded-card`}
+      onMouseEnter={onEnter}
+      className={`product-card reveal ${delayClass} relative flex flex-col overflow-hidden`}
       style={{
         background: "var(--color-bg-2)",
         borderRadius: "var(--radius-card)",
+        border: "1px solid rgba(255,255,255,0.05)",
+        perspective: "900px",
+        transformStyle: "preserve-3d",
+        transform: `translateY(${
+          hovered ? "-8px" : "0"
+        }) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg))`,
+        transition:
+          "transform 0.5s cubic-bezier(0.16,1,0.3,1), border-color 0.3s, box-shadow 0.3s",
+        boxShadow: hovered
+          ? "0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(240,235,226,0.08)"
+          : "0 8px 24px -12px rgba(0,0,0,0.4)",
+        willChange: "transform",
       }}
     >
       {product.tag ? (
         <span
-          className="absolute left-4 top-4 z-10 inline-block rounded-pill px-3 py-[5px] uppercase"
+          className="absolute left-4 top-4 z-20 inline-block rounded-pill px-3 py-[5px] uppercase"
           style={{
             fontFamily: "var(--font-heading)",
-            fontSize: "10px",
+            fontSize: 10,
             fontWeight: 600,
             letterSpacing: "0.15em",
             color: "var(--color-bg)",
-            background: isLaunch ? "var(--color-red-bright)" : "var(--color-green)",
+            background: isLaunch
+              ? "var(--color-red-bright)"
+              : isComing
+                ? "rgba(255,255,255,0.85)"
+                : "var(--color-green)",
             borderRadius: "var(--radius-pill)",
           }}
         >
@@ -71,92 +101,102 @@ export function ProductCard({ product, revealDelay, aspectOverride }: Props): Re
 
       <Link
         href={`/product/${product.slug}`}
-        className="group block"
         aria-label={`View ${product.name}`}
+        className="relative block overflow-hidden"
+        style={{ aspectRatio: aspect }}
       >
-        <div className="relative overflow-hidden" style={{ aspectRatio: aspectOverride ?? (product.featured ? "2/3" : "3/4") }}>
+        <div
+          className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{ transform: hovered ? "scale(1.06)" : "scale(1)" }}
+        >
           <ProductImage
             src={product.image}
             alt={product.imageAlt}
             motif={product.motif}
-            aspect={aspectOverride ?? (product.featured ? "2/3" : "3/4")}
-            fit={product.image.toLowerCase().endsWith(".png") ? "contain" : "cover"}
-            className="h-full w-full transition-transform duration-700 group-hover:scale-[1.07]"
-          />
-          <div
-            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{
-              background: "linear-gradient(transparent 50%, rgba(5,5,5,0.7) 100%)",
-            }}
+            aspect={aspect}
+            fit={fit}
+            className="h-full w-full"
           />
         </div>
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+          style={{
+            background:
+              "linear-gradient(transparent 45%, rgba(5,5,5,0.55) 80%, rgba(5,5,5,0.9) 100%)",
+            opacity: hovered ? 1 : 0,
+          }}
+        />
       </Link>
 
+      {/* Order / notify pill — overlays bottom of image area on hover.
+          Positioned just above the info section so it sits visually
+          inside the photo. */}
       <a
         href={product.orderHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="absolute bottom-[88px] left-1/2 z-10 -translate-x-1/2 translate-y-2 rounded-pill px-6 py-2.5 uppercase opacity-0 transition-[opacity,transform] duration-300 group-hover:opacity-100 group-hover:translate-y-0 group-[.product-card:hover]:opacity-100 group-[.product-card:hover]:translate-y-0"
+        className="absolute left-1/2 z-30 inline-flex items-center gap-2 whitespace-nowrap rounded-pill px-6 py-3 uppercase transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.04] active:scale-[0.98]"
         style={{
+          // info area is ~88px tall; place pill so it overlays image bottom
+          bottom: "96px",
           fontFamily: "var(--font-heading)",
-          fontSize: "11px",
+          fontSize: 11,
           fontWeight: 600,
-          letterSpacing: "0.2em",
+          letterSpacing: "0.18em",
           color: "var(--color-bg)",
           background: "var(--color-fg)",
           borderRadius: "var(--radius-pill)",
-          whiteSpace: "nowrap",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+          opacity: hovered ? 1 : 0,
+          transform: hovered
+            ? "translateX(-50%) translateY(0)"
+            : "translateX(-50%) translateY(10px)",
+          pointerEvents: hovered ? "auto" : "none",
         }}
-        data-quick-add
       >
-        {product.comingSoon ? "Notify on WhatsApp" : "Order via WhatsApp"}
+        <span aria-hidden="true">{isComing ? "✦" : "💬"}</span>
+        {isComing ? "Notify on WhatsApp" : "Order via WhatsApp"}
       </a>
 
-      <div className="flex items-start justify-between px-5 pb-5 pt-[18px]">
-        <div>
-          <div
-            className="font-semibold"
+      <div className="flex items-start justify-between gap-3 px-5 pb-5 pt-[18px]">
+        <div className="min-w-0">
+          <Link
+            href={`/product/${product.slug}`}
+            className="block font-semibold transition-colors hover:text-green"
             style={{
               fontFamily: "var(--font-heading)",
               fontSize: "clamp(14px, 1.2vw, 16px)",
               letterSpacing: "-0.01em",
+              color: "var(--color-fg)",
+              textDecoration: "none",
             }}
           >
             {product.name}
-          </div>
+          </Link>
           <div
-            className="mt-[3px]"
+            className="mt-[3px] truncate"
             style={{
               fontFamily: "var(--font-body)",
-              fontSize: "12px",
+              fontSize: 12,
               color: "var(--color-fg-muted)",
-              letterSpacing: "0.05em",
+              letterSpacing: "0.04em",
             }}
           >
             {product.subtitle}
           </div>
         </div>
         <div
-          className="font-semibold"
+          className="shrink-0 font-semibold"
           style={{
             fontFamily: "var(--font-heading)",
-            fontSize: "16px",
+            fontSize: 16,
             color: "var(--color-fg)",
           }}
         >
           {product.price}
         </div>
       </div>
-
-      <style jsx>{`
-        .product-card:hover [data-quick-add] {
-          opacity: 1;
-          transform: translateX(-50%) translateY(0);
-        }
-        [data-quick-add] {
-          transform: translateX(-50%) translateY(8px);
-        }
-      `}</style>
     </div>
   );
 }

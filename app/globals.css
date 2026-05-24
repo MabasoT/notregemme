@@ -81,15 +81,48 @@ button {
 @media (pointer: fine) {
   a,
   button,
-  input,
-  textarea {
+  [role="button"] {
     cursor: none;
   }
 }
 
 input,
-textarea {
+textarea,
+select {
   font-family: inherit;
+  /* Keep native caret/text cursor on form fields — typing without a
+     cursor indicator is hostile UX. */
+  cursor: text;
+}
+
+button,
+[role="button"],
+a {
+  /* Always show a focus ring for keyboard users even though hover uses
+     the custom diamond cursor. */
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Universal tap feedback so the custom cursor doesn't make clicks feel dead */
+.btn-primary,
+.btn-ghost,
+.btn-whatsapp {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.btn-primary:active,
+.btn-ghost:active,
+.btn-whatsapp:active {
+  transform: scale(0.97);
+  transition: transform 0.08s ease;
 }
 
 /* ─── LAYOUT UTILITIES ─────────────────────────────────────────────── */

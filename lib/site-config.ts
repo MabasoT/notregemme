@@ -28,7 +28,7 @@ export const siteConfig = {
     short: "Mabaso Dev AI",
     tagline: "The Digital Alchemist",
     url: "https://mabasodevai.co.za",
-    fullLine: "Built by Mabaso Dev & AI – The Digital Alchemist",
+    fullLine: "Digital footprint by Mabaso Dev AI – The Digital Alchemist",
   },
   drop: {
     nextDropDate: "2026-09-01T00:00:00",
@@ -36,7 +36,7 @@ export const siteConfig = {
   nav: {
     left: [
       { label: "Home", href: "/" },
-      { label: "Story", href: "/about" },
+      { label: "Story", href: "/#story" },
       { label: "Homme", href: "/homme" },
       { label: "Femme", href: "/femme" },
     ],

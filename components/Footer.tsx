@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { footerCopy, igPreviewCopy, waPreviewCopy } from "@/lib/content";
+import { footerCopy } from "@/lib/content";
 import { siteConfig, whatsappOrderLink } from "@/lib/site-config";
 import { NewsletterBar } from "./NewsletterBar";
 
@@ -9,7 +10,7 @@ import { NewsletterBar } from "./NewsletterBar";
  *  - Giant ghost "NG." display gem
  *  - 4-column link grid (brand, collections, brand, socials)
  *  - IG / WhatsApp hover preview cards
- *  - "Built by Mabaso Dev & AI" pill with logo hover-preview
+ *  - "Digital footprint by Mabaso Dev AI" pill linking to mabasodevai.co.za
  */
 export function Footer(): React.ReactElement {
   return (
@@ -37,28 +38,23 @@ export function Footer(): React.ReactElement {
           {footerCopy.giantGem}
         </div>
 
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] mb-[60px]">
+        <div className="mb-[60px] grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/" className="inline-flex items-center gap-3" aria-label={siteConfig.brand.name}>
-              <span
-                aria-hidden="true"
-                className="diamond-clip block h-5 w-5"
-                style={{ background: "var(--color-green)" }}
+            <Link
+              href="/"
+              className="inline-flex items-center"
+              aria-label={siteConfig.brand.name}
+            >
+              <Image
+                src="/assets/logo notregemme.png"
+                alt={siteConfig.brand.name}
+                width={200}
+                height={112}
+                className="h-[64px] w-auto object-contain"
               />
-              <span style={{ fontFamily: "var(--font-heading)" }}>
-                <span className="block text-base font-bold uppercase tracking-[0.14em] text-fg">
-                  Notre Gemme
-                </span>
-                <span
-                  className="block text-[9px] font-medium uppercase tracking-[0.45em]"
-                  style={{ color: "var(--color-fg-muted)" }}
-                >
-                  ✦ Studios
-                </span>
-              </span>
             </Link>
             <p
-              className="mt-4 max-w-[280px]"
+              className="mt-5 max-w-[300px]"
               style={{
                 fontFamily: "var(--font-body)",
                 fontSize: "14px",
@@ -153,7 +149,7 @@ export function Footer(): React.ReactElement {
           >
             {footerCopy.madeIn}
           </span>
-          <BuiltByMabaso />
+          <DigitalFootprint />
         </div>
       </div>
     </footer>
@@ -178,7 +174,8 @@ function InstagramLink(): React.ReactElement {
         <span
           className="flex h-8 w-8 items-center justify-center rounded-[10px] text-white"
           style={{
-            background: "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
+            background:
+              "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
           }}
           aria-hidden="true"
         >
@@ -186,69 +183,6 @@ function InstagramLink(): React.ReactElement {
         </span>
         <span>{footerCopy.instagramLabel}</span>
       </a>
-      <div
-        className="pointer-events-none absolute bottom-[calc(100%+14px)] left-1/2 z-[200] w-[220px] -translate-x-1/2 translate-y-2 rounded-2xl p-4 opacity-0 transition-[opacity,transform] duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
-        style={{
-          background: "rgba(15,15,15,0.97)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-        }}
-      >
-        <div className="mb-2.5 flex items-center gap-3">
-          <span
-            className="block h-[52px] w-[52px] shrink-0 overflow-hidden rounded-full"
-            style={{
-              background:
-                "linear-gradient(#0f0f0f, #0f0f0f) padding-box, linear-gradient(135deg, #f09433, #dc2743, #bc1888) border-box",
-              border: "2px solid transparent",
-            }}
-          >
-            <span
-              aria-hidden="true"
-              className="diamond-clip mx-auto mt-3 block h-6 w-6"
-              style={{ background: "var(--color-green)" }}
-            />
-          </span>
-          <div>
-            <div
-              style={{ fontFamily: "var(--font-heading)", fontSize: 13, fontWeight: 600, color: "var(--color-fg)" }}
-            >
-              {igPreviewCopy.handle}
-            </div>
-            <div
-              className="mt-0.5"
-              style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--color-fg-muted)" }}
-            >
-              {igPreviewCopy.subhandle}
-            </div>
-          </div>
-        </div>
-        <div className="mb-2.5 grid grid-cols-3 gap-[3px] overflow-hidden rounded-lg">
-          <span
-            aria-hidden="true"
-            className="placeholder-art aspect-square"
-          />
-          <span aria-hidden="true" className="placeholder-art aspect-square" />
-          <span aria-hidden="true" className="placeholder-art aspect-square" />
-        </div>
-        <a
-          href={siteConfig.contact.instagramUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block rounded-lg p-2.5 text-center uppercase text-white"
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.15em",
-            background: "linear-gradient(135deg, #f09433, #dc2743, #bc1888)",
-            textDecoration: "none",
-          }}
-        >
-          {igPreviewCopy.followCta}
-        </a>
-      </div>
     </div>
   );
 }
@@ -257,7 +191,9 @@ function WhatsAppLink(): React.ReactElement {
   return (
     <div className="group relative inline-flex">
       <a
-        href={whatsappOrderLink("Hi Notre Gemme! I'd like to place an order.")}
+        href={whatsappOrderLink(
+          "Hi Notre Gemme! I'd like to place an order.",
+        )}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-2 transition-colors hover:text-fg"
@@ -277,120 +213,73 @@ function WhatsAppLink(): React.ReactElement {
         </span>
         <span>{footerCopy.whatsappLabel}</span>
       </a>
-      <div
-        className="pointer-events-none absolute bottom-[calc(100%+14px)] left-1/2 z-[200] w-[220px] -translate-x-1/2 translate-y-2 rounded-2xl p-4 opacity-0 transition-[opacity,transform] duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
-        style={{
-          background: "rgba(15,15,15,0.97)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-        }}
-      >
-        <div
-          className="mb-3 rounded-[12px_12px_12px_4px] px-3.5 py-2.5"
-          style={{
-            background: "rgba(37,211,102,0.08)",
-            border: "1px solid rgba(37,211,102,0.2)",
-            fontFamily: "var(--font-body)",
-            fontSize: 12,
-            color: "var(--color-fg-muted)",
-            lineHeight: 1.6,
-          }}
-        >
-          👋 {waPreviewCopy.message}
-          <br />
-          <strong style={{ color: "var(--color-fg)" }}>{waPreviewCopy.emphasis}</strong>
-          {waPreviewCopy.rest}
-          <strong style={{ color: "var(--color-fg)" }}>{waPreviewCopy.emphasis2}</strong>
-          {waPreviewCopy.tail}
-        </div>
-        <a
-          href={whatsappOrderLink("Hi Notre Gemme! I'd like to place an order.")}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block rounded-lg p-2.5 text-center uppercase"
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.15em",
-            color: "#050505",
-            background: "var(--color-whatsapp)",
-            textDecoration: "none",
-          }}
-        >
-          {waPreviewCopy.cta}
-        </a>
-      </div>
     </div>
   );
 }
 
-function BuiltByMabaso(): React.ReactElement {
+/**
+ * "Digital footprint by Mabaso Dev AI" credit pill. Hover reveals a small
+ * preview card with a typography-only monogram (gold gradient on dark)
+ * — keeping it clean rather than approximating the brand logo, since
+ * the actual Mabaso brand mark isn't bundled in this repo.
+ */
+function DigitalFootprint(): React.ReactElement {
   return (
     <div className="group relative">
       <a
         href={siteConfig.built.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 rounded-pill px-3.5 py-1.5 transition-[border-color,background]"
+        className="inline-flex items-center gap-2 rounded-pill px-4 py-2 transition-[border-color,background,transform] duration-200 hover:scale-[1.02]"
         style={{
-          border: "1px solid rgba(255,255,255,0.07)",
+          border: "1px solid rgba(255,255,255,0.08)",
           background: "rgba(255,255,255,0.03)",
           borderRadius: "var(--radius-pill)",
           textDecoration: "none",
         }}
-        aria-label={siteConfig.built.fullLine}
-        title={siteConfig.built.fullLine}
+        aria-label={`Digital footprint by ${siteConfig.built.name}`}
       >
         <span
           style={{
             fontFamily: "var(--font-body)",
             fontSize: 11,
             color: "var(--color-fg-muted)",
-            letterSpacing: "0.05em",
+            letterSpacing: "0.08em",
           }}
         >
-          Built by
+          Digital footprint by
         </span>
         <span
           style={{
             fontFamily: "var(--font-heading)",
             fontSize: 11,
             fontWeight: 600,
-            letterSpacing: "0.1em",
+            letterSpacing: "0.12em",
             color: "var(--color-gold)",
+            textTransform: "uppercase",
           }}
         >
-          {siteConfig.built.name}
-        </span>
-        <span
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 10,
-            color: "var(--color-fg-muted)",
-            letterSpacing: "0.05em",
-          }}
-        >
-          – {siteConfig.built.tagline}
+          {siteConfig.built.short}
         </span>
       </a>
+
       <div
-        className="pointer-events-none absolute bottom-[calc(100%+12px)] right-0 z-50 w-[180px] translate-y-2 rounded-2xl p-4 text-center opacity-0 transition-[opacity,transform] duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
+        className="pointer-events-none absolute bottom-[calc(100%+10px)] right-0 z-50 w-[200px] translate-y-2 rounded-2xl p-4 text-center opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
         style={{
           background: "rgba(12,12,12,0.97)",
           border: "1px solid rgba(255,255,255,0.1)",
           backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
           boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
         }}
       >
-        <MabasoLogo />
+        <MabasoMonogram />
         <div
-          className="mt-2"
+          className="mt-3"
           style={{
             fontFamily: "var(--font-heading)",
-            fontSize: 11,
-            fontWeight: 600,
+            fontSize: 12,
+            fontWeight: 700,
             color: "var(--color-fg)",
             letterSpacing: "0.05em",
           }}
@@ -398,85 +287,106 @@ function BuiltByMabaso(): React.ReactElement {
           {siteConfig.built.name}
         </div>
         <div
-          className="mt-0.5"
+          className="mt-1"
           style={{
             fontFamily: "var(--font-body)",
             fontSize: 10,
             color: "var(--color-fg-muted)",
+            letterSpacing: "0.05em",
           }}
         >
-          mabasodevai.co.za
+          {siteConfig.built.tagline}
+        </div>
+        <div
+          className="mt-2"
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: 9,
+            color: "var(--color-gold)",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
+        >
+          mabasodevai.co.za ↗
         </div>
       </div>
     </div>
   );
 }
 
-function MabasoLogo(): React.ReactElement {
+/** Typography-only "MD" monogram in gold-on-dark glass square. */
+function MabasoMonogram(): React.ReactElement {
   return (
-    <svg
-      viewBox="0 0 100 100"
-      className="mx-auto block h-20 w-20"
+    <div
+      className="mx-auto flex h-16 w-16 items-center justify-center rounded-[14px]"
+      style={{
+        background:
+          "linear-gradient(135deg, oklch(22% 0.04 240 / 0.9), oklch(15% 0.03 240 / 0.6))",
+        border: "1px solid oklch(78% 0.14 85 / 0.4)",
+        boxShadow: "inset 0 0 24px oklch(78% 0.14 85 / 0.08)",
+      }}
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient id="md-glass" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#5fdcff" />
-          <stop offset="100%" stopColor="#1a6fa5" />
-        </linearGradient>
-        <linearGradient id="md-gold" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#f8d572" />
-          <stop offset="100%" stopColor="#b8842a" />
-        </linearGradient>
-      </defs>
-      <rect
-        x="14"
-        y="10"
-        width="72"
-        height="72"
-        rx="14"
-        fill="url(#md-glass)"
-        opacity="0.55"
-        stroke="url(#md-gold)"
-        strokeWidth="2"
-      />
-      <path
-        d="M28 70 L42 48 L52 60 L66 38 L78 28 L72 38 L78 36"
-        fill="none"
-        stroke="url(#md-gold)"
-        strokeWidth="6"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      <rect x="14" y="82" width="72" height="14" rx="3" fill="#1a1a1a" />
-      <text
-        x="50"
-        y="93"
-        textAnchor="middle"
-        fontFamily="var(--font-heading)"
-        fontSize="8"
-        fontWeight="700"
-        fill="url(#md-gold)"
-        letterSpacing="0.5"
+      <span
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: 26,
+          fontWeight: 700,
+          letterSpacing: "-0.04em",
+          background:
+            "linear-gradient(135deg, oklch(86% 0.13 85), oklch(60% 0.14 60))",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
       >
-        Mabaso Dev &amp; AI
-      </text>
+        M
+      </span>
+      <span
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: 26,
+          fontWeight: 700,
+          color: "var(--color-gold)",
+          marginLeft: -2,
+        }}
+      >
+        ↗
+      </span>
+    </div>
+  );
+}
+
+function InstagramGlyph({
+  className,
+}: {
+  className?: string;
+}): React.ReactElement {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.26.07 1.64.07 4.85s0 3.6-.07 4.85c-.05 1.17-.25 1.8-.41 2.23a3.7 3.7 0 0 1-.9 1.38c-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.26.06-1.64.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.2 15.6 2.2 15.22 2.2 12s0-3.6.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.4 2.2 8.78 2.2 12 2.2Zm0 5.8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm5.3-.5a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3ZM12 9.6a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8Z" />
     </svg>
   );
 }
 
-function InstagramGlyph({ className }: { className?: string }): React.ReactElement {
+function WhatsAppGlyph({
+  className,
+}: {
+  className?: string;
+}): React.ReactElement {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
-      <path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.26.07 1.64.07 4.85s0 3.6-.07 4.85c-.05 1.17-.25 1.8-.41 2.23a3.7 3.7 0 0 1-.9 1.38c-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.26.06-1.64.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.2 15.6 2.2 15.22 2.2 12s0-3.6.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.4 2.2 8.78 2.2 12 2.2Zm0 1.8c-3.16 0-3.53 0-4.77.07-1.07.05-1.65.23-2.04.38a3 3 0 0 0-1.06.69 3 3 0 0 0-.69 1.06c-.15.39-.33.97-.38 2.04C3 8.47 3 8.84 3 12s0 3.53.07 4.77c.05 1.07.23 1.65.38 2.04.16.45.39.78.69 1.06.28.3.61.53 1.06.69.39.15.97.33 2.04.38C8.47 21 8.84 21 12 21s3.53 0 4.77-.07c1.07-.05 1.65-.23 2.04-.38a3 3 0 0 0 1.06-.69 3 3 0 0 0 .69-1.06c.15-.39.33-.97.38-2.04.06-1.24.07-1.61.07-4.77s0-3.53-.07-4.77c-.05-1.07-.23-1.65-.38-2.04a3 3 0 0 0-.69-1.06 3 3 0 0 0-1.06-.69c-.39-.15-.97-.33-2.04-.38C15.53 4 15.16 4 12 4Zm0 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm5.3-2.3a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z" />
-    </svg>
-  );
-}
-
-function WhatsAppGlyph({ className }: { className?: string }): React.ReactElement {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
-      <path d="M20.52 3.48A11.94 11.94 0 0 0 12.05 0C5.5 0 .2 5.3.2 11.83a11.7 11.7 0 0 0 1.59 5.91L0 24l6.42-1.68a11.85 11.85 0 0 0 5.64 1.43h.01c6.55 0 11.85-5.3 11.85-11.83a11.7 11.7 0 0 0-3.4-8.44Z" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M20.52 3.48A11.94 11.94 0 0 0 12.05 0C5.5 0 .2 5.3.2 11.83a11.7 11.7 0 0 0 1.59 5.91L0 24l6.42-1.68a11.85 11.85 0 0 0 5.64 1.43h.01c6.55 0 11.85-5.3 11.85-11.83a11.7 11.7 0 0 0-3.4-8.44ZM12.07 21.7a9.85 9.85 0 0 1-5.03-1.38l-.36-.21-3.81 1 1.02-3.71-.23-.38a9.86 9.86 0 1 1 18.31-5.18 9.86 9.86 0 0 1-9.9 9.86Z" />
     </svg>
   );
 }
