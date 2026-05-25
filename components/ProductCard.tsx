@@ -129,20 +129,20 @@ export function ProductCard({
         />
       </Link>
 
-      <div className="flex items-start justify-between gap-4 px-6 pb-6 pt-5">
-        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+      <div
+        className="flex items-start justify-between gap-4"
+        style={{ padding: "18px 20px 20px" }}
+      >
+        <div className="min-w-0 flex-1">
           <Link
             href={`/product/${product.slug}`}
-            className="block font-semibold leading-tight tracking-[-0.005em] transition-colors hover:text-green"
+            className="block font-semibold leading-snug transition-colors hover:text-green"
             style={{
               fontFamily: "var(--font-heading)",
-              fontSize: "15px",
+              fontSize: "clamp(14px, 1.2vw, 16px)",
+              letterSpacing: "-0.01em",
               color: "var(--color-fg)",
               textDecoration: "none",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
               wordBreak: "break-word",
             }}
           >
@@ -153,12 +153,9 @@ export function ProductCard({
               fontFamily: "var(--font-body)",
               fontSize: "12px",
               color: "var(--color-fg-muted)",
-              letterSpacing: "0.03em",
-              lineHeight: 1.45,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
+              letterSpacing: "0.05em",
+              marginTop: "3px",
+              lineHeight: 1.5,
               wordBreak: "break-word",
             }}
           >
@@ -169,9 +166,8 @@ export function ProductCard({
           className="shrink-0 self-start whitespace-nowrap font-semibold"
           style={{
             fontFamily: "var(--font-heading)",
-            fontSize: "15px",
+            fontSize: "16px",
             color: "var(--color-fg)",
-            paddingTop: "1px",
           }}
         >
           {product.price}

@@ -53,7 +53,7 @@ export function Countdown({ targetIso }: Props): React.ReactElement {
   }
 
   return (
-    <div className="mt-3 flex items-start gap-4">
+    <div className="mt-5 flex items-start gap-4">
       <Unit num={r.d} label="Days" />
       <Sep />
       <Unit num={r.h} label="Hrs" />
@@ -68,10 +68,28 @@ export function Countdown({ targetIso }: Props): React.ReactElement {
 function Unit({ num, label }: { num: string; label: string }): React.ReactElement {
   return (
     <div className="text-center">
-      <div className="font-heading text-[clamp(28px,3vw,42px)] font-bold leading-none tracking-[-0.03em] text-fg">
+      <div
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontSize: "clamp(28px, 3.5vw, 48px)",
+          fontWeight: 700,
+          letterSpacing: "-0.03em",
+          lineHeight: 1,
+          color: "var(--color-fg)",
+        }}
+      >
         {num}
       </div>
-      <div className="mt-[5px] font-heading text-[9px] font-medium uppercase tracking-[0.12em] text-fg-muted">
+      <div
+        className="uppercase"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "10px",
+          letterSpacing: "0.2em",
+          color: "var(--color-fg-muted)",
+          marginTop: "4px",
+        }}
+      >
         {label}
       </div>
     </div>
@@ -82,7 +100,12 @@ function Sep(): React.ReactElement {
   return (
     <span
       aria-hidden="true"
-      className="block self-start pt-0.5 text-[clamp(20px,2.5vw,32px)] font-light leading-none text-fg/25"
+      style={{
+        fontFamily: "var(--font-heading)",
+        fontSize: "32px",
+        lineHeight: 1.4,
+        color: "var(--color-fg-muted)",
+      }}
     >
       :
     </span>

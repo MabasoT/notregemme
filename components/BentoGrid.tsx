@@ -55,7 +55,7 @@ export function BentoGrid(): React.ReactElement {
                 </p>
               </div>
               <div>
-                <div className="mb-3 font-heading text-[10px] font-medium uppercase tracking-[0.15em] text-fg-muted">
+                <div className="mb-3 font-heading text-[10px] font-medium uppercase tracking-[0.2em] text-fg-muted">
                   {upcomingCopy.hero.countdownLabel}
                 </div>
                 <Countdown targetIso={siteConfig.drop.nextDropDate} />
@@ -145,12 +145,7 @@ export function BentoGrid(): React.ReactElement {
           </div>
 
           {/* 6 — Notify capture */}
-          <div
-            className="bento-card bento-6 reveal reveal-delay-2 flex flex-col justify-between gap-5 p-7"
-            style={{
-              background: "linear-gradient(135deg, oklch(15% 0.08 128 / 0.3), transparent)",
-            }}
-          >
+          <div className="bento-card bento-6 reveal reveal-delay-2 flex flex-col justify-between gap-5 p-7">
             <BentoTag>{c.notify.tag}</BentoTag>
             <div className="font-heading text-[clamp(18px,2.2vw,26px)] font-bold leading-[1.15] tracking-[-0.02em]">
               {c.notify.titleLines.map((l) => (
@@ -355,8 +350,8 @@ function SketchPlaceholder({
         style={{
           fontFamily: "'Courier New', monospace",
           fontSize: "10px",
-          color: "rgba(255,255,255,0.35)",
-          letterSpacing: "0.06em",
+          color: "rgba(255,255,255,0.2)",
+          letterSpacing: "0.05em",
         }}
       >
         {label}

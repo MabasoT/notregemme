@@ -57,17 +57,17 @@ export function BrandStory(): React.ReactElement {
                 {p}
               </p>
             ))}
-            <div className="reveal reveal-delay-4 mt-4 grid grid-cols-2 gap-3">
+            <div className="reveal reveal-delay-4 mt-4 grid grid-cols-2 gap-5">
               {storyCopy.stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="glass-card flex min-h-[100px] flex-col justify-between px-6 py-6"
+                  className="glass-card px-6 py-5"
                   style={{ borderRadius: "var(--radius-stat)" }}
                 >
                   <div
                     style={{
                       fontFamily: "var(--font-heading)",
-                      fontSize: "clamp(26px, 2.6vw, 32px)",
+                      fontSize: "clamp(28px, 3vw, 48px)",
                       fontWeight: 700,
                       letterSpacing: "-0.02em",
                       lineHeight: 1,
@@ -81,11 +81,10 @@ export function BrandStory(): React.ReactElement {
                   <div
                     style={{
                       fontFamily: "var(--font-body)",
-                      fontSize: "10px",
-                      letterSpacing: "0.14em",
+                      fontSize: "12px",
+                      letterSpacing: "0.1em",
                       color: "var(--color-fg-muted)",
-                      fontWeight: 500,
-                      marginTop: "14px",
+                      marginTop: "4px",
                       textTransform: "uppercase",
                     }}
                   >
