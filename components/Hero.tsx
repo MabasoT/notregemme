@@ -1,4 +1,5 @@
 import { heroCopy } from "@/lib/content";
+import { asset } from "@/lib/site-config";
 
 /**
  * Full-viewport hero. Cinematic background using Background.png with a
@@ -22,7 +23,7 @@ export function Hero(): React.ReactElement {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: "url('/assets/Background.png')",
+            backgroundImage: `url('${asset("/assets/Background.png")}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",

@@ -52,3 +52,23 @@ export const siteConfig = {
 export function whatsappOrderLink(message: string): string {
   return `https://wa.me/${siteConfig.contact.whatsappE164}?text=${encodeURIComponent(message)}`;
 }
+
+/**
+ * Asset URL helper. When the site is hosted under a sub-path (e.g.
+ * GitHub Pages at /notregemme/), every absolute /asset path needs the
+ * sub-path prepended. Pass any public-folder path here:
+ *
+ *   asset("/assets/logo.png")  →  "/notregemme/assets/logo.png"  on GH Pages
+ *   asset("/assets/logo.png")  →  "/assets/logo.png"             on Vercel root
+ *
+ * Required because `next/image` with `unoptimized: true` skips Next's
+ * built-in basePath rewriter on the rendered <img src>.
+ */
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+export function asset(path: string): string {
+  if (!path) return path;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  if (!path.startsWith("/")) return path;
+  return `${BASE_PATH}${path}`;
+}

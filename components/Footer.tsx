@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { footerCopy, igPreviewCopy } from "@/lib/content";
-import { siteConfig, whatsappOrderLink } from "@/lib/site-config";
+import { asset, siteConfig, whatsappOrderLink } from "@/lib/site-config";
 import { NewsletterBar } from "./NewsletterBar";
 
 /**
@@ -46,7 +46,7 @@ export function Footer(): React.ReactElement {
               aria-label={siteConfig.brand.name}
             >
               <Image
-                src="/assets/logo notregemme.png"
+                src={asset("/assets/logo notregemme.png")}
                 alt={siteConfig.brand.name}
                 width={200}
                 height={112}
@@ -204,7 +204,7 @@ function InstagramLink(): React.ReactElement {
             }}
           >
             <Image
-              src="/assets/logo notregemme.png"
+              src={asset("/assets/logo notregemme.png")}
               alt=""
               width={52}
               height={52}
@@ -246,7 +246,7 @@ function InstagramLink(): React.ReactElement {
             aria-hidden="true"
           >
             <Image
-              src="/assets/Product 1.jpg"
+              src={asset("/assets/Product 1.jpg")}
               alt=""
               fill
               sizes="80px"
@@ -259,7 +259,7 @@ function InstagramLink(): React.ReactElement {
             aria-hidden="true"
           >
             <Image
-              src="/assets/Hoodie back.png"
+              src={asset("/assets/Hoodie back.png")}
               alt=""
               fill
               sizes="80px"
@@ -272,7 +272,7 @@ function InstagramLink(): React.ReactElement {
             aria-hidden="true"
           >
             <Image
-              src="/assets/Product 2.jpg"
+              src={asset("/assets/Product 2.jpg")}
               alt=""
               fill
               sizes="80px"

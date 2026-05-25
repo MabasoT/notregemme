@@ -1,37 +1,39 @@
 import type { NextConfig } from "next";
 
 /**
- * Security headers applied to every route.
- * CSP allows: self, Google Fonts, inline styles (Tailwind injects),
- * and connect-src 'self' for the newsletter / bot endpoints.
+ * Static export config — produces a fully static `out/` directory so the
+ * site can be hosted on GitHub Pages (or any static host).
+ *
+ * - `output: "export"` writes plain HTML/CSS/JS for every route
+ * - `basePath: "/notregemme"` matches the GitHub Pages URL
+ *   (https://<user>.github.io/notregemme/). If you set up a custom
+ *   domain or move to the user/org root, drop this back to "".
+ * - `trailingSlash: true` makes GitHub Pages happy (it serves /foo/
+ *   as /foo/index.html cleanly without redirects)
+ * - `images.unoptimized: true` is required for static export
+ *
+ * Note: `headers()` is NOT available with `output: "export"` — security
+ * headers must be applied at the hosting layer instead. CSP / HSTS /
+ * etc. are still in place when serving from Vercel; when serving from
+ * GitHub Pages, GitHub applies its own baseline security headers.
  */
-const securityHeaders = [
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob:",
-      "connect-src 'self'",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self' https://wa.me",
-    ].join("; "),
-  },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-  { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "X-Frame-Options", value: "DENY" },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
-];
+const isGithubPages = process.env.GITHUB_PAGES === "true";
+const basePath = isGithubPages ? "/notregemme" : "";
 
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+  output: "export",
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
+  basePath: basePath || undefined,
+  assetPrefix: basePath || undefined,
+  env: {
+    // Exposed so `asset()` in lib/site-config.ts can prefix /public paths
+    // for hosts that serve the site under a sub-path (GitHub Pages).
+    NEXT_PUBLIC_BASE_PATH: basePath,
   },
 };
 

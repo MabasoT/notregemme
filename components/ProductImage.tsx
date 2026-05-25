@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { asset } from "@/lib/site-config";
 
 type Motif = "barcode" | "suits" | "heart";
 
@@ -49,7 +50,7 @@ export function ProductImage({
     >
       {!showFallback ? (
         <Image
-          src={src}
+          src={asset(src)}
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 700px"
@@ -89,7 +90,7 @@ function BrandedFallback({
       >
         {/* Brand logo silhouette — faint */}
         <Image
-          src="/assets/logo notregemme.png"
+          src={asset("/assets/logo notregemme.png")}
           alt=""
           width={200}
           height={112}

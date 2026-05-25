@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { siteConfig, whatsappOrderLink } from "@/lib/site-config";
+import { asset, siteConfig, whatsappOrderLink } from "@/lib/site-config";
 
 /**
  * Fixed top header. Logo center, nav left/right, WhatsApp pill CTA right.
@@ -108,7 +108,7 @@ export function Header(): React.ReactElement {
           className="relative z-[101] flex items-center justify-center"
         >
           <Image
-            src="/assets/logo notregemme.png"
+            src={asset("/assets/logo notregemme.png")}
             alt={siteConfig.brand.name}
             width={200}
             height={112}
