@@ -4,7 +4,7 @@
 @theme {
   --color-bg: #050505;
   --color-bg-2: #0b0b0b;
-  --color-bg-3: #111111;
+  --color-bg-3: #161616;
   --color-fg: #f0ebe2;
   --color-fg-muted: #7a7570;
   --color-green: oklch(68% 0.17 128);
@@ -255,8 +255,8 @@ textarea:focus-visible {
 
 /* ─── GLASS SURFACES ───────────────────────────────────────────────── */
 .glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -423,7 +423,7 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 24px;
+  padding: 28px;
 }
 
 /* ─── NAV ORDER BUTTON (outlined green pill, hover-fills) ─────────── */

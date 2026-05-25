@@ -25,7 +25,7 @@ export function BentoGrid(): React.ReactElement {
         <div className="bento-grid">
           {/* 1 — Hero countdown teaser */}
           <div className="bento-card bento-1 reveal reveal-delay-1">
-            <div className="flex h-full flex-col justify-between p-8">
+            <div className="flex h-full flex-col justify-between p-9">
               <div>
                 <BentoTag>
                   <span
@@ -145,7 +145,7 @@ export function BentoGrid(): React.ReactElement {
           </div>
 
           {/* 6 — Notify capture */}
-          <div className="bento-card bento-6 reveal reveal-delay-2 flex flex-col justify-between gap-5 p-7">
+          <div className="bento-card bento-6 reveal reveal-delay-2 flex flex-col justify-between gap-5 p-8">
             <BentoTag>{c.notify.tag}</BentoTag>
             <div className="font-heading text-[clamp(18px,2.2vw,26px)] font-bold leading-[1.15] tracking-[-0.02em]">
               {c.notify.titleLines.map((l) => (
@@ -172,7 +172,7 @@ export function BentoGrid(): React.ReactElement {
         }
         .bento-card {
           background: var(--color-bg-3);
-          border: 1px solid rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.12);
           border-radius: var(--radius-card);
           overflow: hidden;
           position: relative;
@@ -301,7 +301,7 @@ function SketchPlaceholder({
   label: string;
 }): React.ReactElement {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 p-7 text-center">
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
       {shape === "circle" ? (
         <div
           className="h-20 w-20 rounded-full"

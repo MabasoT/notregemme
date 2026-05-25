@@ -61,7 +61,7 @@ export function BrandStory(): React.ReactElement {
               {storyCopy.stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="glass-card px-6 py-5"
+                  className="glass-card px-7 py-6"
                   style={{ borderRadius: "var(--radius-stat)" }}
                 >
                   <div
