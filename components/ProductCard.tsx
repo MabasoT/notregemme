@@ -64,7 +64,6 @@ export function ProductCard({
       style={{
         background: "var(--color-bg-2)",
         borderRadius: "var(--radius-card)",
-        border: "1px solid rgba(255,255,255,0.05)",
         perspective: "900px",
         transformStyle: "preserve-3d",
         transform: `translateY(${
@@ -73,9 +72,12 @@ export function ProductCard({
         transition:
           "transform 0.5s cubic-bezier(0.16,1,0.3,1), border-color 0.3s, box-shadow 0.3s",
         boxShadow: hovered
-          ? "0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(240,235,226,0.08)"
-          : "0 8px 24px -12px rgba(0,0,0,0.4)",
-        willChange: "transform",
+          /* Hover: lift shadow + subtle acid-green brand glow (easy on the eye, aids navigation) */
+          ? "0 30px 60px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(110,203,62,0.3), 0 0 28px -4px rgba(110,203,62,0.18)"
+          /* Default: quiet depth shadow */
+          : "0 8px 24px -12px rgba(0,0,0,0.5)",
+        border: hovered ? "1px solid rgba(110,203,62,0.35)" : "1px solid rgba(255,255,255,0.05)",
+        willChange: "transform"
       }}
     >
       {product.tag ? (
@@ -103,7 +105,9 @@ export function ProductCard({
         href={`/product/${product.slug}`}
         aria-label={`View ${product.name}`}
         className="relative block overflow-hidden"
-        style={{ aspectRatio: aspect }}
+        {/* Fixed image area height ensures all cards have their info section
+           at the same vertical position — key to visual consistency */}
+        style={{ height: "clamp(280px, 40vw, 420px)" }}
       >
         <div
           className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
