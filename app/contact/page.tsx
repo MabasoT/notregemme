@@ -42,13 +42,18 @@ export default function ContactPage(): React.ReactElement {
               >
                 {c.label}
               </div>
+              {/* Card value — word-break:break-word prevents long email addresses
+                 (hello@notregemmestudios.co.za) from overflowing the card boundary */}
               <div
                 className="font-bold"
                 style={{
                   fontFamily: "var(--font-heading)",
-                  fontSize: "clamp(20px, 2.4vw, 28px)",
+                  fontSize: "clamp(16px, 2vw, 26px)",
                   letterSpacing: "-0.01em",
                   color: "var(--color-fg)",
+                  wordBreak: "break-word",
+                  overflowWrap: "anywhere",
+                  hyphens: "auto",
                 }}
               >
                 {c.value}
