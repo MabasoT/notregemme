@@ -172,14 +172,17 @@ function InstagramLink(): React.ReactElement {
         }}
       >
         <span
-          className="flex h-8 w-8 items-center justify-center rounded-[10px] text-white"
-          style={{
-            background:
-              "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
-          }}
+          className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-[10px]"
           aria-hidden="true"
         >
-          <InstagramGlyph className="h-4 w-4" />
+          {/* Use the uploaded Instagram brand icon */}
+          <Image
+            src={asset("/assets/icon-instagram.png")}
+            alt="Instagram"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-cover"
+          />
         </span>
         <span>{footerCopy.instagramLabel}</span>
       </a>
@@ -322,12 +325,19 @@ function WhatsAppLink(): React.ReactElement {
         }}
       >
         <span
-          className="flex h-8 w-8 items-center justify-center rounded-[10px] text-[#050505]"
-          style={{ background: "var(--color-whatsapp)" }}
+          className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full"
           aria-hidden="true"
         >
-          <WhatsAppGlyph className="h-4 w-4" />
+          {/* Use the uploaded WhatsApp brand icon */}
+          <Image
+            src={asset("/assets/icon-whatsapp.png")}
+            alt="WhatsApp"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-cover"
+          />
         </span>
+        <span>{footerCopy.whatsappLabel}</span>
         <span>{footerCopy.whatsappLabel}</span>
       </a>
     </div>
@@ -356,6 +366,15 @@ function DigitalFootprint(): React.ReactElement {
         }}
         aria-label={`Digital footprint by ${siteConfig.built.name}`}
       >
+        {/* Small Mabaso Dev AI logo in the credit pill */}
+        <Image
+          src={asset("/assets/logo-mabasodevai.png")}
+          alt=""
+          width={20}
+          height={20}
+          aria-hidden="true"
+          className="h-5 w-5 rounded-md object-contain"
+        />
         <span
           style={{
             fontFamily: "var(--font-body)",
@@ -390,7 +409,14 @@ function DigitalFootprint(): React.ReactElement {
           boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
         }}
       >
-        <MabasoMonogram />
+        {/* Mabaso Dev AI company logo — uploaded to public/assets */}
+        <Image
+          src={asset("/assets/logo-mabasodevai.png")}
+          alt="Mabaso Dev AI"
+          width={80}
+          height={80}
+          className="h-[72px] w-[72px] rounded-[12px] object-contain"
+        />
         <div
           className="mt-3"
           style={{
