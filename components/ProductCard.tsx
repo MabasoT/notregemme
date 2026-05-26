@@ -105,8 +105,6 @@ export function ProductCard({
         href={`/product/${product.slug}`}
         aria-label={`View ${product.name}`}
         className="relative block overflow-hidden"
-        {/* Fixed image area height ensures all cards have their info section
-           at the same vertical position — key to visual consistency */}
         style={{ height: "clamp(280px, 40vw, 420px)" }}
       >
         <div
