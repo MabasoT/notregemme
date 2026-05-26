@@ -79,6 +79,7 @@ export function BrandStory(): React.ReactElement {
                   SS 2026
                 </p>
               </div>
+            </div>
           </div>
 
           <div className="flex flex-col gap-7">
