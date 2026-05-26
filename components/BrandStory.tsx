@@ -61,7 +61,7 @@ export function BrandStory(): React.ReactElement {
                     lineHeight: 1.35,
                   }}
                 >
-                  &ldquo;Love doesn&rsquo;t vanish &mdash; It Evolves. Yes.&rdquo;
+                  &ldquo;Love doesn&rsquo;t vanish &mdash; It Evolves. Ves.&rdquo;
                 </p>
                 {/* Sub-caption with diamond icon */}
                 <p
