@@ -26,7 +26,7 @@ function getBotReply(input: string): string {
   const q = input.toLowerCase().trim();
 
   if (/^(hi|hello|hey|sup|howzit|hola|yo)\b/.test(q)) {
-    return "Hey! Welcome to Notre Gemme \u{1F44B} I'm here to help you with prices, available products, pre-orders and size fittings. What can I do for you?";
+    return "Hey! Welcome to Notre Gemme I'm here to help you with prices, available products, pre-orders and size fittings. What can I do for you?";
   }
 
   if (/\b(price|prices|cost|how much|range|pricelist|price list)\b/.test(q)) {
@@ -66,7 +66,7 @@ function getBotReply(input: string): string {
   }
 
   if (/\bship|\bdeliver|\bpostage|\bcourier\b/.test(q)) {
-    return "We offer delivery across South Africa Delivery fees and timelines are confirmed at checkout. Reach out on WhatsApp for details!";
+    return "We offer delivery across South Africa. Delivery fees and timelines are confirmed at checkout. Reach out on WhatsApp for details!";
   }
 
   if (/\bcontact|\blocation|\bwhere|\baddress|\bphone|\bnumber\b/.test(q)) {
@@ -92,7 +92,7 @@ function formatAvailableProducts(): string {
 }
 
 // ---------------------------------------------------------------------------
-// Component
+// Component — floats bottom-LEFT so it never covers main content on the right
 // ---------------------------------------------------------------------------
 export function NotreGemmeChatbot(): React.ReactElement {
   const [open, setOpen] = useState(false);
@@ -135,11 +135,11 @@ export function NotreGemmeChatbot(): React.ReactElement {
 
   return (
     <>
-      {/* Floating toggle button */}
+      {/* Floating toggle button — bottom-LEFT corner */}
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close chat" : "Open Notre Gemme chat assistant"}
-        className="fixed bottom-6 right-6 z-[9999] flex h-14 w-14 items-center justify-center rounded-full shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95 sm:bottom-8 sm:right-8"
+        className="fixed bottom-6 left-6 z-[9999] flex h-14 w-14 items-center justify-center rounded-full shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95 sm:bottom-8 sm:left-8"
         style={{
           background: "linear-gradient(135deg, #25D366, #128C7E)",
           boxShadow: "0 4px 24px rgba(37,211,102,0.45)",
@@ -156,12 +156,12 @@ export function NotreGemmeChatbot(): React.ReactElement {
         )}
       </button>
 
-      {/* Chat window */}
+      {/* Chat window — opens ABOVE the toggle button on the LEFT side */}
       {open && (
         <div
           role="dialog"
           aria-label="Notre Gemme Chat Assistant"
-          className="fixed bottom-24 right-4 z-[9998] flex w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl shadow-2xl sm:bottom-28 sm:right-8"
+          className="fixed bottom-24 left-4 z-[9998] flex w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl shadow-2xl sm:bottom-28 sm:left-8"
           style={{
             background: "var(--color-bg-2, #0f0f0f)",
             border: "1px solid rgba(255,255,255,0.1)",
@@ -335,4 +335,4 @@ export function NotreGemmeChatbot(): React.ReactElement {
       )}
     </>
   );
-                  }
+    }
