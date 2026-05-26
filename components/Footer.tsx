@@ -40,10 +40,11 @@ export function Footer(): React.ReactElement {
 
         <div className="mb-[60px] grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
+            {/* Footer logo — clicking takes user back to the home page */}
             <Link
               href="/"
               className="inline-flex items-center"
-              aria-label={siteConfig.brand.name}
+              aria-label={siteConfig.brand.name + " — go to home"}
             >
               <Image
                 src={asset("/assets/logo notregemme.png")}
@@ -305,7 +306,7 @@ function InstagramLink(): React.ReactElement {
   );
 }
 
-/** Icon-only WhatsApp link. */
+/** WhatsApp link — icon + "WhatsApp Orders" label (matching Instagram row style). */
 function WhatsAppLink(): React.ReactElement {
   return (
     <div className="group relative inline-flex">
@@ -315,16 +316,27 @@ function WhatsAppLink(): React.ReactElement {
         )}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Order on WhatsApp"
-        className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-opacity hover:opacity-80"
+        className="flex items-center gap-2 transition-colors hover:text-fg"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "14px",
+          color: "var(--color-fg-muted)",
+          textDecoration: "none",
+        }}
       >
-        <Image
-          src={asset("/assets/icon-whatsapp.png")}
-          alt="WhatsApp"
-          width={32}
-          height={32}
-          className="h-8 w-8 object-cover"
-        />
+        <span
+          className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full"
+          aria-hidden="true"
+        >
+          <Image
+            src={asset("/assets/icon-whatsapp.png")}
+            alt="WhatsApp"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-cover"
+          />
+        </span>
+        <span>{footerCopy.whatsappLabel}</span>
       </a>
     </div>
   );
@@ -433,4 +445,4 @@ function DigitalFootprint(): React.ReactElement {
       </div>
     </div>
   );
-}
+                                         }
