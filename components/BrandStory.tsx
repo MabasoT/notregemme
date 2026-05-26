@@ -23,9 +23,7 @@ export function BrandStory(): React.ReactElement {
               fit="cover"
               className="h-full w-full"
             />
-            <div
-              {/* Quote overlay: flush to bottom of the hoodie image.
-                 ♦ = diamond / treasure (brand symbol), ♥ = heart / humanity (love) */}
+            <div>
               <div
                 className="absolute inset-x-0 bottom-0 p-8"
                 style={{
