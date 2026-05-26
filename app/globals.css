@@ -39,13 +39,17 @@
   }
 }
 
-/* ─── BASE RESET ───────────────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  /* Universal box-sizing + margin/padding reset. Placed inside @layer base
+     so Tailwind utility classes in @layer utilities can correctly override
+     margin/padding values (fixes pt-[140px] and other spacing utilities). */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 html {
