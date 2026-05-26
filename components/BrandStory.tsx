@@ -24,18 +24,63 @@ export function BrandStory(): React.ReactElement {
               className="h-full w-full"
             />
             <div
-              className="absolute inset-x-0 bottom-0 p-8 italic"
-              style={{
-                background: "linear-gradient(transparent, rgba(5,5,5,0.9))",
-                fontFamily: "var(--font-heading)",
-                fontSize: "clamp(14px, 1.8vw, 22px)",
-                fontWeight: 600,
-                color: "var(--color-fg)",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              {storyCopy.overlay}
-            </div>
+              {/* Quote overlay: flush to bottom of the hoodie image.
+                 ♦ = diamond / treasure (brand symbol), ♥ = heart / humanity (love) */}
+              <div
+                className="absolute inset-x-0 bottom-0 p-8"
+                style={{
+                  background:
+                    "linear-gradient(transparent, rgba(5,5,5,0.82) 55%, rgba(5,5,5,0.96) 100%)",
+                }}
+              >
+                {/* Icon row — diamond + heart in brand green */}
+                <div
+                  className="mb-3 flex items-center gap-2"
+                  aria-hidden="true"
+                  style={{ color: "var(--color-green)" }}
+                >
+                  <span style={{ fontSize: 16 }}>♦</span>
+                  <span style={{ fontSize: 16 }}>♥</span>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 28,
+                      height: 1,
+                      background: "var(--color-green)",
+                      opacity: 0.6,
+                    }}
+                  />
+                </div>
+                {/* Corrected brand quote — no double-h */}
+                <p
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontSize: "clamp(14px, 1.6vw, 20px)",
+                    fontWeight: 600,
+                    fontStyle: "italic",
+                    color: "var(--color-fg)",
+                    letterSpacing: "-0.01em",
+                    lineHeight: 1.35,
+                  }}
+                >
+                  &ldquo;Love doesn&rsquo;t vanish &mdash; It Evolves. Yes.&rdquo;
+                </p>
+                {/* Sub-caption with diamond icon */}
+                <p
+                  className="mt-2 flex items-center gap-1.5"
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: 11,
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "var(--color-green)",
+                    opacity: 0.8,
+                  }}
+                >
+                  <span aria-hidden="true">♦</span>
+                  SS 2026
+                </p>
+              </div>
           </div>
 
           <div className="flex flex-col gap-7">
