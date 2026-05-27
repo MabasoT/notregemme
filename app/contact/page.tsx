@@ -1,10 +1,30 @@
 import type { Metadata } from "next";
 import { contactPage } from "@/lib/content";
+import { JsonLd } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact — Notre Gemme Studios",
   description:
-    "Reach Notre Gemme Studios via WhatsApp, Instagram, or email. We typically respond within a few hours.",
+    "Get in touch with Notre Gemme Studios via WhatsApp, Instagram, or email. Based in South Africa. We typically respond within a few hours.",
+  alternates: {
+    canonical: "https://notregemmestudios.co.za/contact/",
+  },
+};
+
+const contactSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact — Notre Gemme Studios",
+  description:
+    "Reach Notre Gemme Studios via WhatsApp, Instagram, or email. Based in South Africa.",
+  url: "https://notregemmestudios.co.za/contact/",
+  breadcrumb: {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
+      { "@type": "ListItem", position: 2, name: "Contact", item: "https://notregemmestudios.co.za/contact/" },
+    ],
+  },
 };
 
 /**
@@ -13,6 +33,7 @@ export const metadata: Metadata = {
 export default function ContactPage(): React.ReactElement {
   return (
     <article className="pt-[140px] pb-[clamp(80px,10vw,140px)]">
+      <JsonLd data={contactSchema} />
       <div className="container-page">
         <header className="reveal mb-16 max-w-[820px]">
           <p className="section-label">{contactPage.eyebrow}</p>
@@ -42,8 +63,6 @@ export default function ContactPage(): React.ReactElement {
               >
                 {c.label}
               </div>
-              {/* Card value — word-break:break-word prevents long email addresses
-                 (hello@notregemmestudios.co.za) from overflowing the card boundary */}
               <div
                 className="font-bold"
                 style={{
