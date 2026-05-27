@@ -36,7 +36,7 @@ export const siteConfig = {
     nav: {
           left: [
             { label: "Home", href: "/" },
-            { label: "Story", href: "/#story" },
+            { label: "Story", href: "/story" },
             { label: "Homme", href: "/homme" },
             { label: "Femme", href: "/femme" },
                 ],
