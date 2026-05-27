@@ -56,14 +56,14 @@ export function Header(): React.ReactElement {
   ): void => {
     close();
 
-    // Home link: always navigate to "/" and clear any existing hash
+    // Home link: if a hash fragment is active, clear it in-place rather than
+    // navigating away (avoids Next.js routing to root "/" without basePath).
     if (href === "/") {
-      if (pathname === "/") {
+      if (window.location.hash) {
         e.preventDefault();
         history.replaceState(null, "", window.location.pathname);
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
-      // Otherwise let Next.js handle the navigation to "/"
       return;
     }
 
