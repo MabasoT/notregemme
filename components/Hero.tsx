@@ -101,10 +101,10 @@ export function Hero(): React.ReactElement {
 
           <div className="flex flex-col items-start gap-5 pb-2 md:gap-7">
             <div className="flex flex-wrap items-center gap-3">
-              <a href="#collection" className="btn-primary">
+              <a href="/collection" className="btn-primary">
                 {heroCopy.ctaLabel}
               </a>
-              <a href="#story" className="btn-ghost">
+              <a href="/story" className="btn-ghost">
                 Our Story
               </a>
             </div>
