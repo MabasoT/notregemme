@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import { CollectionHeader } from "@/components/CollectionHeader";
+import { JsonLd } from "@/components/JsonLd";
 import { OrderNotice } from "@/components/OrderNotice";
 import { ProductCard } from "@/components/ProductCard";
 import { collectionCopy } from "@/lib/content";
 import { productsByCollection } from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "Femme — SS2026",
+  title: "Femme Collection — SS2026",
   description:
-    "The Femme collection — playing-card suits, structured silhouettes, queens and kings. Notre Gemme Studios SS2026.",
+    "Shop the Notre Gemme Femme collection. Playing-card suits, structured silhouettes, queens and kings. SS2026 — South Africa.",
+  alternates: {
+    canonical: "https://notregemmestudios.co.za/femme/",
+  },
 };
 
 /**
@@ -16,8 +20,42 @@ export const metadata: Metadata = {
  */
 export default function FemmePage(): React.ReactElement {
   const items = productsByCollection("femme");
+
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Femme Collection — SS2026",
+    description:
+      "Notre Gemme Studios Femme collection: playing-card suits, structured silhouettes, queens and kings.",
+    url: "https://notregemmestudios.co.za/femme/",
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
+        { "@type": "ListItem", position: 2, name: "Femme", item: "https://notregemmestudios.co.za/femme/" },
+      ],
+    },
+    hasPart: items.map((p) => ({
+      "@type": "Product",
+      name: p.name,
+      description: p.description,
+      image: p.image ? `https://notregemmestudios.co.za${p.image}` : undefined,
+      brand: { "@type": "Brand", name: "Notre Gemme Studios" },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "ZAR",
+        price: p.priceValue > 0 ? p.priceValue : undefined,
+        availability: p.comingSoon
+          ? "https://schema.org/PreOrder"
+          : "https://schema.org/InStock",
+        url: `https://notregemmestudios.co.za/femme/`,
+      },
+    })),
+  };
+
   return (
     <section className="pt-[140px] pb-[clamp(80px,10vw,140px)]" style={{ background: "var(--color-bg-2)" }}>
+      <JsonLd data={collectionSchema} />
       <div className="container-page">
         <CollectionHeader
           eyebrow={collectionCopy.femme.eyebrow}
