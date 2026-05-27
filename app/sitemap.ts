@@ -1,5 +1,9 @@
 import type { MetadataRoute } from "next";
 
+// Required for Next.js static export (output: "export") — tells the
+// static export pipeline that this route is pre-renderable at build time.
+export const dynamic = "force-static";
+
 /**
  * Next.js sitemap generator — auto-produces /sitemap.xml
  * Google uses this to discover and crawl all pages.
