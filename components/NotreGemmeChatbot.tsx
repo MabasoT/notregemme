@@ -251,7 +251,7 @@ export function NotreGemmeChatbot(): React.ReactElement {
 
           {/* Quick chips */}
           <div
-            className="flex gap-2 overflow-x-auto px-4 py-2"
+            className="flex flex-wrap gap-2 px-4 py-2"
             style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
           >
             {["Prices", "Available", "Pre-order", "Sizing"].map((chip) => (
