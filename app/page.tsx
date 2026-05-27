@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { Hero } from "@/components/Hero";
+import { JsonLd } from "@/components/JsonLd";
 import { ShippingStrip } from "@/components/ShippingStrip";
 import { Marquee } from "@/components/Marquee";
 import { BrandStory } from "@/components/BrandStory";
@@ -7,19 +9,56 @@ import { ProductCard } from "@/components/ProductCard";
 import { BentoGrid } from "@/components/BentoGrid";
 import { products } from "@/lib/products";
 
+export const metadata: Metadata = {
+  title: "Notre Gemme Studios — Humanity, Our Treasure.",
+  description:
+    "Notre Gemme Studios — luxury minimalist streetwear born in South Africa. SS2026 collection: Homme, Femme, and Unisex pieces designed to endure.",
+  alternates: {
+    canonical: "https://notregemmestudios.co.za/",
+  },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Notre Gemme Studios",
+  url: "https://notregemmestudios.co.za",
+  logo: "https://notregemmestudios.co.za/assets/logo.png",
+  description:
+    "Luxury minimalist streetwear from South Africa. Every piece is a translation of feeling into form.",
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "ZA",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+27-75-276-3672",
+    contactType: "customer service",
+    availableLanguage: "English",
+  },
+  sameAs: [
+    "https://www.instagram.com/notregemme",
+  ],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Notre Gemme Studios",
+  url: "https://notregemmestudios.co.za",
+};
+
 /**
  * Home — single-page brand experience: hero → shipping → marquee → story →
  * unified collection grid (all in-season products) → upcoming bento.
- *
- * The unified collection groups every shoppable piece into one responsive
- * 3-up grid. Coming-soon items are excluded; they live in /unisex and
- * the upcoming bento.
  */
 export default function HomePage(): React.ReactElement {
   const liveProducts = products.filter((p) => p.comingSoon !== true);
 
   return (
     <>
+      <JsonLd data={organizationSchema} />
+      <JsonLd data={websiteSchema} />
       <Hero />
       <ShippingStrip />
       <Marquee />
