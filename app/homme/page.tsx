@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import { CollectionHeader } from "@/components/CollectionHeader";
+import { JsonLd } from "@/components/JsonLd";
 import { OrderNotice } from "@/components/OrderNotice";
 import { ProductCard } from "@/components/ProductCard";
 import { collectionCopy } from "@/lib/content";
 import { productsByCollection } from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "Homme — SS2026",
+  title: "Homme Collection — SS2026",
   description:
-    "The Homme collection — barcode graphics on heavyweight cotton, built for the modern man. Notre Gemme Studios SS2026.",
+    "Shop the Notre Gemme Homme collection. Barcode tees and heavyweight hoodies built for the modern man. SS2026 — South Africa.",
+  alternates: {
+    canonical: "https://notregemmestudios.co.za/homme/",
+  },
 };
 
 /**
@@ -16,8 +20,42 @@ export const metadata: Metadata = {
  */
 export default function HommePage(): React.ReactElement {
   const items = productsByCollection("homme");
+
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Homme Collection — SS2026",
+    description:
+      "Notre Gemme Studios Homme collection: barcode graphics on heavyweight cotton, built for the modern man.",
+    url: "https://notregemmestudios.co.za/homme/",
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
+        { "@type": "ListItem", position: 2, name: "Homme", item: "https://notregemmestudios.co.za/homme/" },
+      ],
+    },
+    hasPart: items.map((p) => ({
+      "@type": "Product",
+      name: p.name,
+      description: p.description,
+      image: p.image ? `https://notregemmestudios.co.za${p.image}` : undefined,
+      brand: { "@type": "Brand", name: "Notre Gemme Studios" },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "ZAR",
+        price: p.priceValue > 0 ? p.priceValue : undefined,
+        availability: p.comingSoon
+          ? "https://schema.org/PreOrder"
+          : "https://schema.org/InStock",
+        url: `https://notregemmestudios.co.za/homme/`,
+      },
+    })),
+  };
+
   return (
     <section className="pt-[140px] pb-[clamp(80px,10vw,140px)]">
+      <JsonLd data={collectionSchema} />
       <div className="container-page">
         <CollectionHeader
           eyebrow={collectionCopy.homme.eyebrow}
