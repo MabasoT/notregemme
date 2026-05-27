@@ -60,7 +60,7 @@ export function Header(): React.ReactElement {
     if (href === "/") {
       if (pathname === "/") {
         e.preventDefault();
-        history.replaceState(null, "", "/");
+        history.replaceState(null, "", window.location.pathname);
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       // Otherwise let Next.js handle the navigation to "/"
