@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { Countdown } from "@/components/Countdown";
+import { JsonLd } from "@/components/JsonLd";
 import { NotifyForm } from "@/components/NotifyForm";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
@@ -9,19 +10,51 @@ import { upcomingProducts } from "@/lib/products";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Unisex — Upcoming",
+  title: "Unisex — Upcoming AW2026",
   description:
-    "Unisex pieces — the next chapter of Notre Gemme. Upcoming AW2026 drops. Built different. Made to endure.",
+    "Notre Gemme Unisex — pieces designed without a side of the line. Worn by whoever the silhouette serves. AW2026 upcoming drops, South Africa.",
+  alternates: {
+    canonical: "https://notregemmestudios.co.za/unisex/",
+  },
 };
 
 /**
  * Unisex page — surfaces every product currently flagged as coming soon
- * alongside a countdown to the next AW2026 drop. Pieces appear here
- * before they migrate into Homme or Femme proper.
+ * alongside a countdown to the next AW2026 drop.
  */
 export default function UnisexPage(): React.ReactElement {
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Unisex — Upcoming AW2026",
+    description:
+      "Notre Gemme Studios Unisex collection: upcoming pieces designed without a side of the line, worn by whoever the silhouette serves.",
+    url: "https://notregemmestudios.co.za/unisex/",
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
+        { "@type": "ListItem", position: 2, name: "Unisex", item: "https://notregemmestudios.co.za/unisex/" },
+      ],
+    },
+    hasPart: upcomingProducts.map((p) => ({
+      "@type": "Product",
+      name: p.name,
+      description: p.description,
+      image: p.image ? `https://notregemmestudios.co.za${p.image}` : undefined,
+      brand: { "@type": "Brand", name: "Notre Gemme Studios" },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "ZAR",
+        availability: "https://schema.org/PreOrder",
+        url: "https://notregemmestudios.co.za/unisex/",
+      },
+    })),
+  };
+
   return (
     <article className="pt-[140px] pb-[clamp(80px,10vw,140px)]">
+      <JsonLd data={collectionSchema} />
       <div className="container-page">
         <CollectionHeader
           eyebrow="What's Next — AW 2026"
@@ -112,7 +145,7 @@ export default function UnisexPage(): React.ReactElement {
               <Link href="/contact" className="btn-primary">
                 Request Access
               </Link>
-              <Link href="/#upcoming" className="btn-ghost">
+              <Link href="/upcoming" className="btn-ghost">
                 See Sketches
               </Link>
             </div>
