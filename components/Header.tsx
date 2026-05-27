@@ -12,7 +12,8 @@ import { asset, siteConfig, whatsappOrderLink } from "@/lib/site-config";
  * links with a full-screen overlay toggled by the hamburger button.
  *
  * Clicking the logo while on the home route smooth-scrolls to top
- * instead of triggering a no-op navigation.
+ * instead of triggering a no-op navigation. It also clears any hash
+ * fragment so the URL always shows clean "/" when on the home page.
  */
 export function Header(): React.ReactElement {
   const [scrolled, setScrolled] = useState<boolean>(false);
@@ -42,6 +43,8 @@ export function Header(): React.ReactElement {
     close();
     if (pathname === "/") {
       e.preventDefault();
+      // Clear any hash fragment so URL always shows clean "/"
+      history.replaceState(null, "", window.location.pathname);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -52,6 +55,18 @@ export function Header(): React.ReactElement {
     href: string,
   ): void => {
     close();
+
+    // Home link: always navigate to "/" and clear any existing hash
+    if (href === "/") {
+      if (pathname === "/") {
+        e.preventDefault();
+        history.replaceState(null, "", "/");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      // Otherwise let Next.js handle the navigation to "/"
+      return;
+    }
+
     if (!href.includes("#")) return;
     const [path, hash] = href.split("#");
     if (path && path !== "" && path !== pathname) {
