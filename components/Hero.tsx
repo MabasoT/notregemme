@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { heroCopy } from "@/lib/content";
 import { asset } from "@/lib/site-config";
 
@@ -101,12 +102,12 @@ export function Hero(): React.ReactElement {
 
           <div className="flex flex-col items-start gap-5 pb-2 md:gap-7">
             <div className="flex flex-wrap items-center gap-3">
-              <a href="/collection" className="btn-primary">
+              <Link href="/collection" className="btn-primary">
                 {heroCopy.ctaLabel}
-              </a>
-              <a href="/story" className="btn-ghost">
+              </Link>
+              <Link href="/story" className="btn-ghost">
                 Our Story
-              </a>
+              </Link>
             </div>
             <span className="flex items-center gap-2">
               <span
