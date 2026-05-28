@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Shop the Notre Gemme Homme collection. Barcode tees and heavyweight hoodies built for the modern man. SS2026 — South Africa.",
   alternates: {
-    canonical: "https://notregemmestudios.co.za/homme/",
+    canonical: "https://notregemme.co.za/homme/",
   },
 };
 
@@ -26,21 +26,21 @@ export default function HommePage(): React.ReactElement {
     "@type": "CollectionPage",
     name: "Homme Collection — SS2026",
     description:
-      "Notre Gemme Studios Homme collection: barcode graphics on heavyweight cotton, built for the modern man.",
-    url: "https://notregemmestudios.co.za/homme/",
+      "Notre Gemme Homme collection: barcode graphics on heavyweight cotton, built for the modern man.",
+    url: "https://notregemme.co.za/homme/",
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
-        { "@type": "ListItem", position: 2, name: "Homme", item: "https://notregemmestudios.co.za/homme/" },
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
+        { "@type": "ListItem", position: 2, name: "Homme", item: "https://notregemme.co.za/homme/" },
       ],
     },
     hasPart: items.map((p) => ({
       "@type": "Product",
       name: p.name,
       description: p.description,
-      image: p.image ? `https://notregemmestudios.co.za${p.image}` : undefined,
-      brand: { "@type": "Brand", name: "Notre Gemme Studios" },
+      image: p.image ? `https://notregemme.co.za${p.image}` : undefined,
+      brand: { "@type": "Brand", name: "Notre Gemme" },
       offers: {
         "@type": "Offer",
         priceCurrency: "ZAR",
@@ -48,7 +48,7 @@ export default function HommePage(): React.ReactElement {
         availability: p.comingSoon
           ? "https://schema.org/PreOrder"
           : "https://schema.org/InStock",
-        url: `https://notregemmestudios.co.za/homme/`,
+        url: `https://notregemme.co.za/homme/`,
       },
     })),
   };
