@@ -227,8 +227,8 @@ export const contactPage = {
     },
     {
       label: "Email",
-      value: "hello@notregemmestudios.co.za",
-      href: "mailto:hello@notregemmestudios.co.za",
+      value: "hello@notregemme.co.za",
+      href: "mailto:hello@notregemme.co.za",
       note: "Press, partnerships, wholesale.",
     },
   ],
