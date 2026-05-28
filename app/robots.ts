@@ -15,6 +15,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://notregemmestudios.co.za/sitemap.xml",
+    sitemap: "https://notregemme.co.za/sitemap.xml",
   };
 }
