@@ -105,7 +105,7 @@ export function ProductCard({
         href={`/product/${product.slug}`}
         aria-label={`View ${product.name}`}
         className="relative block overflow-hidden"
-        style={{ height: "clamp(280px, 40vw, 420px)" }}
+        style={{ aspectRatio: "3/4" }}
       >
         <div
           className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
@@ -141,7 +141,7 @@ export function ProductCard({
             className="block font-semibold leading-snug transition-colors hover:text-green"
             style={{
               fontFamily: "var(--font-heading)",
-              fontSize: "clamp(14px, 1.2vw, 16px)",
+              fontSize: "clamp(14px, 3.5vw, 16px)",
               letterSpacing: "-0.01em",
               color: "var(--color-fg)",
               textDecoration: "none",
