@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Shop the Notre Gemme Femme collection. Playing-card suits, structured silhouettes, queens and kings. SS2026 — South Africa.",
   alternates: {
-    canonical: "https://notregemmestudios.co.za/femme/",
+    canonical: "https://notregemme.co.za/femme/",
   },
 };
 
@@ -26,21 +26,21 @@ export default function FemmePage(): React.ReactElement {
     "@type": "CollectionPage",
     name: "Femme Collection — SS2026",
     description:
-      "Notre Gemme Studios Femme collection: playing-card suits, structured silhouettes, queens and kings.",
-    url: "https://notregemmestudios.co.za/femme/",
+      "Notre Gemme Femme collection: playing-card suits, structured silhouettes, queens and kings.",
+    url: "https://notregemme.co.za/femme/",
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
-        { "@type": "ListItem", position: 2, name: "Femme", item: "https://notregemmestudios.co.za/femme/" },
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
+        { "@type": "ListItem", position: 2, name: "Femme", item: "https://notregemme.co.za/femme/" },
       ],
     },
     hasPart: items.map((p) => ({
       "@type": "Product",
       name: p.name,
       description: p.description,
-      image: p.image ? `https://notregemmestudios.co.za${p.image}` : undefined,
-      brand: { "@type": "Brand", name: "Notre Gemme Studios" },
+      image: p.image ? `https://notregemme.co.za${p.image}` : undefined,
+      brand: { "@type": "Brand", name: "Notre Gemme" },
       offers: {
         "@type": "Offer",
         priceCurrency: "ZAR",
@@ -48,7 +48,7 @@ export default function FemmePage(): React.ReactElement {
         availability: p.comingSoon
           ? "https://schema.org/PreOrder"
           : "https://schema.org/InStock",
-        url: `https://notregemmestudios.co.za/femme/`,
+        url: `https://notregemme.co.za/femme/`,
       },
     })),
   };
