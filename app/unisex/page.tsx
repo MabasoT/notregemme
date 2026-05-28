@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "Notre Gemme Unisex — pieces designed without a side of the line. Worn by whoever the silhouette serves. AW2026 upcoming drops, South Africa.",
   alternates: {
-    canonical: "https://notregemmestudios.co.za/unisex/",
+    canonical: "https://notregemme.co.za/unisex/",
   },
 };
 
@@ -29,25 +29,25 @@ export default function UnisexPage(): React.ReactElement {
     name: "Unisex — Upcoming AW2026",
     description:
       "Notre Gemme Studios Unisex collection: upcoming pieces designed without a side of the line, worn by whoever the silhouette serves.",
-    url: "https://notregemmestudios.co.za/unisex/",
+    url: "https://notregemme.co.za/unisex/",
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
-        { "@type": "ListItem", position: 2, name: "Unisex", item: "https://notregemmestudios.co.za/unisex/" },
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
+        { "@type": "ListItem", position: 2, name: "Unisex", item: "https://notregemme.co.za/unisex/" },
       ],
     },
     hasPart: upcomingProducts.map((p) => ({
       "@type": "Product",
       name: p.name,
       description: p.description,
-      image: p.image ? `https://notregemmestudios.co.za${p.image}` : undefined,
-      brand: { "@type": "Brand", name: "Notre Gemme Studios" },
+      image: p.image ? `https://notregemme.co.za${p.image}` : undefined,
+      brand: { "@type": "Brand", name: "Notre Gemme" },
       offers: {
         "@type": "Offer",
         priceCurrency: "ZAR",
         availability: "https://schema.org/PreOrder",
-        url: "https://notregemmestudios.co.za/unisex/",
+        url: "https://notregemme.co.za/unisex/",
       },
     })),
   };
