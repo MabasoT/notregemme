@@ -3,9 +3,9 @@ import { aboutPage, storyCopy } from "@/lib/content";
 import { ProductImage } from "@/components/ProductImage";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About | Notre Gemme",
   description:
-    "Notre Gemme Studios is a luxury minimalist house from South Africa. Read our story, philosophy, and the meaning behind 1632.",
+    "Notre Gemme means 'Our Gem.' A fashion and art brand born in South Africa, Tembisa 1632 — built on emotion, memory, and real human experience.",
 };
 
 /**
