@@ -524,7 +524,3 @@ textarea:focus-visible {
   }
 }
 
-/* Mobile menu drawer: prevent body scroll when open */
-body.menu-open {
-  overflow: hidden;
-}
