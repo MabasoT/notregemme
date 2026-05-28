@@ -21,6 +21,7 @@ export function NotifyForm(): React.ReactElement {
   }
 
   return (
+    <>
     {notified ? (
       <div
         className="flex items-center justify-center gap-2 rounded-pill px-5 py-4 text-center"
@@ -64,5 +65,6 @@ export function NotifyForm(): React.ReactElement {
         </button>
       </form>
     )}
+    </>
   );
 }
