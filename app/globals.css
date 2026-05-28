@@ -488,3 +488,43 @@ textarea:focus-visible {
   );
   mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, #000 30%, transparent 75%);
 }
+
+
+/* ============================================================
+   MOBILE RESPONSIVE IMPROVEMENTS
+   ============================================================ */
+
+/* fadeInUp animation for subscription success message */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Product card: ensure images display correctly on all screen sizes */
+@media (max-width: 768px) {
+  .product-card {
+    transform: none !important;
+  }
+
+  /* Newsletter bar: stack layout on mobile */
+  .newsletter-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* Ensure collection grid cards don't overflow on small screens */
+  .bento-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile menu drawer: prevent body scroll when open */
+body.menu-open {
+  overflow: hidden;
+}
