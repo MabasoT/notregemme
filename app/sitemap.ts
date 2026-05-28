@@ -9,7 +9,7 @@ export const dynamic = "force-static";
  * Google uses this to discover and crawl all pages.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://notregemmestudios.co.za";
+  const baseUrl = "https://notregemme.co.za";
 
   return [
     {
