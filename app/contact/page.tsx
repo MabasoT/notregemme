@@ -3,26 +3,26 @@ import { contactPage } from "@/lib/content";
 import { JsonLd } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Contact — Notre Gemme Studios",
+  title: "Contact — Notre Gemme",
   description:
-    "Get in touch with Notre Gemme Studios via WhatsApp, Instagram, or email. Based in South Africa. We typically respond within a few hours.",
+    "Get in touch with Notre Gemme via WhatsApp, Instagram, or email. Based in South Africa. We typically respond within a few hours.",
   alternates: {
-    canonical: "https://notregemmestudios.co.za/contact/",
+    canonical: "https://notregemme.co.za/contact/",
   },
 };
 
 const contactSchema = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  name: "Contact — Notre Gemme Studios",
+  name: "Contact — Notre Gemme",
   description:
-    "Reach Notre Gemme Studios via WhatsApp, Instagram, or email. Based in South Africa.",
-  url: "https://notregemmestudios.co.za/contact/",
+    "Reach Notre Gemme via WhatsApp, Instagram, or email. Based in South Africa.",
+  url: "https://notregemme.co.za/contact/",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
-      { "@type": "ListItem", position: 2, name: "Contact", item: "https://notregemmestudios.co.za/contact/" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
+      { "@type": "ListItem", position: 2, name: "Contact", item: "https://notregemme.co.za/contact/" },
     ],
   },
 };
@@ -105,4 +105,4 @@ export default function ContactPage(): React.ReactElement {
       </div>
     </article>
   );
-}
+                  }
