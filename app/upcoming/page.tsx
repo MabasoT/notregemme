@@ -5,9 +5,9 @@ import { JsonLd } from "@/components/JsonLd";
 export const metadata: Metadata = {
   title: "Upcoming Drops — Notre Gemme AW2026",
   description:
-    "Discover what's dropping next from Notre Gemme Studios. AW2026 collection previews, countdown, and early notification sign-up. South Africa.",
+    "Discover what's dropping next from Notre Gemme. AW2026 collection previews, countdown, and early notification sign-up. South Africa.",
   alternates: {
-    canonical: "https://notregemmestudios.co.za/upcoming/",
+    canonical: "https://notregemme.co.za/upcoming/",
   },
 };
 
@@ -17,12 +17,12 @@ const upcomingSchema = {
   name: "Upcoming Drops — Notre Gemme AW2026",
   description:
     "Notre Gemme Studios upcoming AW2026 collection — sign up to be notified first when new pieces drop.",
-  url: "https://notregemmestudios.co.za/upcoming/",
+  url: "https://notregemme.co.za/upcoming/",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
-      { "@type": "ListItem", position: 2, name: "Upcoming", item: "https://notregemmestudios.co.za/upcoming/" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
+      { "@type": "ListItem", position: 2, name: "Upcoming", item: "https://notregemme.co.za/upcoming/" },
     ],
   },
 };
