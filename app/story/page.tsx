@@ -3,7 +3,7 @@ import { BrandStory } from "@/components/BrandStory";
 import { JsonLd } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Our Story — Notre Gemme Studios",
+  title: "Our Story — Notre Gemme",
   description:
     "Notre Gemme was born from the belief that humanity is the rarest gem of all. Discover the story behind the brand — South African spirit, built different, made to endure.",
   alternates: {
