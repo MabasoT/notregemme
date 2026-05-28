@@ -5,26 +5,26 @@ import { ProductCard } from "@/components/ProductCard";
 import { products } from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "SS2026 Collection — Notre Gemme Studios",
+  title: "SS2026 Collection — Notre Gemme",
   description:
     "Shop the full Notre Gemme SS2026 collection. Heavyweight cotton tees, evolution hoodies, and more — luxury minimalist streetwear from South Africa.",
   alternates: {
-    canonical: "https://notregemmestudios.co.za/collection/",
+    canonical: "https://notregemme.co.za/collection/",
   },
 };
 
 const collectionSchema = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: "SS2026 Collection — Notre Gemme Studios",
+  name: "SS2026 Collection — Notre Gemme",
   description:
     "The full Notre Gemme SS2026 collection: Homme, Femme, and Unisex pieces — heavyweight cotton, luxury minimalist streetwear from South Africa.",
-  url: "https://notregemmestudios.co.za/collection/",
+  url: "https://notregemme.co.za/collection/",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemmestudios.co.za/" },
-      { "@type": "ListItem", position: 2, name: "Collection", item: "https://notregemmestudios.co.za/collection/" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
+      { "@type": "ListItem", position: 2, name: "Collection", item: "https://notregemme.co.za/collection/" },
     ],
   },
 };
