@@ -179,48 +179,61 @@ export function Header(): React.ReactElement {
       </header>
 
       {/* Mobile overlay nav — single drawer, both left + right links */}
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          aria-hidden="true"
+          onClick={close}
+          className="fixed inset-0 z-[199] md:hidden"
+          style={{ background: "rgba(5,5,5,0.7)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}
+        />
+      )}
+      {/* Mobile drawer — slides in from the right */}
       <div
         id="mobile-nav"
-        className={`fixed inset-0 z-[200] flex flex-col items-center justify-center gap-7 transition-[opacity,transform] duration-[400ms] md:hidden ${
-          mobileOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none -translate-y-2 opacity-0"
+        className={`fixed inset-y-0 right-0 z-[200] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0,0.15,1)] md:hidden ${
+          mobileOpen ? "translate-x-0" : "translate-x-full"
         }`}
         style={{
-          background: "rgba(5,5,5,0.97)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
+          width: "min(280px, 85vw)",
+          background: "rgba(10,10,10,0.98)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderLeft: "1px solid rgba(255,255,255,0.06)",
+          paddingTop: "calc(var(--header-h, 72px) + 16px)",
         }}
         aria-hidden={!mobileOpen}
       >
-        {[...siteConfig.nav.left, ...siteConfig.nav.right].map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            onClick={(e) => onAnchorClick(e, link.href)}
-            className="text-lg uppercase tracking-[0.18em] text-fg transition-colors hover:text-green"
-            style={{ fontFamily: "var(--font-body)" }}
+        <nav className="flex flex-col gap-1 overflow-y-auto px-6 pb-8">
+          {[...siteConfig.nav.left, ...siteConfig.nav.right].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={(e) => onAnchorClick(e, link.href)}
+              className="block border-b border-white/5 py-3 text-[13px] uppercase tracking-[0.18em] text-fg-muted transition-colors hover:text-fg active:text-green"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <a
+            href={whatsappOrderLink(
+              "Hi Notre Gemme! I'd like to place an order.",
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={close}
+            className="mt-6 inline-flex items-center justify-center gap-2 rounded-pill py-3 text-sm font-semibold uppercase tracking-[0.15em]"
+            style={{
+              fontFamily: "var(--font-heading)",
+              background: "var(--color-whatsapp)",
+              color: "#050505",
+            }}
           >
-            {link.label}
-          </Link>
-        ))}
-        <a
-          href={whatsappOrderLink(
-            "Hi Notre Gemme! I'd like to place an order.",
-          )}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={close}
-          className="mt-4 inline-flex items-center gap-2 rounded-pill px-7 py-3 text-sm font-semibold uppercase tracking-[0.15em]"
-          style={{
-            fontFamily: "var(--font-heading)",
-            background: "var(--color-whatsapp)",
-            color: "#050505",
-          }}
-        >
-          <WhatsAppGlyph className="h-5 w-5" />
-          Order via WhatsApp
-        </a>
+            <WhatsAppGlyph className="h-5 w-5" />
+            Order via WhatsApp
+          </a>
+        </nav>
       </div>
     </>
   );
