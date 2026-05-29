@@ -76,19 +76,43 @@ export const navCopy = {
 } as const;
 
 export const footerCopy = {
-      brand: "Notre Gemme",
-      tagline: "Humanity, our treasure.",
-      links: [
-          { label: "Shop", href: "/shop" },
-          { label: "About", href: "/about" },
-          { label: "Contact", href: "/contact" },
-          { label: "Privacy", href: "/privacy" },
-            ],
-      social: [
-          { platform: "Instagram", href: "https://www.instagram.com/notregemme" },
-          { platform: "TikTok", href: "https://www.tiktok.com/@notregemme" },
-          { platform: "WhatsApp", href: "https://wa.me/27752763672" },
-            ],
+      giantGem: "NG.",
+      brandLines: [
+            "Premium hoodies, tees, caps and track pants.",
+            "Designed in South Africa. Built to endure.",
+      ],
+      columns: [
+            {
+                  title: "Shop",
+                  links: [
+                        { label: "All Products", href: "/shop" },
+                        { label: "Hoodies", href: "/shop" },
+                        { label: "T-Shirts", href: "/shop" },
+                        { label: "Caps", href: "/shop" },
+                        { label: "Track Pants", href: "/shop" },
+                  ],
+            },
+            {
+                  title: "Studio",
+                  links: [
+                        { label: "About", href: "/about" },
+                        { label: "Our Story", href: "/story" },
+                        { label: "Contact", href: "/contact" },
+                  ],
+            },
+            {
+                  title: "Support",
+                  links: [
+                        { label: "Order on WhatsApp", href: "https://wa.me/27752763672" },
+                        { label: "Shipping & Returns", href: "/contact" },
+                        { label: "Size Guide", href: "/contact" },
+                  ],
+            },
+      ],
+      followTitle: "Follow Along",
+      instagramLabel: "@notregemme",
+      whatsappLabel: "Order via WhatsApp",
+      madeIn: "Designed & made in South Africa",
       copyright: "© 2026 Notre Gemme. All rights reserved.",
 } as const;
 
