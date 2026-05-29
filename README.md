@@ -1,6 +1,6 @@
-# Notre Gemme Studios — SS2026
+# Notre Gemme — SS2026
 
-A production-ready e-commerce site for Notre Gemme Studios — a luxury minimalist
+A production-ready e-commerce site for Notre Gemme — a luxury minimalist
 South African streetwear house. Built on Next.js 16 (App Router), React 19,
 TypeScript 5 strict, and Tailwind CSS 4.
 
