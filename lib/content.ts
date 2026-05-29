@@ -215,3 +215,16 @@ export const upcomingCopy = {
     sketch3: { label: "accessories_drop.fig" },
   },
 } as const;
+
+export const newsletterCopy = {
+  eyebrow: "Stay in the loop",
+  titleLines: ["Join the", "Gemme family."],
+  emphasisWord: "Gemme",
+  placeholder: "Enter your email",
+  cta: "Subscribe",
+} as const;
+
+export const floatingActionsCopy = {
+  whatsappLabel: "Order via WhatsApp",
+  botLabel: "Ask Notre Gemme",
+} as const;
