@@ -4,8 +4,8 @@
  */
 export const siteConfig = {
         brand: {
-                      name: "Notre Gemme Studios",
-                      short: "Notre Gemme",
+                      name: "Notre Gemme",
+                      short: "NG",
                       tagline: "Humanity, Our Treasure.",
                       season: "SS2026",
                       seasonLong: "Spring/Summer 2026",
