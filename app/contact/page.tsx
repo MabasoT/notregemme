@@ -37,8 +37,8 @@ export default function ContactPage(): React.ReactElement {
       <div className="container-page">
         <header className="reveal mb-16 max-w-[820px]">
           <p className="section-label">{contactPage.eyebrow}</p>
-          <h1 className="section-title">{contactPage.title}</h1>
-          <p className="section-body mt-7">{contactPage.intro}</p>
+          <h1 className="section-title">{contactPage.headline}</h1>
+          <p className="section-body mt-7">{contactPage.subheadline}</p>
         </header>
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
