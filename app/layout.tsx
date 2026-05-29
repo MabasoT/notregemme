@@ -32,6 +32,7 @@ export const metadata: Metadata = {
           description: siteConfig.brand.description,
           siteName: siteConfig.brand.name,
           locale: "en_ZA",
+    url: "https://notregemme.co.za",
     },
     twitter: {
           card: "summary_large_image",

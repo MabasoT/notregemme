@@ -4,6 +4,9 @@ import Link from "next/link";
 import { ProductImage } from "@/components/ProductImage";
 import { getProductBySlug, products, productsByCollection } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
+import { ProductOrder } from "@/components/ProductOrder";
+import { JsonLd } from "@/components/JsonLd";
+import { siteConfig } from "@/lib/site-config";
 
 type Params = { slug: string };
 
@@ -22,6 +25,14 @@ export async function generateMetadata({
   return {
     title: `${product.name} — ${product.collection === "homme" ? "Homme" : "Femme"} SS2026`,
     description: product.description,
+    alternates: { canonical: `https://notregemme.co.za/product/${product.slug}` },
+    openGraph: {
+      type: "website",
+      title: `${product.name} — ${siteConfig.brand.name}`,
+      description: product.description,
+      url: `https://notregemme.co.za/product/${product.slug}`,
+      images: [{ url: `https://notregemme.co.za${product.image}`, alt: product.imageAlt }],
+    },
   };
 }
 
@@ -42,8 +53,47 @@ export default async function ProductPage({
     .filter((p) => p.slug !== product.slug)
     .slice(0, 3);
 
+  const productUrl = `https://notregemme.co.za/product/${product.slug}`;
+  const productImage = `https://notregemme.co.za${product.image}`;
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: productImage,
+    sku: product.slug,
+    brand: { "@type": "Brand", name: siteConfig.brand.name },
+    category: product.collection === "homme" ? "Men's Streetwear" : product.collection === "femme" ? "Women's Streetwear" : "Unisex Streetwear",
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency: "ZAR",
+      price: product.priceValue,
+      availability: product.comingSoon ? "https://schema.org/PreOrder" : "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: { "@type": "Organization", name: siteConfig.brand.name },
+    },
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: product.collection === "homme" ? "Homme" : product.collection === "femme" ? "Femme" : "Unisex",
+        item: `https://notregemme.co.za/${product.collection}`,
+      },
+      { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
+    ],
+  };
+
+
   return (
     <article className="pt-[140px]">
+      <JsonLd data={productSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <div className="container-page">
         <nav
           className="reveal mb-10 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.15em]"
@@ -154,42 +204,7 @@ export default async function ProductPage({
 
             <p className="section-body">{product.description}</p>
 
-            <div>
-              <div
-                className="mb-3 uppercase"
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.2em",
-                  color: "var(--color-fg-muted)",
-                }}
-              >
-                Sizes
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <span
-                    key={size}
-                    className="rounded-pill px-4 py-2 uppercase"
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      letterSpacing: "0.15em",
-                      color: "var(--color-fg)",
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: "var(--radius-pill)",
-                    }}
-                  >
-                    {size}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div>
+                        <div>
               <div
                 className="mb-3 uppercase"
                 style={{
@@ -224,23 +239,13 @@ export default async function ProductPage({
               </ul>
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-2">
-              <a
-                href={product.orderHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                Order via WhatsApp
-              </a>
-              <Link
-                href={product.collection === "homme" ? "/homme" : "/femme"}
-                className="btn-ghost"
-              >
-                Back to {product.collection === "homme" ? "Homme" : "Femme"}
-              </Link>
-            </div>
-          </div>
+                      <ProductOrder
+            productName={product.name}
+            price={product.price}
+            sizes={product.sizes}
+            collection={product.collection}
+          />
+</div>
         </div>
 
         {related.length > 0 ? (
