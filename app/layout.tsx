@@ -71,6 +71,6 @@ export default function RootLayout({
                         <Footer />
                         <NotreGemmeChatbot />
                 </body>
-          </html>html>
-        );
-}</html>
+                </html>
+);
+}

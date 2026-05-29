@@ -172,3 +172,46 @@ export const contactPage = {
               submit: "Send Message",
       },
 } as const;
+
+
+export const orderNoticeCopy = {
+  body: "Orders processed via WhatsApp",
+  homme: "See something you love? Message us to order. We courier nationwide across South Africa.",
+  femme: "Tap to order any piece. Nationwide courier available across South Africa.",
+  cta: "Order Now",
+} as const;
+
+export const upcomingCopy = {
+  eyebrow: "What's Next",
+  title: "Upcoming",
+  hero: {
+    tag: "Season 02 — AW2026",
+    titleLines: ["Something", "new is", "forming."],
+    description:
+      "The second chapter of Notre Gemme is being crafted. Rooted in memory, translated into form.",
+    countdownLabel: "Drops in",
+  },
+  cards: {
+    archive: {
+      tag: "Design Sketch",
+      title: "The Archive Piece",
+      description: "A reinterpretation of the original barcode graphic.",
+      badge: "Coming Soon",
+    },
+    sketch1: { label: "design_sketch_03.fig", badge: "AW26" },
+    sketch2: { label: "collab_untitled.fig" },
+    evolutionII: {
+      tag: "New Graphic",
+      title: "Evolution II",
+      description: "The sequel to our love motif.",
+      badge: "Coming Soon",
+    },
+    notify: {
+      tag: "Be First",
+      titleLines: ["Get notified", "on drop day."],
+      placeholder: "your@email.com",
+      cta: "Notify Me",
+    },
+    sketch3: { label: "accessories_drop.fig" },
+  },
+} as const;
