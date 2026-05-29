@@ -168,7 +168,7 @@ export function FloatingActions(): React.ReactElement {
         <div
           id="ng-bot"
           role="dialog"
-          aria-label={botCopy.name}
+          aria-label={botCopy.poweredBy}
           className="fixed bottom-24 left-7 z-[9995] w-[320px] overflow-hidden rounded-[20px]"
           style={{
             background: "rgba(12,12,12,0.97)",
@@ -204,7 +204,7 @@ export function FloatingActions(): React.ReactElement {
                   color: "var(--color-fg)",
                 }}
               >
-                {botCopy.name}
+                {botCopy.poweredBy}
               </div>
               <div
                 className="mt-0.5 flex items-center gap-1.5"

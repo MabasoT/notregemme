@@ -107,6 +107,8 @@ export const botCopy = {
       send: "Send",
       close: "Close",
       poweredBy: "Notre Gemme Assistant",
+      status: "Online — typically replies in minutes",
+      quickReplies: ["How do I order?", "Do you ship nationwide?", "Size guide"],
 } as const;
 
 export const aboutPage = {
