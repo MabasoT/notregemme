@@ -34,8 +34,8 @@ export const marqueeWords = [
 export const storyCopy = {
       eyebrow: "Brand Story",
       titleLines: ["Love", "Evolves."],
-      overlay: '"Love doesn\'t vanishh — it evolves. Yes."',
-      imageAlt: "Love Evolves — Notre Gemme brand emblem",
+      overlay: '"Love doesn\'t vanishh — it evolves. Ves."',
+      imageAlt: "Humanity, Our Treasure — Notre Gemme brand emblem",
       paragraphs: [
               "Notre Gemme was born from the belief that humanity is the rarest gem of all. Every piece we create is a translation of feeling into form — a wearable memory, a statement of identity, a quiet act of love for who you are and who you're becoming.",
               "We are not just a clothing brand. We are a testimony to the South African spirit — resilient, bold, deeply human. Built different. Made to endure.",
@@ -87,7 +87,7 @@ export const footerCopy = {
       social: [
           { platform: "Instagram", href: "https://www.instagram.com/notregemme" },
           { platform: "TikTok", href: "https://www.tiktok.com/@notregemme" },
-          { platform: "WhatsApp", href: "https://wa.me/27000000000" },
+          { platform: "WhatsApp", href: "https://wa.me/27752763672" },
             ],
       copyright: "© 2026 Notre Gemme. All rights reserved.",
 } as const;
@@ -147,7 +147,7 @@ export const contactPage = {
           {
                     label: "WhatsApp",
                     value: "Chat with us",
-                    href: "https://wa.me/27000000000",
+                    href: "https://wa.me/27752763672",
                     icon: "whatsapp",
           },
           {
