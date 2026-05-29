@@ -299,7 +299,7 @@ function InstagramLink(): React.ReactElement {
             textDecoration: "none",
           }}
         >
-          {igPreviewCopy.followCta}
+          {igPreviewCopy.cta}
         </a>
       </div>
     </div>
