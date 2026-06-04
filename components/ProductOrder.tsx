@@ -3,11 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { whatsappOrderLink } from "@/lib/site-config";
+import type { ColorOption } from "@/lib/products";
 
 type ProductOrderProps = {
   productName: string;
   price: string;
   sizes: ReadonlyArray<string>;
+  colors: ReadonlyArray<ColorOption>;
+  defaultColor: string;
   collection: "homme" | "femme" | "unisex";
 };
 
@@ -24,20 +27,92 @@ const collectionHref: Record<ProductOrderProps["collection"], string> = {
 };
 
 /**
- * Interactive order block. Lets the customer pick a size, then builds a
- * pre-filled WhatsApp message that already includes the chosen size so the
- * brand can confirm the order without a back-and-forth.
+ * Interactive order block. Lets the customer pick a colour + size, then
+ * builds a pre-filled WhatsApp message that already includes both choices
+ * so the brand can confirm the order without a back-and-forth.
  */
-export function ProductOrder({ productName, price, sizes, collection }: ProductOrderProps): React.ReactElement {
+export function ProductOrder({
+  productName,
+  price,
+  sizes,
+  colors,
+  defaultColor,
+  collection,
+}: ProductOrderProps): React.ReactElement {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string>(defaultColor);
 
+  const colorPart = selectedColor ? ` in ${selectedColor}` : "";
   const orderMessage = selectedSize
-    ? `Hi! I'd like to order the ${productName} (Size ${selectedSize}) \u2014 ${price}.`
-    : `Hi! I'd like to order the ${productName} \u2014 ${price}.`;
+    ? `Hi! I'd like to order the ${productName}${colorPart} (Size ${selectedSize}) — ${price}.`
+    : `Hi! I'd like to order the ${productName}${colorPart} — ${price}.`;
   const orderHref = whatsappOrderLink(orderMessage);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-7">
+      {colors.length > 0 ? (
+        <div>
+          <div
+            className="mb-3 flex items-baseline gap-2 uppercase"
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.2em",
+              color: "var(--color-fg-muted)",
+            }}
+          >
+            <span>Colour</span>
+            <span
+              className="normal-case"
+              style={{
+                fontSize: 12,
+                letterSpacing: "0.02em",
+                color: "var(--color-fg)",
+              }}
+            >
+              {selectedColor}
+            </span>
+          </div>
+          <div
+            className="flex flex-wrap gap-3"
+            role="group"
+            aria-label="Select a colour"
+          >
+            {colors.map((color) => {
+              const active = selectedColor === color.name;
+              return (
+                <button
+                  key={color.key}
+                  type="button"
+                  onClick={() => setSelectedColor(color.name)}
+                  aria-pressed={active}
+                  aria-label={color.name}
+                  title={color.name}
+                  className="relative flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-200"
+                  style={{
+                    cursor: "pointer",
+                    transform: active ? "scale(1.08)" : "scale(1)",
+                    boxShadow: active
+                      ? "0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-green)"
+                      : "0 0 0 1px rgba(255,255,255,0.18)",
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="h-full w-full rounded-full"
+                    style={{
+                      background: color.hex,
+                      border: "1px solid rgba(255,255,255,0.12)",
+                    }}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
       <div>
         <div
           className="mb-3 uppercase"
@@ -87,7 +162,9 @@ export function ProductOrder({ productName, price, sizes, collection }: ProductO
             color: selectedSize ? "var(--color-fg-muted)" : "var(--color-green)",
           }}
         >
-          {selectedSize ? `Selected size: ${selectedSize}` : "Please select a size to continue."}
+          {selectedSize
+            ? `Selected: ${selectedColor}, size ${selectedSize}`
+            : "Please select a size to continue."}
         </p>
       </div>
 
