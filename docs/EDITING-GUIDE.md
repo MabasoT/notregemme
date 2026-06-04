@@ -37,31 +37,55 @@ the map: "I want to change X → go here."
 
 ## 1. Add a product (the important one)
 
-Open `lib/products.ts` and add **one object** to the `products` array,
-wrapped in `defineProduct({...})`. That's it — a card, a detail page,
-colour swatches, sizes, the WhatsApp order link, sitemap entry and
-SEO data are all generated for you.
+### First — what the collections mean
+
+| Section | Means | Page |
+|---|---|---|
+| **HOMME** | Men's pieces | `/homme` |
+| **FEMME** | Women's pieces | `/femme` |
+| **UNISEX** | For everyone (cards get an automatic **"Unisex"** tag) | `/unisex` |
+
+### Adding it
+
+Open `lib/products.ts`. You'll see three clearly-labelled sections:
+`// ── HOMME`, `// ── FEMME`, `// ── UNISEX`. **Add one object under the
+section you want it to appear in** — that's how it gets routed. You do
+**not** type a `collection` field; the section handles it.
 
 ```ts
-defineProduct({
+// Add this object inside the HOMME list (or FEMME / UNISEX):
+{
   slug: "ng-cap-i",                 // URL: /product/ng-cap-i  (must be unique)
   name: "NG Logo Cap",
   subtitle: "Structured 6-Panel",
   price: "R 350",                   // what shoppers see
   priceValue: 350,                  // number used for SEO / schema
-  collection: "unisex",             // "homme" | "femme" | "unisex"
-  type: "cap",                      // "hoodie" | "tee" | "cap"  ← sets colours + sizes
-  motif: "barcode",                 // "barcode" | "suits" | "heart" (placeholder art)
-  image: "/assets/NG Cap.jpg",      // drop the file in public/assets first
-  imageAlt: "Notre Gemme logo cap in white",
+  type: "cap",                      // "hoodie" | "tee" | "cap" ← sets colours, sizes, fabric
+  motif: "barcode",                 // "barcode" | "suits" | "heart" (placeholder art style)
   description: "Short story about the piece, shown on the product page.",
-  details: ["100% cotton twill", "Adjustable strap", "Embroidered NG gem"],
-}),
+  details: ["Adjustable strap", "Embroidered NG gem"],
+  // image is OPTIONAL — see below
+},
 ```
 
-Because `type: "cap"`, this product **automatically** offers White,
-Blue and Purple, defaults to White, and uses the "One Size" run — you
-wrote zero card code.
+That's it — a card, detail page, colour swatches, sizes, the fabric
+line, the WhatsApp order link, sitemap entry and SEO data are all
+generated. Because `type: "cap"`, it automatically offers White, Blue
+and Purple at One Size. Zero card code.
+
+### Photos — add them when you have them
+
+- **No photo yet?** Leave `image` off entirely. A branded "Photography
+  in progress" placeholder shows, and the card still appears immediately.
+- **Got the photo?** Drop the file in `public/assets/` and add:
+  ```ts
+  image: "/assets/ng-cap-white.jpg",
+  imageAlt: "Notre Gemme logo cap in white",
+  ```
+- **A second view** (e.g. hoodie back): add `imageBack: "/assets/...png"`.
+- Tip: keep files organised in `public/assets/` (e.g. prefix names with
+  `homme-`, `femme-`, `unisex-`). The collection is decided by which
+  **section** the product sits in, not by the filename.
 
 ### Defaults per garment type
 
@@ -69,7 +93,7 @@ These come from `TYPE_DEFAULTS` in `lib/products.ts`:
 
 | Type | Colours offered | Default | Sizes | Fabric (auto) |
 |---|---|---|---|---|
-| `hoodie` | White, Black, Grey, Cream White | White | S–2XL | 430gsm 100% cotton |
+| `hoodie` | Black, Grey, Cream White | Black | S–2XL | 430gsm 100% cotton |
 | `tee` | White, Black, Grey, Brown | White | S–3XL | 300gsm 100% cotton |
 | `cap` | White, Blue, Purple | White | One Size | 100% cotton twill |
 
@@ -78,24 +102,26 @@ don't type it per product. Change it once in `TYPE_DEFAULTS`.
 
 ### Overriding the defaults for a single product
 
-Add any of these optional fields to the `defineProduct({...})` object:
+Add any of these optional fields to the product object:
 
 ```ts
-colorKeys: ["white", "black"],   // only offer these two, in this order
-defaultColorKey: "black",         // pre-select Black instead of White
-sizes: ["XS", "S", "M", "L", "XL"], // custom size run (e.g. femme cut)
+colorKeys: ["white"],               // sell in WHITE only (like the King/Queen tees)
+defaultColorKey: "grey",            // pre-select Grey (like Rooted in Humanity)
+sizes: ["XS", "S", "M", "L", "XL"], // custom size run (e.g. a femme cut)
+colorImages: {                       // swap the photo when a colour is picked
+  black: "/assets/hoodie-black.jpg",
+  grey:  "/assets/hoodie-grey.jpg",
+},
 ```
 
-### Coming-soon products
-
-Set `comingSoon: true` and `tag: "Coming Soon"`. The order button turns
-into a "notify me" WhatsApp link automatically, and the piece shows up
-on `/unisex` and `/upcoming`.
+> Hoodies are designed per-piece: give each hoodie its own `colorImages`
+> so Black / Grey / Cream White each show their own design photo.
 
 ### Remove a product
 
-Delete its object from the array. The card and page disappear on the
-next build.
+Delete its object from its section. The card and page disappear on the
+next build. (There are no demo/placeholder products left to clean up —
+the catalogue only contains your real pieces.)
 
 ---
 

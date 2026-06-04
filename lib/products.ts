@@ -1,26 +1,31 @@
 /**
- * Product catalogue. Each product is referenced by slug.
- * Image paths point to /public — if the file isn't present, the
- * <ProductImage> component renders a brand-styled placeholder.
+ * ══════════════════════════════════════════════════════════════════
+ *  NOTRE GEMME — PRODUCT CATALOGUE
+ * ══════════════════════════════════════════════════════════════════
+ *  Collections (what the words mean):
+ *    • HOMME  = Men's pieces        → shown on /homme
+ *    • FEMME  = Women's pieces       → shown on /femme
+ *    • UNISEX = For everyone         → shown on /unisex (auto "Unisex" tag)
  *
- * ──────────────────────────────────────────────────────────────────
- *  HOW TO ADD A PRODUCT (no copy-paste card coding required)
- * ──────────────────────────────────────────────────────────────────
- *  Add one entry to the `catalogue` array below and pass it through
- *  `defineProduct({...})`. Set `type` to "hoodie" | "tee" | "cap" and
- *  the correct colour swatches, size run and fabric line are filled in
- *  automatically. A product card, a detail page, sitemap entry and
- *  structured data are all generated for you — nothing else to wire up.
+ *  ───── HOW TO ADD A PRODUCT (no coding a card) ─────
+ *  Add ONE object under the right section below (HOMME / FEMME / UNISEX).
+ *  That's it — the card, detail page, sitemap entry, colour swatches,
+ *  sizes, fabric line and WhatsApp order link are all generated for you.
+ *  Where you put it = where it shows up. No `collection` field to set.
  *
- *  Override anything per-product:
- *    colorKeys:      ["white", "black"]   // restrict / reorder colours
- *    defaultColorKey:"black"               // pre-selected swatch
- *    sizes:          ["S", "M", "L"]       // custom size run
- *    colorImages:    { black: "/assets/hoodie-black.png" } // swap photo per colour
+ *  Minimum needed:  slug, name, price, priceValue, type, motif, description.
+ *  The photo is OPTIONAL — leave `image` off and a branded placeholder
+ *  shows until you add the file to /public/assets and set `image`.
  *
- *  Live stock + "sold out" colours + social proof live in lib/stock.ts.
- *  See docs/EDITING-GUIDE.md for the full walkthrough.
- * ──────────────────────────────────────────────────────────────────
+ *  Handy overrides:
+ *    colorKeys:       ["white"]                 // sell in these colours only
+ *    defaultColorKey: "grey"                     // pre-selected swatch
+ *    colorImages:     { black: "/assets/x.jpg" } // swap photo per colour
+ *    sizes:           ["S","M","L"]              // custom size run
+ *
+ *  To REMOVE a product: delete its object. To hide temporarily: see
+ *  stock (lib/stock.ts → soldOut). Full guide: docs/EDITING-GUIDE.md.
+ * ══════════════════════════════════════════════════════════════════
  */
 import { whatsappOrderLink } from "./site-config";
 
@@ -28,6 +33,8 @@ export type Tag = "New" | "Launch" | "Signature" | "Coming Soon" | "Unisex";
 
 /** Garment family. Drives the default colour palette, size run + fabric. */
 export type ProductType = "hoodie" | "tee" | "cap";
+
+export type Collection = "homme" | "femme" | "unisex";
 
 /** Keys into the master swatch table below. */
 export type ColorKey =
@@ -78,8 +85,8 @@ export const TYPE_DEFAULTS: Record<
   }
 > = {
   hoodie: {
-    colors: ["white", "black", "grey", "cream"],
-    defaultColor: "white",
+    colors: ["black", "grey", "cream"],
+    defaultColor: "black",
     sizes: ["S", "M", "L", "XL", "2XL"],
     fabric: "430gsm 100% cotton",
   },
@@ -103,7 +110,7 @@ export type Product = {
   subtitle: string;
   price: string;
   priceValue: number;
-  collection: "homme" | "femme" | "unisex";
+  collection: Collection;
   /** Garment family — drives default colours, sizes & fabric. */
   type: ProductType;
   motif: "barcode" | "suits" | "heart";
@@ -140,8 +147,18 @@ export type Product = {
 /** The minimum a new product needs — everything else is derived. */
 type ProductDraft = Omit<
   Product,
-  "colors" | "defaultColor" | "defaultColorKey" | "sizes" | "orderHref"
+  | "collection"
+  | "colors"
+  | "defaultColor"
+  | "defaultColorKey"
+  | "sizes"
+  | "orderHref"
+  | "image"
+  | "imageAlt"
 > & {
+  /** Photo path under /public. Optional — omit for a branded placeholder. */
+  image?: string;
+  imageAlt?: string;
   /** Restrict / reorder the colours offered. Defaults to the type palette. */
   colorKeys?: ReadonlyArray<ColorKey>;
   /** Pre-selected swatch. Defaults to the type default. */
@@ -156,11 +173,10 @@ function order(item: string): string {
 
 /**
  * Factory that turns a lean draft into a fully-formed Product, filling
- * in colours, default colour, sizes, the fabric detail line and the
- * WhatsApp order link from the garment `type`. This is what makes
- * "add a product = add one object" possible — no card markup to copy.
+ * in colours, default colour, sizes, the fabric detail line, the
+ * WhatsApp order link and — for unisex pieces — a "Unisex" tag.
  */
-function defineProduct(draft: ProductDraft): Product {
+function defineProduct(draft: ProductDraft, collection: Collection): Product {
   const defaults = TYPE_DEFAULTS[draft.type];
   const colorKeys = draft.colorKeys ?? defaults.colors;
   const colors = colorKeys.map((k) => COLORS[k]);
@@ -172,9 +188,17 @@ function defineProduct(draft: ProductDraft): Product {
     ? draft.details
     : [defaults.fabric, ...draft.details];
 
+  // Unisex pieces get a "Unisex" tag automatically (unless already tagged).
+  const tag =
+    draft.tag ?? (collection === "unisex" && !draft.comingSoon ? "Unisex" : undefined);
+
   const { colorKeys: _ck, defaultColorKey: _dk, ...rest } = draft;
   return {
     ...rest,
+    collection,
+    tag,
+    image: draft.image ?? "",
+    imageAlt: draft.imageAlt ?? draft.name,
     colors,
     defaultColor: COLORS[defaultColorKey].name,
     defaultColorKey,
@@ -186,14 +210,22 @@ function defineProduct(draft: ProductDraft): Product {
   };
 }
 
-export const products: ReadonlyArray<Product> = [
-  defineProduct({
+/** Builds every product in a section, stamping the collection for you. */
+function inCollection(
+  collection: Collection,
+  drafts: ReadonlyArray<ProductDraft>,
+): ReadonlyArray<Product> {
+  return drafts.map((d) => defineProduct(d, collection));
+}
+
+// ── HOMME · Men ────────────────────────────────────────────────────
+const homme = inCollection("homme", [
+  {
     slug: "ng-barcode-tee-i",
     name: "NG Barcode Tee I",
     subtitle: "Heavyweight Cotton",
     price: "R 500",
     priceValue: 500,
-    collection: "homme",
     type: "tee",
     motif: "barcode",
     tag: "New",
@@ -208,14 +240,13 @@ export const products: ReadonlyArray<Product> = [
       "Screen-printed full back graphic",
       "Embroidered NG gem on left sleeve",
     ],
-  }),
-  defineProduct({
+  },
+  {
     slug: "ng-barcode-tee-ii",
     name: "NG Barcode Tee II",
     subtitle: "Heavyweight Cotton",
     price: "R 500",
     priceValue: 500,
-    collection: "homme",
     type: "tee",
     motif: "barcode",
     image: "/assets/Product 2.jpg",
@@ -228,19 +259,18 @@ export const products: ReadonlyArray<Product> = [
       "Updated graphic layout with stat block",
       "Embroidered NG gem on left sleeve",
     ],
-  }),
-  defineProduct({
+  },
+  {
     slug: "evolution-hoodie",
     name: "Evolution Hoodie",
     subtitle: "Heavyweight Cotton",
     price: "R 800",
     priceValue: 800,
-    collection: "homme",
     type: "hoodie",
     motif: "heart",
     tag: "Launch",
     image: "/assets/Hoodie front.png",
-    imageAlt: "Notre Gemme Evolution Hoodie — front view, heather white fleece",
+    imageAlt: "Notre Gemme Evolution Hoodie — front view",
     imageBack: "/assets/Hoodie back.png",
     imageBackAlt:
       "Notre Gemme Evolution Hoodie — back view with circular 'Love Doesn't Vanish, It Evolves' graphic and anatomical heart",
@@ -251,120 +281,86 @@ export const products: ReadonlyArray<Product> = [
       "Discharge-print circular back graphic",
       "Tonal flat drawcords",
     ],
-  }),
-  defineProduct({
-    slug: "queen-of-hearts-tee",
-    name: "Queen of Hearts Tee",
-    subtitle: "Heavyweight Cotton",
-    price: "R 500",
-    priceValue: 500,
-    collection: "femme",
-    type: "tee",
-    motif: "suits",
-    image: "",
-    imageAlt:
-      "Notre Gemme Queen of Hearts Tee — heavyweight cotton with playing-card suits motif",
-    featured: true,
-    description:
-      "The Femme signature. Playing-card motifs reimagined for a softer cut and longer drape. The Queen sits at centre — sovereign, calm, untouchable.",
-    sizes: ["XS", "S", "M", "L", "XL"],
-    details: [
-      "Cropped boxy fit with extended hem",
-      "Discharge-print graphic for soft hand-feel",
-      "Embroidered NG gem on left sleeve",
-    ],
-  }),
-  defineProduct({
+  },
+  {
     slug: "king-of-hearts-tee",
     name: "King of Hearts Tee",
-    subtitle: "Heavyweight Cotton",
+    subtitle: "Heavyweight Cotton — White",
     price: "R 500",
     priceValue: 500,
-    collection: "femme",
     type: "tee",
     motif: "suits",
-    image: "",
-    imageAlt:
-      "Notre Gemme King of Hearts Tee — companion to the Queen design",
+    colorKeys: ["white"],
+    // No photo yet — branded placeholder shows until you add `image`.
+    imageAlt: "Notre Gemme King of Hearts Tee — white, playing-card suits motif",
     description:
-      "Companion to the Queen. Same fabric, same construction, mirrored composition — the King answers the Queen across the deck.",
+      "The King. Playing-card motif on heavyweight white cotton — the masculine answer to the Queen across the deck.",
+    sizes: ["S", "M", "L", "XL", "2XL"],
+    details: [
+      "Boxy fit",
+      "Discharge-print graphic for soft hand-feel",
+      "Embroidered NG gem on left sleeve",
+    ],
+  },
+]);
+
+// ── FEMME · Women ──────────────────────────────────────────────────
+const femme = inCollection("femme", [
+  {
+    slug: "queen-of-hearts-tee",
+    name: "Queen of Hearts Tee",
+    subtitle: "Heavyweight Cotton — White",
+    price: "R 500",
+    priceValue: 500,
+    type: "tee",
+    motif: "suits",
+    colorKeys: ["white"],
+    featured: true,
+    // No photo yet — branded placeholder shows until you add `image`.
+    imageAlt: "Notre Gemme Queen of Hearts Tee — white, playing-card suits motif",
+    description:
+      "The Femme signature. Playing-card motif on heavyweight white cotton, cut for a softer drape. The Queen sits at centre — sovereign, calm, untouchable.",
     sizes: ["XS", "S", "M", "L", "XL"],
     details: [
       "Cropped boxy fit with extended hem",
       "Discharge-print graphic for soft hand-feel",
       "Embroidered NG gem on left sleeve",
     ],
-  }),
-  defineProduct({
-    slug: "femme-hoodie",
-    name: "Femme Hoodie",
-    subtitle: "Fleece — Coming SS2026",
-    price: "—",
-    priceValue: 0,
-    collection: "femme",
-    type: "hoodie",
-    motif: "heart",
-    tag: "Coming Soon",
-    image: "",
-    imageAlt: "Notre Gemme Femme Hoodie — coming soon teaser",
-    comingSoon: true,
-    description:
-      "The counterpart to our debut Evolution piece. Arriving later in SS2026. Add your email to the notify list or message us on WhatsApp.",
-    sizes: ["XS", "S", "M", "L", "XL"],
-    details: ["Cropped fit", "Tonal drawcords", "Embroidered NG gem"],
-  }),
-  defineProduct({
-    slug: "archive-piece",
-    name: "The Archive Piece",
-    subtitle: "Unisex — Coming AW2026",
-    price: "—",
-    priceValue: 0,
-    collection: "unisex",
+  },
+]);
+
+// ── UNISEX · For everyone (auto-tagged "Unisex") ───────────────────
+const unisex = inCollection("unisex", [
+  {
+    slug: "rooted-in-humanity",
+    name: "Rooted in Humanity",
+    subtitle: "Heavyweight Cotton — Grey",
+    price: "R 500",
+    priceValue: 500,
     type: "tee",
-    motif: "barcode",
-    tag: "Coming Soon",
-    image: "/assets/Product 1.jpg",
-    imageAlt:
-      "The Archive Piece — unisex reinterpretation of the original barcode graphic",
-    comingSoon: true,
-    description:
-      "A reinterpretation of the original SS2026 barcode graphic for the AW2026 season. Unisex cut, longer drape, deeper dye lot.",
-    sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
-    details: [
-      "Unisex oversized fit",
-      "Reworked back graphic",
-      "Tonal NG gem embroidery",
-    ],
-  }),
-  defineProduct({
-    slug: "evolution-ii",
-    name: "Evolution II",
-    subtitle: "Unisex — Coming AW2026",
-    price: "—",
-    priceValue: 0,
-    collection: "unisex",
-    type: "hoodie",
     motif: "heart",
-    tag: "Coming Soon",
-    image: "/assets/Hoodie back.png",
-    imageAlt: "Evolution II — sequel to the Love Evolves heart motif",
-    comingSoon: true,
+    colorKeys: ["grey"],
+    defaultColorKey: "grey",
+    // No photo yet — branded placeholder shows until you add `image`.
+    imageAlt: "Notre Gemme Rooted in Humanity tee — grey, unisex cut",
     description:
-      "The sequel to our love motif. Same circular composition, new central icon, deeper season palette. Unisex cut.",
+      "A unisex statement piece in heather grey. Rooted in our founding belief — humanity is the rarest gem of all. Worn by whoever the silhouette serves.",
     details: [
-      "Unisex drop-shoulder fit",
-      "Discharge-print circular back graphic",
-      "Tonal flat drawcords",
+      "Unisex relaxed fit",
+      "Discharge-print graphic for soft hand-feel",
+      "Embroidered NG gem on left sleeve",
     ],
-  }),
-];
+  },
+]);
+
+export const products: ReadonlyArray<Product> = [...homme, ...femme, ...unisex];
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
 export function productsByCollection(
-  collection: "homme" | "femme" | "unisex",
+  collection: Collection,
 ): ReadonlyArray<Product> {
   return products.filter((p) => p.collection === collection);
 }

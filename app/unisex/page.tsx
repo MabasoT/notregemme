@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { NotifyForm } from "@/components/NotifyForm";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
-import { upcomingProducts } from "@/lib/products";
+import { productsByCollection } from "@/lib/products";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
  * alongside a countdown to the next AW2026 drop.
  */
 export default function UnisexPage(): React.ReactElement {
+  const unisexItems = productsByCollection("unisex");
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -37,7 +38,7 @@ export default function UnisexPage(): React.ReactElement {
         { "@type": "ListItem", position: 2, name: "Unisex", item: "https://notregemme.co.za/unisex/" },
       ],
     },
-    hasPart: upcomingProducts.map((p) => ({
+    hasPart: unisexItems.map((p) => ({
       "@type": "Product",
       name: p.name,
       description: p.description,
@@ -105,7 +106,7 @@ export default function UnisexPage(): React.ReactElement {
         </div>
 
         <div className="grid grid-cols-1 gap-[clamp(16px,2vw,24px)] sm:grid-cols-2 lg:grid-cols-3">
-          {upcomingProducts.map((p, i) => (
+          {unisexItems.map((p, i) => (
             <ProductCard
               key={p.slug}
               product={p}

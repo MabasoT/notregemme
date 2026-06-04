@@ -73,6 +73,11 @@ export const stock: Record<string, ProductStock> = {
   "king-of-hearts-tee": {
     inStock: 15,
   },
+  "rooted-in-humanity": {
+    inStock: 10,
+    boughtRecently: 6,
+    boughtRecentlyWindow: "this week",
+  },
 };
 
 /** Static stock for a slug. Unknown slugs default to "available, no badges". */
