@@ -1,17 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { whatsappOrderLink } from "@/lib/site-config";
-import type { ColorOption } from "@/lib/products";
+import type { ColorKey, ColorOption } from "@/lib/products";
 
 type ProductOrderProps = {
   productName: string;
   price: string;
   sizes: ReadonlyArray<string>;
   colors: ReadonlyArray<ColorOption>;
-  defaultColor: string;
   collection: "homme" | "femme" | "unisex";
+  /** Controlled colour state (lifted so the gallery can swap its photo). */
+  selectedColorKey: ColorKey;
+  onSelectColor: (key: ColorKey) => void;
+  /** Controlled size state. */
+  selectedSize: string | null;
+  onSelectSize: (size: string) => void;
+  /** Colours currently unavailable. */
+  soldOutColors: ReadonlyArray<ColorKey>;
+  /** Whole product sold out (disables ordering). */
+  soldOut: boolean;
 };
 
 const collectionLabel: Record<ProductOrderProps["collection"], string> = {
@@ -27,20 +35,28 @@ const collectionHref: Record<ProductOrderProps["collection"], string> = {
 };
 
 /**
- * Interactive order block. Lets the customer pick a colour + size, then
- * builds a pre-filled WhatsApp message that already includes both choices
- * so the brand can confirm the order without a back-and-forth.
+ * Interactive order block. Colour + size are controlled by the parent
+ * <ProductView> so picking a colour also swaps the product photo. The
+ * pre-filled WhatsApp message carries both choices so the brand can
+ * confirm without a back-and-forth.
  */
 export function ProductOrder({
   productName,
   price,
   sizes,
   colors,
-  defaultColor,
   collection,
+  selectedColorKey,
+  onSelectColor,
+  selectedSize,
+  onSelectSize,
+  soldOutColors,
+  soldOut,
 }: ProductOrderProps): React.ReactElement {
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string>(defaultColor);
+  const selectedColor =
+    colors.find((c) => c.key === selectedColorKey)?.name ?? "";
+  const isColorSoldOut = soldOutColors.includes(selectedColorKey);
+  const canOrder = !soldOut && !isColorSoldOut && selectedSize !== null;
 
   const colorPart = selectedColor ? ` in ${selectedColor}` : "";
   const orderMessage = selectedSize
@@ -72,6 +88,7 @@ export function ProductOrder({
               }}
             >
               {selectedColor}
+              {isColorSoldOut ? " — sold out" : ""}
             </span>
           </div>
           <div
@@ -80,19 +97,23 @@ export function ProductOrder({
             aria-label="Select a colour"
           >
             {colors.map((color) => {
-              const active = selectedColor === color.name;
+              const active = selectedColorKey === color.key;
+              const colorSoldOut = soldOutColors.includes(color.key);
               return (
                 <button
                   key={color.key}
                   type="button"
-                  onClick={() => setSelectedColor(color.name)}
+                  onClick={() => onSelectColor(color.key)}
                   aria-pressed={active}
-                  aria-label={color.name}
-                  title={color.name}
+                  aria-label={
+                    colorSoldOut ? `${color.name} (sold out)` : color.name
+                  }
+                  title={colorSoldOut ? `${color.name} — sold out` : color.name}
                   className="relative flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-200"
                   style={{
                     cursor: "pointer",
                     transform: active ? "scale(1.08)" : "scale(1)",
+                    opacity: colorSoldOut ? 0.45 : 1,
                     boxShadow: active
                       ? "0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-green)"
                       : "0 0 0 1px rgba(255,255,255,0.18)",
@@ -106,6 +127,13 @@ export function ProductOrder({
                       border: "1px solid rgba(255,255,255,0.12)",
                     }}
                   />
+                  {colorSoldOut ? (
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute h-[1px] w-[120%] rotate-45"
+                      style={{ background: "rgba(255,255,255,0.7)" }}
+                    />
+                  ) : null}
                 </button>
               );
             })}
@@ -133,7 +161,7 @@ export function ProductOrder({
               <button
                 key={size}
                 type="button"
-                onClick={() => setSelectedSize(size)}
+                onClick={() => onSelectSize(size)}
                 aria-pressed={active}
                 className="rounded-pill px-5 py-2.5 uppercase transition-colors duration-200"
                 style={{
@@ -159,12 +187,16 @@ export function ProductOrder({
           style={{
             fontFamily: "var(--font-body)",
             fontSize: 13,
-            color: selectedSize ? "var(--color-fg-muted)" : "var(--color-green)",
+            color: canOrder ? "var(--color-fg-muted)" : "var(--color-green)",
           }}
         >
-          {selectedSize
-            ? `Selected: ${selectedColor}, size ${selectedSize}`
-            : "Please select a size to continue."}
+          {soldOut
+            ? "This piece is currently sold out — message us to join the waitlist."
+            : isColorSoldOut
+              ? `${selectedColor} is sold out. Pick another colour to continue.`
+              : selectedSize
+                ? `Selected: ${selectedColor}, size ${selectedSize}`
+                : "Please select a size to continue."}
         </p>
       </div>
 
@@ -173,17 +205,21 @@ export function ProductOrder({
           href={orderHref}
           target="_blank"
           rel="noopener noreferrer"
-          aria-disabled={!selectedSize}
+          aria-disabled={!canOrder}
           onClick={(e) => {
-            if (!selectedSize) {
+            if (!canOrder) {
               e.preventDefault();
-              setSelectedSize(null);
+              if (!selectedSize) onSelectSize("");
             }
           }}
           className="btn-primary"
-          style={!selectedSize ? { opacity: 0.55, cursor: "not-allowed" } : undefined}
+          style={!canOrder ? { opacity: 0.55, cursor: "not-allowed" } : undefined}
         >
-          {selectedSize ? `Order Size ${selectedSize} via WhatsApp` : "Order via WhatsApp"}
+          {soldOut
+            ? "Join the waitlist"
+            : selectedSize && !isColorSoldOut
+              ? `Order ${selectedColor} / ${selectedSize} via WhatsApp`
+              : "Order via WhatsApp"}
         </a>
         <Link href={collectionHref[collection]} className="btn-ghost">
           Back to {collectionLabel[collection]}

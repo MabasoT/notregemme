@@ -1,94 +1,157 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { asset, siteConfig, whatsappOrderLink } from "@/lib/site-config";
-
-// ---------------------------------------------------------------------------
-// Product catalogue & chatbot knowledge base
-// ---------------------------------------------------------------------------
-const PRODUCTS = [
-  { name: "Hoodie", price: 800, preOrder: false, notes: "Available now" },
-  { name: "T-Shirt", price: 500, preOrder: false, notes: "Available now" },
-  { name: "Cap (standard)", price: 150, preOrder: false, notes: "Available now" },
-  { name: "Cap (premium)", price: 200, preOrder: false, notes: "Available now" },
-  { name: "Track Pants", price: null, preOrder: true, notes: "Pre-order — contact us for pricing" },
-];
+import { siteConfig, whatsappOrderLink } from "@/lib/site-config";
+import { products, type Product } from "@/lib/products";
+import { isSoldOut, type ProductStock } from "@/lib/stock";
+import { useLiveStockMap } from "@/lib/live-stock";
 
 type Message = {
   role: "bot" | "user";
   text: string;
 };
 
+type StockMap = Record<string, ProductStock>;
+
 // ---------------------------------------------------------------------------
-// Simple intent matcher
+// Knowledge helpers — everything is derived from lib/products.ts +
+// lib/stock.ts so the assistant always knows the real catalogue, the
+// colours offered, what's sold out and how many units are left.
 // ---------------------------------------------------------------------------
-function getBotReply(input: string): string {
+const liveProducts = products.filter((p) => !p.comingSoon);
+const comingSoonProducts = products.filter((p) => p.comingSoon);
+
+function stockFor(slug: string, map: StockMap): ProductStock {
+  return map[slug] ?? { inStock: 999 };
+}
+
+function availabilityLabel(p: Product, map: StockMap): string {
+  const s = stockFor(p.slug, map);
+  if (isSoldOut(s)) return "Sold out";
+  if (s.inStock <= 10) return `Only ${s.inStock} left`;
+  return "In stock";
+}
+
+function coloursLine(p: Product, map: StockMap): string {
+  const soldOut = stockFor(p.slug, map).soldOutColors ?? [];
+  return p.colors
+    .map((c) => (soldOut.includes(c.key) ? `${c.name} (sold out)` : c.name))
+    .join(", ");
+}
+
+function describeProduct(p: Product, map: StockMap): string {
+  const fabric = p.details.find((d) => /gsm|cotton|fleece/i.test(d));
+  return (
+    `**${p.name}** — **${p.price}** · ${availabilityLabel(p, map)}\n` +
+    `Colours: ${coloursLine(p, map)}\n` +
+    `Sizes: ${p.sizes.join(", ")}` +
+    (fabric ? `\nFabric: ${fabric}` : "")
+  );
+}
+
+function findProduct(q: string): Product | undefined {
+  // direct slug/name word match first, then garment-type keyword
+  const byName = products.find((p) =>
+    q.includes(p.name.toLowerCase()) || q.includes(p.slug),
+  );
+  if (byName) return byName;
+  if (/\bhoodie\b/.test(q)) return products.find((p) => p.type === "hoodie" && !p.comingSoon);
+  if (/\bt[\-\s]?shirt|\btee\b/.test(q)) return products.find((p) => p.type === "tee" && !p.comingSoon);
+  if (/\bcap\b/.test(q)) return products.find((p) => p.type === "cap" && !p.comingSoon);
+  return undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Intent matcher (stock-aware)
+// ---------------------------------------------------------------------------
+function getBotReply(input: string, map: StockMap): string {
   const q = input.toLowerCase().trim();
 
   if (/^(hi|hello|hey|sup|howzit|hola|yo)\b/.test(q)) {
-    return "Hey! Welcome to Notre Gemme I'm here to help you with prices, available products, pre-orders and size fittings. What can I do for you?";
+    return "Hey! Welcome to Notre Gemme. I can help with prices, colours, what's in stock, sizing and orders. What are you after?";
+  }
+
+  // Colours / sold-out questions
+  if (/\bcolou?rs?\b|\bsold ?out\b|\bavailable colou?rs?\b/.test(q)) {
+    const p = findProduct(q);
+    if (p) {
+      const s = stockFor(p.slug, map);
+      const sold = s.soldOutColors ?? [];
+      const base = `**${p.name}** comes in: ${coloursLine(p, map)}.`;
+      return sold.length > 0
+        ? `${base}\nCurrently sold out: ${sold.map((k) => p.colors.find((c) => c.key === k)?.name ?? k).join(", ")}.`
+        : `${base}\nAll colours are available right now.`;
+    }
+    return (
+      "Here's what each piece comes in:\n\n" +
+      liveProducts.map((p) => `- **${p.name}**: ${coloursLine(p, map)}`).join("\n")
+    );
+  }
+
+  // Stock / how many left
+  if (/\bstock\b|\bhow many\b|\bleft\b|\bin stock\b|\bsold\b/.test(q)) {
+    const p = findProduct(q);
+    if (p) return describeProduct(p, map);
+    return (
+      "Live availability:\n\n" +
+      liveProducts.map((p) => `- **${p.name}** — ${availabilityLabel(p, map)}`).join("\n")
+    );
   }
 
   if (/\b(price|prices|cost|how much|range|pricelist|price list)\b/.test(q)) {
-    return formatPriceList();
+    const p = findProduct(q);
+    if (p) return describeProduct(p, map);
+    return (
+      "Current price list:\n\n" +
+      liveProducts.map((p) => `- ${p.name} — **${p.price}** · ${availabilityLabel(p, map)}`).join("\n") +
+      "\n\nAsk me about any piece for its colours and sizes."
+    );
   }
 
-  if (/\bhoodie\b/.test(q)) {
-    return "Our Hoodies are **R800** and are available now. Want to order? I can connect you straight to WhatsApp";
+  if (/\bfabric|\bmaterial|\bgsm|\bcotton|\bquality\b/.test(q)) {
+    return "Our **Hoodies are 430gsm, 100% cotton** and our **T-Shirts are 300gsm, 100% cotton** — heavyweight, premium hand-feel. Ask me about a specific piece for full details.";
   }
 
-  if (/\bt[\-\s]?shirt\b/.test(q)) {
-    return "T-Shirts are **R500** and available now. Would you like to place an order or need a size fitting?";
+  // Specific product mention (covers hoodie/tee/cap and named pieces)
+  {
+    const p = findProduct(q);
+    if (p) return describeProduct(p, map);
   }
 
-  if (/\bcap\b/.test(q)) {
-    return "We have two cap options:\n- Standard cap — **R150**\n- Premium cap — **R200**\nBoth are available now. Need one?";
+  if (/\bpre[\-\s]?order|\bcoming|\bupcoming|\bdrop\b/.test(q)) {
+    if (comingSoonProducts.length === 0) return "Everything in the current drop is available now! Ask me about any piece.";
+    return (
+      "Coming soon / pre-order:\n\n" +
+      comingSoonProducts.map((p) => `- **${p.name}** — ${p.subtitle}`).join("\n") +
+      "\n\nMessage us on WhatsApp to reserve yours."
+    );
   }
 
-  if (/\btrack\s*pant|\btracksuit|\bpant\b/.test(q)) {
-    return "Track Pants are currently available for **pre-order** Drop us a WhatsApp to lock yours in!";
-  }
-
-  if (/\bpre[\-\s]?order\b/.test(q)) {
-    return "Currently, **Track Pants** are available for pre-order. Contact us on WhatsApp to place yours and we'll confirm sizing and pricing.";
-  }
-
-  if (/\bavailable|\bstock|\bwhat.*sell|\bproduct|\bcatalogue|\bcatalog\b/.test(q)) {
-    return formatAvailableProducts();
+  if (/\bavailable|\bwhat.*sell|\bproduct|\bcatalogue|\bcatalog\b/.test(q)) {
+    return (
+      "**Available now:**\n" +
+      liveProducts.map((p) => `- ${p.name} — **${p.price}** · ${availabilityLabel(p, map)}`).join("\n") +
+      "\n\nAsk me about any item for colours, sizes or to place an order!"
+    );
   }
 
   if (/\bsize|\bfit|\bfitting|\bmeasure|\bbook|\bbooking\b/.test(q)) {
-    return "We offer **size fittings on special request** Just book a session with us via WhatsApp and we'll arrange a convenient time for you to try on your preferred items before purchasing.";
+    return "We offer **size fittings on special request**. Book a session via WhatsApp and we'll arrange a time for you to try on your preferred pieces before buying.";
   }
 
   if (/\border|\bbuy|\bpurchase|\bget one|\bwant one\b/.test(q)) {
-    return "Ready to order? Hit the WhatsApp button below or message us on Instagram. We'll sort you out with the right size and style!";
+    return "Ready to order? Open any product page to pick your **colour and size**, or hit the WhatsApp button below and we'll sort you out!";
   }
 
   if (/\bship|\bdeliver|\bpostage|\bcourier\b/.test(q)) {
-    return "We offer delivery across South Africa. Delivery fees and timelines are confirmed at checkout. Reach out on WhatsApp for details!";
+    return "We deliver across South Africa. Fees and timelines are confirmed at checkout — reach out on WhatsApp for details!";
   }
 
   if (/\bcontact|\blocation|\bwhere|\baddress|\bphone|\bnumber\b/.test(q)) {
-    return "You can reach us on WhatsApp or Instagram. We're based in South Africa";
+    return "You can reach us on WhatsApp or Instagram — we're based in South Africa.";
   }
 
-  return "I'm not sure about that — but I'm still learning! For now I can help with **prices**, **available products**, **pre-orders**, and **size bookings**. Or you can reach us directly on WhatsApp.";
-}
-
-function formatPriceList(): string {
-  const lines = PRODUCTS.map((p) => {
-    const priceStr = p.price ? "R" + p.price : "TBC (pre-order)";
-    const tag = p.preOrder ? " Pre-order" : " In stock";
-    return "- " + p.name + " — **" + priceStr + "**" + tag;
-  });
-  return "Here's our current price list:\n\n" + lines.join("\n") + "\n\nMore products and prices will be added over time. Book a size fitting on request!";
-}
-
-function formatAvailableProducts(): string {
-  const inStock = PRODUCTS.filter((p) => !p.preOrder).map((p) => p.name);
-  const preOrder = PRODUCTS.filter((p) => p.preOrder).map((p) => p.name);
-  return "**Available now:** " + inStock.join(", ") + "\n**Pre-order:** " + preOrder.join(", ") + "\n\nAsk me about any item for pricing or to place an order!";
+  return "I'm not sure about that one yet! I can help with **prices**, **colours**, **what's in stock**, **sizing** and **orders**. Or reach us directly on WhatsApp.";
 }
 
 // ---------------------------------------------------------------------------
@@ -96,10 +159,11 @@ function formatAvailableProducts(): string {
 // ---------------------------------------------------------------------------
 export function NotreGemmeChatbot(): React.ReactElement {
   const [open, setOpen] = useState(false);
+  const stockMap = useLiveStockMap();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "bot",
-      text: "Hi there! I'm the Notre Gemme assistant. Ask me about prices, available items, pre-orders or book a size fitting!",
+      text: "Hi there! I'm the Notre Gemme assistant. Ask me about prices, colours, what's in stock, sizing or place an order!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -115,7 +179,7 @@ export function NotreGemmeChatbot(): React.ReactElement {
     const trimmed = input.trim();
     if (!trimmed) return;
     const userMsg: Message = { role: "user", text: trimmed };
-    const botMsg: Message = { role: "bot", text: getBotReply(trimmed) };
+    const botMsg: Message = { role: "bot", text: getBotReply(trimmed, stockMap) };
     setMessages((prev) => [...prev, userMsg, botMsg]);
     setInput("");
   }
@@ -254,11 +318,11 @@ export function NotreGemmeChatbot(): React.ReactElement {
             className="flex flex-wrap gap-2 px-4 py-2"
             style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
           >
-            {["Prices", "Available", "Pre-order", "Sizing"].map((chip) => (
+            {["Prices", "Colours", "Stock", "Sizing"].map((chip) => (
               <button
                 key={chip}
                 onClick={() => {
-                  const reply = getBotReply(chip);
+                  const reply = getBotReply(chip, stockMap);
                   setMessages((prev) => [
                     ...prev,
                     { role: "user", text: chip },

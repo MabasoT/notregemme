@@ -15,7 +15,13 @@ the map: "I want to change X → go here."
 | I want to… | Go to | 
 |---|---|
 | Add / edit / remove a product | `lib/products.ts` |
-| Change which colours a hoodie / tee / cap offers | `lib/products.ts` → `TYPE_DEFAULTS` |
+| **Change stock count / "Only N left"** | `lib/stock.ts` |
+| **Mark a colour sold out** | `lib/stock.ts` → `soldOutColors` |
+| **Set "X people bought this" social proof** | `lib/stock.ts` → `boughtRecently` |
+| **Connect the auto stock bot (Apps Script)** | `docs/STOCK-AND-SOCIAL-PROOF.md` |
+| Change which colours a hoodie / tee / cap offers | `lib/products.ts` → `TYPE_DEFAULTS` (all) or `colorKeys` (one product) |
+| **Swap the photo per colour** | `lib/products.ts` → product's `colorImages` |
+| Change the fabric / gsm per garment type | `lib/products.ts` → `TYPE_DEFAULTS` → `fabric` |
 | Tweak a colour's exact shade | `lib/products.ts` → `COLORS` |
 | Change a price | `lib/products.ts` (the product's `price` + `priceValue`) |
 | Add a product photo | `public/assets/` (then reference it in `lib/products.ts`) |
@@ -23,6 +29,7 @@ the map: "I want to change X → go here."
 | Change the top / footer menu links | `lib/site-config.ts` → `nav` |
 | Change the next drop date / countdown | `lib/site-config.ts` → `drop.nextDropDate` |
 | Change headlines, descriptions, section copy | `lib/content.ts` |
+| What the bottom-left chatbot knows | auto — reads `lib/products.ts` + `lib/stock.ts` |
 | Change brand colours / fonts / radii (site-wide) | `app/globals.css` → `@theme` |
 | Swap the logo | `public/assets/logo notregemme.png` |
 
@@ -60,11 +67,14 @@ wrote zero card code.
 
 These come from `TYPE_DEFAULTS` in `lib/products.ts`:
 
-| Type | Colours offered | Default | Sizes |
-|---|---|---|---|
-| `hoodie` | White, Black, Grey, Cream White | White | S–2XL |
-| `tee` | White, Black, Grey, Brown | White | S–3XL |
-| `cap` | White, Blue, Purple | White | One Size |
+| Type | Colours offered | Default | Sizes | Fabric (auto) |
+|---|---|---|---|---|
+| `hoodie` | White, Black, Grey, Cream White | White | S–2XL | 430gsm 100% cotton |
+| `tee` | White, Black, Grey, Brown | White | S–3XL | 300gsm 100% cotton |
+| `cap` | White, Blue, Purple | White | One Size | 100% cotton twill |
+
+The fabric line is added to each product's details automatically — you
+don't type it per product. Change it once in `TYPE_DEFAULTS`.
 
 ### Overriding the defaults for a single product
 
@@ -117,6 +127,32 @@ every tee instantly offers Cream White.
 The shopper picks a colour **and** a size on the product page; both are
 baked into the pre-filled WhatsApp message, e.g.
 *"I'd like to order the Evolution Hoodie in Black (Size L) — R 800."*
+
+---
+
+## 2b. Stock, sold-out colours & social proof
+
+These change daily, so they live in their **own file**, `lib/stock.ts`,
+keyed by product slug:
+
+```ts
+"evolution-hoodie": {
+  inStock: 4,                 // → "Only 4 left" badge
+  soldOutColors: ["cream"],   // → Cream White swatch disabled
+  boughtRecently: 8,          // → "🔥 8 people bought this yesterday"
+  boughtRecentlyWindow: "yesterday",
+},
+```
+
+- `inStock: 0` (or `soldOut: true`) marks the whole piece sold out.
+- Selecting a colour also **swaps the product photo** if you've set
+  `colorImages` for it in `lib/products.ts`.
+- The bottom-left **chatbot** reads this same file, so it always quotes
+  correct stock, colours and what's sold out — no separate update.
+
+When you're ready to automate it, a Google Apps Script bot can feed
+these numbers live (the site falls back to this file if the bot is off).
+Full walkthrough: **`docs/STOCK-AND-SOCIAL-PROOF.md`**.
 
 ---
 
