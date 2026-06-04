@@ -8,15 +8,17 @@
  * ──────────────────────────────────────────────────────────────────
  *  Add one entry to the `catalogue` array below and pass it through
  *  `defineProduct({...})`. Set `type` to "hoodie" | "tee" | "cap" and
- *  the correct colour swatches + size run are filled in automatically.
- *  A product card, a detail page, sitemap entry, and structured data
- *  are all generated for you — nothing else to wire up.
+ *  the correct colour swatches, size run and fabric line are filled in
+ *  automatically. A product card, a detail page, sitemap entry and
+ *  structured data are all generated for you — nothing else to wire up.
  *
  *  Override anything per-product:
  *    colorKeys:      ["white", "black"]   // restrict / reorder colours
  *    defaultColorKey:"black"               // pre-selected swatch
  *    sizes:          ["S", "M", "L"]       // custom size run
+ *    colorImages:    { black: "/assets/hoodie-black.png" } // swap photo per colour
  *
+ *  Live stock + "sold out" colours + social proof live in lib/stock.ts.
  *  See docs/EDITING-GUIDE.md for the full walkthrough.
  * ──────────────────────────────────────────────────────────────────
  */
@@ -24,7 +26,7 @@ import { whatsappOrderLink } from "./site-config";
 
 export type Tag = "New" | "Launch" | "Signature" | "Coming Soon" | "Unisex";
 
-/** Garment family. Drives the default colour palette + size run. */
+/** Garment family. Drives the default colour palette, size run + fabric. */
 export type ProductType = "hoodie" | "tee" | "cap";
 
 /** Keys into the master swatch table below. */
@@ -62,27 +64,36 @@ export const COLORS: Record<ColorKey, ColorOption> = {
 
 /**
  * ── PER-GARMENT DEFAULTS ─────────────────────────────────────────
- * What colours + sizes a product gets automatically based on its
- * `type`. Change these to update every product of that type at once.
+ * What colours, sizes and fabric a product gets automatically based
+ * on its `type`. Change these to update every product of that type.
  */
 export const TYPE_DEFAULTS: Record<
   ProductType,
-  { colors: ReadonlyArray<ColorKey>; defaultColor: ColorKey; sizes: ReadonlyArray<string> }
+  {
+    colors: ReadonlyArray<ColorKey>;
+    defaultColor: ColorKey;
+    sizes: ReadonlyArray<string>;
+    /** Auto-added as the first line of `details`. */
+    fabric: string;
+  }
 > = {
   hoodie: {
     colors: ["white", "black", "grey", "cream"],
     defaultColor: "white",
     sizes: ["S", "M", "L", "XL", "2XL"],
+    fabric: "430gsm 100% cotton",
   },
   tee: {
     colors: ["white", "black", "grey", "brown"],
     defaultColor: "white",
     sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
+    fabric: "300gsm 100% cotton",
   },
   cap: {
     colors: ["white", "blue", "purple"],
     defaultColor: "white",
     sizes: ["One Size"],
+    fabric: "100% cotton twill",
   },
 };
 
@@ -93,7 +104,7 @@ export type Product = {
   price: string;
   priceValue: number;
   collection: "homme" | "femme" | "unisex";
-  /** Garment family — drives default colours & sizes. */
+  /** Garment family — drives default colours, sizes & fabric. */
   type: ProductType;
   motif: "barcode" | "suits" | "heart";
   tag?: Tag;
@@ -102,6 +113,12 @@ export type Product = {
   /** Optional secondary view (e.g. hoodie back). */
   imageBack?: string;
   imageBackAlt?: string;
+  /**
+   * Optional per-colour photography. When the shopper selects a colour
+   * with an entry here, the main image swaps to it. Colours without an
+   * entry keep the default `image`.
+   */
+  colorImages?: Partial<Record<ColorKey, string>>;
   featured?: boolean;
   comingSoon?: boolean;
   /** Pre-built WhatsApp order link with item context. */
@@ -110,18 +127,20 @@ export type Product = {
   description: string;
   /** Selectable colours (resolved from COLORS). */
   colors: ReadonlyArray<ColorOption>;
-  /** Pre-selected colour name. */
+  /** Pre-selected colour name (for display). */
   defaultColor: string;
+  /** Pre-selected colour key. */
+  defaultColorKey: ColorKey;
   /** Available sizes. */
   sizes: ReadonlyArray<string>;
-  /** Material / construction details. */
+  /** Material / construction details (fabric line auto-prepended). */
   details: ReadonlyArray<string>;
 };
 
 /** The minimum a new product needs — everything else is derived. */
 type ProductDraft = Omit<
   Product,
-  "colors" | "defaultColor" | "sizes" | "orderHref"
+  "colors" | "defaultColor" | "defaultColorKey" | "sizes" | "orderHref"
 > & {
   /** Restrict / reorder the colours offered. Defaults to the type palette. */
   colorKeys?: ReadonlyArray<ColorKey>;
@@ -137,9 +156,9 @@ function order(item: string): string {
 
 /**
  * Factory that turns a lean draft into a fully-formed Product, filling
- * in colours, default colour, sizes and the WhatsApp order link from
- * the garment `type`. This is what makes "add a product = add one
- * object" possible — no card markup to copy.
+ * in colours, default colour, sizes, the fabric detail line and the
+ * WhatsApp order link from the garment `type`. This is what makes
+ * "add a product = add one object" possible — no card markup to copy.
  */
 function defineProduct(draft: ProductDraft): Product {
   const defaults = TYPE_DEFAULTS[draft.type];
@@ -148,12 +167,19 @@ function defineProduct(draft: ProductDraft): Product {
   const defaultColorKey = draft.defaultColorKey ?? defaults.defaultColor;
   const sizes = draft.sizes ?? defaults.sizes;
 
+  // Auto-prepend the fabric line unless the product already states it.
+  const details = draft.details.some((d) => /gsm|cotton|fleece/i.test(d))
+    ? draft.details
+    : [defaults.fabric, ...draft.details];
+
   const { colorKeys: _ck, defaultColorKey: _dk, ...rest } = draft;
   return {
     ...rest,
     colors,
     defaultColor: COLORS[defaultColorKey].name,
+    defaultColorKey,
     sizes,
+    details,
     orderHref: draft.comingSoon
       ? whatsappOrderLink(`Hi! Please notify me when the ${draft.name} drops.`)
       : order(draft.name),
@@ -178,7 +204,6 @@ export const products: ReadonlyArray<Product> = [
     description:
       "The debut tee of SS2026. A full-back barcode graphic in deep navy and acid green, framing a hand-illustrated figure pushing a cart of currency — a reminder that humanity, not commerce, is the treasure.",
     details: [
-      "240gsm heavyweight cotton",
       "Boxy oversized fit",
       "Screen-printed full back graphic",
       "Embroidered NG gem on left sleeve",
@@ -199,7 +224,6 @@ export const products: ReadonlyArray<Product> = [
     description:
       "The second iteration of the barcode silhouette. Same heavyweight construction, restructured composition — the cart, the figure, the code, rearranged into a tighter compositional rhythm.",
     details: [
-      "240gsm heavyweight cotton",
       "Boxy oversized fit",
       "Updated graphic layout with stat block",
       "Embroidered NG gem on left sleeve",
@@ -208,7 +232,7 @@ export const products: ReadonlyArray<Product> = [
   defineProduct({
     slug: "evolution-hoodie",
     name: "Evolution Hoodie",
-    subtitle: "Brushed Fleece",
+    subtitle: "Heavyweight Cotton",
     price: "R 800",
     priceValue: 800,
     collection: "homme",
@@ -221,9 +245,8 @@ export const products: ReadonlyArray<Product> = [
     imageBackAlt:
       "Notre Gemme Evolution Hoodie — back view with circular 'Love Doesn't Vanish, It Evolves' graphic and anatomical heart",
     description:
-      "Our debut hoodie. A circular composition — anatomical heart at centre, butterfly and rose flanking, 'Love doesn't vanish, it evolves' wrapping the form. Heavyweight brushed fleece interior, drop shoulder, kangaroo pocket.",
+      "Our debut hoodie. A circular composition — anatomical heart at centre, butterfly and rose flanking, 'Love doesn't vanish, it evolves' wrapping the form. Heavyweight cotton, drop shoulder, kangaroo pocket.",
     details: [
-      "400gsm brushed fleece interior",
       "Drop-shoulder oversized fit",
       "Discharge-print circular back graphic",
       "Tonal flat drawcords",
@@ -246,7 +269,6 @@ export const products: ReadonlyArray<Product> = [
       "The Femme signature. Playing-card motifs reimagined for a softer cut and longer drape. The Queen sits at centre — sovereign, calm, untouchable.",
     sizes: ["XS", "S", "M", "L", "XL"],
     details: [
-      "220gsm heavyweight cotton",
       "Cropped boxy fit with extended hem",
       "Discharge-print graphic for soft hand-feel",
       "Embroidered NG gem on left sleeve",
@@ -268,7 +290,6 @@ export const products: ReadonlyArray<Product> = [
       "Companion to the Queen. Same fabric, same construction, mirrored composition — the King answers the Queen across the deck.",
     sizes: ["XS", "S", "M", "L", "XL"],
     details: [
-      "220gsm heavyweight cotton",
       "Cropped boxy fit with extended hem",
       "Discharge-print graphic for soft hand-feel",
       "Embroidered NG gem on left sleeve",
@@ -290,12 +311,7 @@ export const products: ReadonlyArray<Product> = [
     description:
       "The counterpart to our debut Evolution piece. Arriving later in SS2026. Add your email to the notify list or message us on WhatsApp.",
     sizes: ["XS", "S", "M", "L", "XL"],
-    details: [
-      "Brushed fleece interior",
-      "Cropped fit",
-      "Tonal drawcords",
-      "Embroidered NG gem",
-    ],
+    details: ["Cropped fit", "Tonal drawcords", "Embroidered NG gem"],
   }),
   defineProduct({
     slug: "archive-piece",
@@ -315,7 +331,6 @@ export const products: ReadonlyArray<Product> = [
       "A reinterpretation of the original SS2026 barcode graphic for the AW2026 season. Unisex cut, longer drape, deeper dye lot.",
     sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
     details: [
-      "260gsm heavyweight cotton",
       "Unisex oversized fit",
       "Reworked back graphic",
       "Tonal NG gem embroidery",
@@ -337,7 +352,6 @@ export const products: ReadonlyArray<Product> = [
     description:
       "The sequel to our love motif. Same circular composition, new central icon, deeper season palette. Unisex cut.",
     details: [
-      "400gsm brushed fleece interior",
       "Unisex drop-shoulder fit",
       "Discharge-print circular back graphic",
       "Tonal flat drawcords",

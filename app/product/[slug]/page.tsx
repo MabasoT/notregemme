@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ProductImage } from "@/components/ProductImage";
 import { getProductBySlug, products, productsByCollection } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
-import { ProductOrder } from "@/components/ProductOrder";
+import { ProductView } from "@/components/ProductView";
 import { JsonLd } from "@/components/JsonLd";
 import { siteConfig } from "@/lib/site-config";
 
@@ -115,141 +114,7 @@ export default async function ProductPage({
           <span style={{ color: "var(--color-fg)" }}>{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
-          <div className="reveal flex flex-col gap-4">
-            <div
-              className="rounded-card overflow-hidden"
-              style={{ borderRadius: "var(--radius-card)" }}
-            >
-              <ProductImage
-                src={product.image}
-                alt={product.imageAlt}
-                motif={product.motif}
-                aspect="3/4"
-                fit={product.image.toLowerCase().endsWith(".png") ? "contain" : "cover"}
-              />
-            </div>
-            {product.imageBack ? (
-              <div
-                className="rounded-card overflow-hidden"
-                style={{ borderRadius: "var(--radius-card)" }}
-              >
-                <ProductImage
-                  src={product.imageBack}
-                  alt={product.imageBackAlt ?? product.imageAlt}
-                  motif={product.motif}
-                  aspect="3/4"
-                  fit="contain"
-                />
-              </div>
-            ) : null}
-          </div>
-
-          <div className="reveal reveal-delay-1 flex flex-col gap-7 lg:sticky lg:top-32 lg:self-start">
-            {product.tag ? (
-              <span
-                className="inline-block w-fit rounded-pill px-3 py-[5px] uppercase"
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: 10,
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  color: "var(--color-bg)",
-                  background:
-                    product.tag === "Launch"
-                      ? "var(--color-red-bright)"
-                      : "var(--color-green)",
-                  borderRadius: "var(--radius-pill)",
-                }}
-              >
-                {product.tag}
-              </span>
-            ) : null}
-
-            <div>
-              <h1
-                className="font-bold"
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "clamp(32px, 4vw, 56px)",
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1,
-                }}
-              >
-                {product.name}
-              </h1>
-              <p
-                className="mt-3"
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: 14,
-                  color: "var(--color-fg-muted)",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                {product.subtitle}
-              </p>
-            </div>
-
-            <div
-              className="font-semibold"
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: "clamp(28px, 3vw, 40px)",
-                color: "var(--color-fg)",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              {product.price}
-            </div>
-
-            <p className="section-body">{product.description}</p>
-
-                        <div>
-              <div
-                className="mb-3 uppercase"
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.2em",
-                  color: "var(--color-fg-muted)",
-                }}
-              >
-                Details
-              </div>
-              <ul className="flex flex-col gap-2">
-                {product.details.map((d) => (
-                  <li
-                    key={d}
-                    className="flex items-start gap-2.5"
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: 14,
-                      color: "var(--color-fg-muted)",
-                    }}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="diamond-clip mt-1.5 inline-block h-1.5 w-1.5 shrink-0"
-                      style={{ background: "var(--color-green)" }}
-                    />
-                    {d}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-                      <ProductOrder
-            productName={product.name}
-            price={product.price}
-            sizes={product.sizes}
-            colors={product.colors}
-            defaultColor={product.defaultColor}
-            collection={product.collection}
-          />
-</div>
-        </div>
+        <ProductView product={product} />
 
         {related.length > 0 ? (
           <section className="mt-[clamp(80px,10vw,140px)]">
