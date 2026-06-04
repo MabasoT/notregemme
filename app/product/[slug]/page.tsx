@@ -23,7 +23,7 @@ export async function generateMetadata({
   const product = getProductBySlug(slug);
   if (!product) return { title: "Product Not Found" };
   return {
-    title: `${product.name} — ${product.collection === "homme" ? "Homme" : "Femme"} SS2026`,
+    title: `${product.name} — ${product.collection === "homme" ? "Homme" : product.collection === "femme" ? "Femme" : "Unisex"} SS2026`,
     description: product.description,
     alternates: { canonical: `https://notregemme.co.za/product/${product.slug}` },
     openGraph: {
@@ -104,11 +104,12 @@ export default async function ProductPage({
             Home
           </Link>
           <span aria-hidden="true">/</span>
-          <Link
-            href={product.collection === "homme" ? "/homme" : "/femme"}
-            className="hover:text-fg"
-          >
-            {product.collection === "homme" ? "Homme" : "Femme"}
+          <Link href={`/${product.collection}`} className="hover:text-fg">
+            {product.collection === "homme"
+              ? "Homme"
+              : product.collection === "femme"
+                ? "Femme"
+                : "Unisex"}
           </Link>
           <span aria-hidden="true">/</span>
           <span style={{ color: "var(--color-fg)" }}>{product.name}</span>
@@ -243,6 +244,8 @@ export default async function ProductPage({
             productName={product.name}
             price={product.price}
             sizes={product.sizes}
+            colors={product.colors}
+            defaultColor={product.defaultColor}
             collection={product.collection}
           />
 </div>

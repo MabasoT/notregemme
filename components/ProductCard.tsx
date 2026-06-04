@@ -163,6 +163,25 @@ export function ProductCard({
           >
             {product.subtitle}
           </div>
+          {product.colors.length > 0 ? (
+            <div
+              className="mt-3 flex items-center gap-1.5"
+              aria-label={`Available in ${product.colors.map((c) => c.name).join(", ")}`}
+            >
+              {product.colors.map((color) => (
+                <span
+                  key={color.key}
+                  aria-hidden="true"
+                  title={color.name}
+                  className="inline-block h-3 w-3 rounded-full"
+                  style={{
+                    background: color.hex,
+                    boxShadow: "0 0 0 1px rgba(255,255,255,0.18)",
+                  }}
+                />
+              ))}
+            </div>
+          ) : null}
         </div>
         <div
           className="shrink-0 self-start whitespace-nowrap font-semibold"

@@ -51,7 +51,8 @@ export function Footer(): React.ReactElement {
                 alt={siteConfig.brand.name}
                 width={200}
                 height={112}
-                className="h-[64px] w-auto object-contain brightness-0 invert"
+                className="h-[64px] w-auto object-contain"
+                style={{ filter: "brightness(0) invert(1)" }}
               />
             </Link>
             <p
