@@ -240,7 +240,7 @@ border radii. Changing a token here cascades everywhere.
 npm run security:check   # lint, types, audit, link safety, build — all must pass
 ```
 
-Commit and push to `main` — Vercel rebuilds and deploys automatically
+Commit and push to the default branch — Vercel rebuilds and deploys automatically
 (every other branch / pull request gets its own preview URL). After a
 content change, bump `CONTENT_UPDATED` in `lib/site-config.ts` so the
 sitemap tells Google the pages changed.

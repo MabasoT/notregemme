@@ -17,7 +17,7 @@ catalogue, the story and the order funnel.
 | Styling | Tailwind CSS 4 (CSS-first `@theme` tokens in `app/globals.css`) |
 | Fonts | Space Grotesk + Archivo via Google Fonts `<link>` |
 | Images | `next/image` — AVIF/WebP served by Vercel |
-| Hosting | Vercel (Git integration: `main` → production, branches → previews) |
+| Hosting | Vercel (Git integration: default branch → production, other branches → previews) |
 | Forms | `/api/subscribe` → Google Apps Script → Google Sheet (zero cost) |
 
 ## Project structure
@@ -78,7 +78,7 @@ runs in GitHub Actions (`.github/workflows/ci.yml`) on every push and PR.
 
 Vercel's GitHub integration deploys automatically:
 
-- push / merge to `main` → **production** (notregemme.co.za)
+- push / merge to the repo's **default branch** → **production** (notregemme.co.za)
 - any other branch or PR → **preview URL**
 
 Custom domain: Vercel → Project → Settings → Domains → add

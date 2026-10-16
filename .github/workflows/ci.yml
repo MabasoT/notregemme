@@ -1,14 +1,12 @@
 name: CI — Quality + Security Gate
 
-# Vercel's GitHub integration builds and deploys every push (preview for
-# branches/PRs, production for main). This workflow is the quality gate:
-# a red run here means "don't merge".
+# Vercel's GitHub integration builds and deploys every push (production
+# for the default branch, previews for everything else). This workflow is
+# the quality gate: a red run here means "don't merge".
 
 on:
   push:
-    branches: [main]
   pull_request:
-    branches: [main]
   schedule:
     - cron: "0 6 * * 1" # Mondays 08:00 SAST — weekly dependency audit
   workflow_dispatch:

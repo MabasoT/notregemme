@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Mabaso Dev & AI — pre-deploy security + quality gate for Notre Gemme.
-# Run before every push to main:  npm run security:check
+# Run before every push:  npm run security:check
 # Exit 0 = all gates passed. Exit 1 = blocked, read the output.
 
 set -euo pipefail
@@ -51,4 +51,4 @@ npm run --silent build >/dev/null || fail "build failed — run npm run build"
 pass "Build successful"
 
 echo ""
-echo "ALL GATES PASSED ✅  — safe to push to main (Vercel deploys automatically)."
+echo "ALL GATES PASSED ✅  — safe to push (Vercel deploys automatically)."
