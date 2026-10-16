@@ -13,8 +13,9 @@ const isDev = process.env.NODE_ENV === "development";
 const CSP_DIRECTIVES = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com",
+  "style-src 'self' 'unsafe-inline'",
+  // Fonts are self-hosted (lib/fonts.ts) — no third-party font hosts.
+  "font-src 'self'",
   "img-src 'self' data: blob: https:",
   // Optional live-stock / sign-up feeds run on Google Apps Script, which
   // answers via a 302 to script.googleusercontent.com — both are needed.

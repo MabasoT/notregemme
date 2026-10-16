@@ -3,7 +3,7 @@ import { heroCopy } from "@/lib/content";
 import { ASSETS } from "@/lib/assets";
 
 /**
- * Full-viewport hero. Cinematic background using hero-background.png with a
+ * Full-viewport hero. Cinematic background using hero-background.webp with a
  * heavy darkening overlay (the source is intentionally small, so we
  * upscale + blur it as an ambient texture rather than a literal photo).
  * Floating product centerpiece, oversized GEMME background type, vertical
@@ -44,16 +44,15 @@ export function Hero(): React.ReactElement {
       {/* Oversized ghost wordmark */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-bold leading-none"
+        data-text={heroCopy.bgText}
+        className="ghost-text pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap font-bold leading-none"
         style={{
           fontFamily: "var(--font-heading)",
           fontSize: "clamp(140px, 22vw, 380px)",
           letterSpacing: "-0.02em",
           color: "rgba(255,255,255,0.03)",
         }}
-      >
-        {heroCopy.bgText}
-      </div>
+      />
 
       {/* Vertical season code, left edge */}
       <div
