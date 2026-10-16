@@ -1,16 +1,45 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProductBySlug, products, productsByCollection } from "@/lib/products";
-import { ProductCard } from "@/components/ProductCard";
-import { ProductView } from "@/components/ProductView";
 import { JsonLd } from "@/components/JsonLd";
+import { ProductGrid } from "@/components/ProductGrid";
+import { ProductView } from "@/components/ProductView";
+import { relatedCopy } from "@/lib/content";
+import { DEFAULT_OG_IMAGE } from "@/lib/metadata";
+import {
+  COLLECTION_LABELS,
+  getProductBySlug,
+  products,
+  productsByCollection,
+} from "@/lib/products";
+import { breadcrumbSchema, productSchema } from "@/lib/schema";
 import { siteConfig } from "@/lib/site-config";
 
 type Params = { slug: string };
 
+/** How many same-collection pieces to suggest under the product. */
+const RELATED_COUNT = 3;
+
+/** Characters of the product description used as meta description. */
+const META_DESCRIPTION_MAX = 155;
+
 export function generateStaticParams(): Array<Params> {
   return products.map((p) => ({ slug: p.slug }));
+}
+
+// Only catalogue slugs exist — anything else is a real 404.
+export const dynamicParams = false;
+
+/**
+ * Trims a description to the meta-description budget on a word boundary.
+ *
+ * @param text - full product description
+ * @returns text of at most META_DESCRIPTION_MAX characters
+ */
+function toMetaDescription(text: string): string {
+  if (text.length <= META_DESCRIPTION_MAX) return text;
+  const cut = text.slice(0, META_DESCRIPTION_MAX - 1);
+  return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
 }
 
 export async function generateMetadata({
@@ -20,24 +49,36 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  if (!product) return { title: "Product Not Found" };
+  if (!product) return {};
+
+  const path = `/product/${product.slug}`;
+  const title = `${product.name} — ${COLLECTION_LABELS[product.collection]} ${siteConfig.brand.season}`;
+  const description = toMetaDescription(
+    `${product.name}, ${product.price}. ${product.description}`,
+  );
+  // Without photography, fall back to the site-wide OG image.
+  const image = product.image ? { url: product.image, alt: product.imageAlt } : DEFAULT_OG_IMAGE;
+
   return {
-    title: `${product.name} — ${product.collection === "homme" ? "Homme" : product.collection === "femme" ? "Femme" : "Unisex"} SS2026`,
-    description: product.description,
-    alternates: { canonical: `https://notregemme.co.za/product/${product.slug}` },
+    title,
+    description,
+    alternates: { canonical: path },
     openGraph: {
       type: "website",
+      siteName: siteConfig.brand.name,
+      locale: "en_ZA",
+      url: path,
       title: `${product.name} — ${siteConfig.brand.name}`,
-      description: product.description,
-      url: `https://notregemme.co.za/product/${product.slug}`,
-      images: [{ url: `https://notregemme.co.za${product.image}`, alt: product.imageAlt }],
+      description,
+      images: [image],
     },
+    twitter: { card: "summary_large_image", title, description, images: [image.url] },
   };
 }
 
 /**
  * Product detail page. Two-column layout on desktop: image (sticky) on
- * the left, info + sizes + WhatsApp order CTA on the right.
+ * the left, info + colour/size pickers + WhatsApp order CTA on the right.
  */
 export default async function ProductPage({
   params,
@@ -48,99 +89,62 @@ export default async function ProductPage({
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
+  const collectionName = COLLECTION_LABELS[product.collection];
   const related = productsByCollection(product.collection)
     .filter((p) => p.slug !== product.slug)
-    .slice(0, 3);
-
-  const productUrl = `https://notregemme.co.za/product/${product.slug}`;
-  const productImage = `https://notregemme.co.za${product.image}`;
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    image: productImage,
-    sku: product.slug,
-    brand: { "@type": "Brand", name: siteConfig.brand.name },
-    category: product.collection === "homme" ? "Men's Streetwear" : product.collection === "femme" ? "Women's Streetwear" : "Unisex Streetwear",
-    offers: {
-      "@type": "Offer",
-      url: productUrl,
-      priceCurrency: "ZAR",
-      price: product.priceValue,
-      availability: product.comingSoon ? "https://schema.org/PreOrder" : "https://schema.org/InStock",
-      itemCondition: "https://schema.org/NewCondition",
-      seller: { "@type": "Organization", name: siteConfig.brand.name },
-    },
-  };
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: product.collection === "homme" ? "Homme" : product.collection === "femme" ? "Femme" : "Unisex",
-        item: `https://notregemme.co.za/${product.collection}`,
-      },
-      { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
-    ],
-  };
-
+    .slice(0, RELATED_COUNT);
 
   return (
-    <article className="pt-[140px]">
-      <JsonLd data={productSchema} />
-      <JsonLd data={breadcrumbSchema} />
+    <article className="pt-[140px] pb-[clamp(80px,10vw,140px)]">
+      <JsonLd data={productSchema(product)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: collectionName, path: `/${product.collection}` },
+          { name: product.name, path: `/product/${product.slug}` },
+        ])}
+      />
       <div className="container-page">
         <nav
-          className="reveal mb-10 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.15em]"
-          style={{ color: "var(--color-fg-muted)", fontFamily: "var(--font-body)" }}
+          className="reveal mb-10 text-xs uppercase tracking-[0.15em] text-fg-muted"
+          style={{ fontFamily: "var(--font-body)" }}
           aria-label="Breadcrumb"
         >
-          <Link href="/" className="hover:text-fg">
-            Home
-          </Link>
-          <span aria-hidden="true">/</span>
-          <Link href={`/${product.collection}`} className="hover:text-fg">
-            {product.collection === "homme"
-              ? "Homme"
-              : product.collection === "femme"
-                ? "Femme"
-                : "Unisex"}
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span style={{ color: "var(--color-fg)" }}>{product.name}</span>
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link href="/" className="hover:text-fg">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <Link href={`/${product.collection}`} className="hover:text-fg">
+                {collectionName}
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" className="text-fg">
+              {product.name}
+            </li>
+          </ol>
         </nav>
 
         <ProductView product={product} />
 
         {related.length > 0 ? (
-          <section className="mt-[clamp(80px,10vw,140px)]">
-            <CollectionHeaderInline title="You may also like" />
-            <div className="grid grid-cols-1 gap-[clamp(16px,2vw,24px)] sm:grid-cols-2 lg:grid-cols-3">
-              {related.map((p, i) => (
-                <ProductCard
-                  key={p.slug}
-                  product={p}
-                  revealDelay={((i % 4) + 1) as 1 | 2 | 3 | 4}
-                />
-              ))}
+          <section className="mt-[clamp(80px,10vw,140px)]" aria-labelledby="related-title">
+            <div className="reveal mb-10">
+              <h2
+                id="related-title"
+                className="section-title"
+                style={{ fontSize: "clamp(32px, 4vw, 56px)" }}
+              >
+                {relatedCopy.title}
+              </h2>
             </div>
+            <ProductGrid products={related} />
           </section>
         ) : null}
       </div>
     </article>
-  );
-}
-
-function CollectionHeaderInline({ title }: { title: string }): React.ReactElement {
-  return (
-    <div className="reveal mb-10 flex items-end justify-between gap-6">
-      <h2 className="section-title" style={{ fontSize: "clamp(32px, 4vw, 56px)" }}>
-        {title}
-      </h2>
-    </div>
   );
 }

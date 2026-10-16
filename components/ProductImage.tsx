@@ -2,7 +2,11 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { asset } from "@/lib/site-config";
+import { ASSETS, LOGO_SIZE } from "@/lib/assets";
+import { productCopy } from "@/lib/content";
+
+/** Default responsive sizes: full width on mobile, half on tablet/desktop. */
+const DEFAULT_SIZES = "(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 700px";
 
 type Motif = "barcode" | "suits" | "heart";
 
@@ -13,6 +17,10 @@ type Props = {
   aspect?: string;
   className?: string;
   fit?: "cover" | "contain";
+  /** Load eagerly with high priority — only for above-the-fold (LCP) images. */
+  priority?: boolean;
+  /** Responsive `sizes` hint for next/image. */
+  sizes?: string;
 };
 
 /**
@@ -30,6 +38,8 @@ export function ProductImage({
   aspect = "3/4",
   className = "",
   fit = "cover",
+  priority = false,
+  sizes = DEFAULT_SIZES,
 }: Props): React.ReactElement {
   const [failed, setFailed] = useState<boolean>(false);
   // Empty src is the explicit "no photo yet" sentinel used in lib/products.ts.
@@ -50,15 +60,14 @@ export function ProductImage({
     >
       {!showFallback ? (
         <Image
-          src={asset(src)}
+          src={src}
           alt={alt}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 700px"
+          sizes={sizes}
           className="block h-full w-full"
           style={{ objectFit: fit, objectPosition: "center top" }}
           onError={() => setFailed(true)}
-          priority={false}
-          unoptimized
+          priority={priority}
         />
       ) : (
         <BrandedFallback motif={motif} alt={alt} />
@@ -90,13 +99,11 @@ function BrandedFallback({
       >
         {/* Brand logo silhouette — faint */}
         <Image
-          src={asset("/assets/logo notregemme.png")}
+          src={ASSETS.logoWhite}
           alt=""
-          width={200}
-          height={112}
-          className="h-[60px] w-auto select-none object-contain brightness-0 invert opacity-[0.22]"
-          aria-hidden="true"
-          unoptimized
+          width={LOGO_SIZE.width}
+          height={LOGO_SIZE.height}
+          className="h-[60px] w-auto select-none object-contain opacity-[0.22]"
         />
 
         {/* Motif glyph — pure paths, no text */}
@@ -116,7 +123,7 @@ function BrandedFallback({
             backdropFilter: "blur(4px)",
           }}
         >
-          Photography in progress
+          {productCopy.photoPending}
         </div>
       </div>
 

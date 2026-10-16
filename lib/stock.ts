@@ -80,12 +80,25 @@ export const stock: Record<string, ProductStock> = {
   },
 };
 
-/** Static stock for a slug. Unknown slugs default to "available, no badges". */
+/** Stand-in count for untracked slugs: comfortably above LOW_STOCK_THRESHOLD. */
+const UNTRACKED_STOCK = 999;
+
+/**
+ * Static stock for a slug. Unknown slugs default to "available, no badges".
+ *
+ * @param slug - product slug from lib/products.ts
+ * @returns the stock entry, or an in-stock default
+ */
 export function getStock(slug: string): ProductStock {
-  return stock[slug] ?? { inStock: 999 };
+  return stock[slug] ?? { inStock: UNTRACKED_STOCK };
 }
 
-/** True when a piece cannot be ordered right now. */
+/**
+ * True when a piece cannot be ordered right now.
+ *
+ * @param s - stock entry from getStock() or the live feed
+ * @returns whether the product is flagged sold out or has no units left
+ */
 export function isSoldOut(s: ProductStock): boolean {
   return s.soldOut === true || s.inStock <= 0;
 }

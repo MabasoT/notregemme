@@ -6,20 +6,29 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "security:audit": "npm audit --omit=dev --audit-level=high && npm audit --audit-level=critical",
+    "security:check": "bash scripts/security-check.sh"
   },
   "dependencies": {
-    "next": "16.2.6",
-    "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
-    "@types/node": "22.10.5",
-    "@types/react": "19.2.15",
-    "@types/react-dom": "19.2.3",
     "@tailwindcss/postcss": "4.3.0",
+    "@types/node": "22.10.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.2",
     "tailwindcss": "4.3.0",
     "typescript": "5.9.3"
+  },
+  "description": "Notre Gemme \u2014 luxury minimalist streetwear from South Africa. Built by Mabaso Dev & AI.",
+  "engines": {
+    "node": ">=20.9.0"
   }
 }

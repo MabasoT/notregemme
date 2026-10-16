@@ -1,16 +1,22 @@
+import { ASSETS } from "@/lib/assets";
 import { upcomingCopy } from "@/lib/content";
 import { siteConfig } from "@/lib/site-config";
 import { CollectionHeader } from "./CollectionHeader";
 import { Countdown } from "./Countdown";
-import { NotifyForm } from "./NotifyForm";
 import { ProductImage } from "./ProductImage";
+import { SignupForm } from "./SignupForm";
 
 /**
  * Upcoming bento section — 12-column CSS grid with named span cells.
  * Mix of: countdown teaser, blurred image teasers, sketch placeholders,
  * and a "notify me" newsletter capture.
  */
-export function BentoGrid(): React.ReactElement {
+export function BentoGrid({
+  headingLevel = "h2",
+}: {
+  /** "h1" when the bento is the page's main content (/upcoming). */
+  headingLevel?: "h1" | "h2";
+}): React.ReactElement {
   const c = upcomingCopy.cards;
 
   return (
@@ -20,7 +26,11 @@ export function BentoGrid(): React.ReactElement {
       style={{ background: "var(--color-bg)" }}
     >
       <div className="container-page">
-        <CollectionHeader eyebrow={upcomingCopy.eyebrow} title={upcomingCopy.title} />
+        <CollectionHeader
+          eyebrow={upcomingCopy.eyebrow}
+          title={upcomingCopy.title}
+          as={headingLevel}
+        />
 
         <div className="bento-grid">
           {/* 1 — Hero countdown teaser */}
@@ -67,7 +77,7 @@ export function BentoGrid(): React.ReactElement {
           <div className="bento-card bento-2 reveal reveal-delay-2 relative">
             <div className="absolute inset-0">
               <ProductImage
-                src="/assets/Product 1.jpg"
+                src={ASSETS.hoodieFront}
                 alt=""
                 motif="barcode"
                 aspect="16/9"
@@ -114,7 +124,7 @@ export function BentoGrid(): React.ReactElement {
           <div className="bento-card bento-5 reveal reveal-delay-1 relative">
             <div className="absolute inset-0">
               <ProductImage
-                src="/assets/Hoodie back.png"
+                src={ASSETS.hoodieBack}
                 alt=""
                 motif="heart"
                 aspect="16/9"
@@ -154,7 +164,7 @@ export function BentoGrid(): React.ReactElement {
                 </span>
               ))}
             </div>
-            <NotifyForm />
+            <SignupForm list="drop" layout="stack" />
           </div>
 
           {/* 7 — Sketch 3 (accessories) */}
@@ -184,11 +194,6 @@ export function BentoGrid(): React.ReactElement {
         .bento-5 { grid-column: span 5; min-height: 220px; }
         .bento-6 { grid-column: span 4; min-height: 220px; }
         .bento-7 { grid-column: span 3; min-height: 220px; }
-        .bento-overlay {
-          position: absolute; inset: 0;
-          display: flex; flex-direction: column; justify-content: flex-end;
-          padding: 28px;
-        }
         @media (max-width: 1024px) {
           .bento-1 { grid-column: span 12; min-height: 320px; }
           .bento-2 { grid-column: span 6; }

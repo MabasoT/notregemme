@@ -1,41 +1,19 @@
 import type { Metadata } from "next";
 import { BentoGrid } from "@/components/BentoGrid";
 import { JsonLd } from "@/components/JsonLd";
+import { pageMeta } from "@/lib/content";
+import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
-  title: "Upcoming Drops — Notre Gemme AW2026",
-  description:
-    "Discover what's dropping next from Notre Gemme. AW2026 collection previews, countdown, and early notification sign-up. South Africa.",
-  alternates: {
-    canonical: "https://notregemme.co.za/upcoming/",
-  },
-};
+export const metadata: Metadata = pageMetadata("upcoming", "/upcoming");
 
-const upcomingSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  name: "Upcoming Drops — Notre Gemme AW2026",
-  description:
-    "Notre Gemme Studios upcoming AW2026 collection — sign up to be notified first when new pieces drop.",
-  url: "https://notregemme.co.za/upcoming/",
-  breadcrumb: {
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
-      { "@type": "ListItem", position: 2, name: "Upcoming", item: "https://notregemme.co.za/upcoming/" },
-    ],
-  },
-};
-
-/**
- * Upcoming page — dedicated route at /upcoming.
- * Renders the BentoGrid section (countdown, teasers, notify form).
- */
+/** /upcoming — AW2026 teasers, countdown and drop-alert sign-up. */
 export default function UpcomingPage(): React.ReactElement {
   return (
-    <main className="min-h-screen pt-[100px]">
-      <JsonLd data={upcomingSchema} />
-      <BentoGrid />
-    </main>
+    <div className="min-h-screen pt-[100px]">
+      <JsonLd data={webPageSchema("WebPage", pageMeta.upcoming.title, pageMeta.upcoming.description, "/upcoming")} />
+      <JsonLd data={breadcrumbSchema([{ name: "Upcoming", path: "/upcoming" }])} />
+      <BentoGrid headingLevel="h1" />
+    </div>
   );
 }

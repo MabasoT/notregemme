@@ -70,6 +70,7 @@ UI/UX review followed the ui-ux-pro-max-skill checklist
 
 ## 4. Deployment
 
-- This project deploys via GitHub Pages using `.github/workflows/pages.yml`.
-- Vercel is intentionally NOT used. New projects deploy to GitHub by default
-  unless explicitly configured otherwise.
+- ~~This project deploys via GitHub Pages using `.github/workflows/pages.yml`.~~
+- **Superseded by Patch 3 (2026-10-16):** the site now deploys on Vercel
+  (security headers, image optimisation and the sign-up API need a server).
+  See `docs/CHANGES-SS2026-PATCH3.md`.

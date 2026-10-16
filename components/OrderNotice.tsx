@@ -1,8 +1,9 @@
 import { orderNoticeCopy } from "@/lib/content";
+import type { Collection } from "@/lib/products";
 import { whatsappOrderLink } from "@/lib/site-config";
 
 type Props = {
-  variant: "homme" | "femme";
+  variant: Collection;
 };
 
 /**
@@ -11,10 +12,7 @@ type Props = {
  * context so the brand sees which grid the click originated from.
  */
 export function OrderNotice({ variant }: Props): React.ReactElement {
-  const message =
-    variant === "homme"
-      ? "Hi Notre Gemme! I'd like to order from the Homme collection."
-      : "Hi Notre Gemme! I'd like to order from the Femme collection.";
+  const copy = orderNoticeCopy.variants[variant];
 
   return (
     <div
@@ -53,12 +51,12 @@ export function OrderNotice({ variant }: Props): React.ReactElement {
               color: "var(--color-fg-muted)",
             }}
           >
-            {variant === "homme" ? orderNoticeCopy.homme : orderNoticeCopy.femme}
+            {copy.note}
           </div>
         </div>
       </div>
       <a
-        href={whatsappOrderLink(message)}
+        href={whatsappOrderLink(copy.message)}
         target="_blank"
         rel="noopener noreferrer"
         className="btn-whatsapp"

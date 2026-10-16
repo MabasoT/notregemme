@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { heroCopy } from "@/lib/content";
-import { asset } from "@/lib/site-config";
+import { ASSETS } from "@/lib/assets";
 
 /**
- * Full-viewport hero. Cinematic background using Background.png with a
+ * Full-viewport hero. Cinematic background using hero-background.png with a
  * heavy darkening overlay (the source is intentionally small, so we
  * upscale + blur it as an ambient texture rather than a literal photo).
  * Floating product centerpiece, oversized GEMME background type, vertical
@@ -24,7 +24,7 @@ export function Hero(): React.ReactElement {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `url('${asset("/assets/Background.png")}')`,
+            backgroundImage: `url('${ASSETS.heroBackground}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -106,7 +106,7 @@ export function Hero(): React.ReactElement {
                 {heroCopy.ctaLabel}
               </Link>
               <Link href="/story" className="btn-ghost">
-                Our Story
+                {heroCopy.secondaryCtaLabel}
               </Link>
             </div>
             <span className="flex items-center gap-2">

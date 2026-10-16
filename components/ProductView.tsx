@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ProductImage } from "./ProductImage";
 import { ProductOrder } from "./ProductOrder";
+import { productCopy } from "@/lib/content";
 import { useLiveStock } from "@/lib/live-stock";
 import { LOW_STOCK_THRESHOLD, isSoldOut } from "@/lib/stock";
 import type { ColorKey, Product } from "@/lib/products";
@@ -64,6 +65,7 @@ export function ProductView({ product }: { product: Product }): React.ReactEleme
             motif={product.motif}
             aspect="3/4"
             fit={fit}
+            priority
           />
         </div>
         {product.imageBack ? (
@@ -166,7 +168,7 @@ export function ProductView({ product }: { product: Product }): React.ReactEleme
               color: "var(--color-fg-muted)",
             }}
           >
-            Details
+            {productCopy.details}
           </div>
           <ul className="flex flex-col gap-2">
             {product.details.map((d) => (
@@ -197,7 +199,7 @@ export function ProductView({ product }: { product: Product }): React.ReactEleme
             rel="noopener noreferrer"
             className="btn-primary w-fit"
           >
-            Notify me when it drops
+            {productCopy.notifyCta}
           </a>
         ) : (
           <ProductOrder

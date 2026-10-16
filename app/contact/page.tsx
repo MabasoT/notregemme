@@ -1,31 +1,10 @@
 import type { Metadata } from "next";
-import { contactPage } from "@/lib/content";
 import { JsonLd } from "@/components/JsonLd";
+import { contactPage, pageMeta } from "@/lib/content";
+import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
-  title: "Contact — Notre Gemme",
-  description:
-    "Get in touch with Notre Gemme via WhatsApp, Instagram, or email. Based in South Africa. We typically respond within a few hours.",
-  alternates: {
-    canonical: "https://notregemme.co.za/contact/",
-  },
-};
-
-const contactSchema = {
-  "@context": "https://schema.org",
-  "@type": "ContactPage",
-  name: "Contact — Notre Gemme",
-  description:
-    "Reach Notre Gemme via WhatsApp, Instagram, or email. Based in South Africa.",
-  url: "https://notregemme.co.za/contact/",
-  breadcrumb: {
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://notregemme.co.za/" },
-      { "@type": "ListItem", position: 2, name: "Contact", item: "https://notregemme.co.za/contact/" },
-    ],
-  },
-};
+export const metadata: Metadata = pageMetadata("contact", "/contact");
 
 /**
  * Contact page — direct links to each channel with usage hints.
@@ -33,7 +12,8 @@ const contactSchema = {
 export default function ContactPage(): React.ReactElement {
   return (
     <article className="pt-[140px] pb-[clamp(80px,10vw,140px)]">
-      <JsonLd data={contactSchema} />
+      <JsonLd data={webPageSchema("ContactPage", pageMeta.contact.title, pageMeta.contact.description, "/contact")} />
+      <JsonLd data={breadcrumbSchema([{ name: "Contact", path: "/contact" }])} />
       <div className="container-page">
         <header className="reveal mb-16 max-w-[820px]">
           <p className="section-label">{contactPage.eyebrow}</p>
@@ -97,7 +77,7 @@ export default function ContactPage(): React.ReactElement {
                   color: "var(--color-fg-muted)",
                 }}
               >
-                Open <span aria-hidden="true">→</span>
+                {contactPage.openLabel} <span aria-hidden="true">→</span>
               </span>
             </a>
           ))}
@@ -105,4 +85,4 @@ export default function ContactPage(): React.ReactElement {
       </div>
     </article>
   );
-                  }
+}

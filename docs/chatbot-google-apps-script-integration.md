@@ -1,5 +1,10 @@
 # Notre Gemme Chatbot — Google Apps Script Integration Guide
 
+> **Status: not wired up (future option).** The live chatbot answers
+> entirely in the browser from `lib/chatbot.ts` and hands off to WhatsApp —
+> it does not POST anywhere today. This guide describes an optional
+> logging backend; nothing below is required for launch.
+
 This guide explains how to connect the **NotreGemmeChatbot** to a Google Apps Script backend so that bookings, product enquiries and pre-orders are automatically logged to a Google Sheet and trigger email/WhatsApp notifications.
 
 ---
