@@ -6,12 +6,10 @@ import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { NotreGemmeChatbot } from "@/components/NotreGemmeChatbot";
 import { pageMeta } from "@/lib/content";
+import { archivo, spaceGrotesk } from "@/lib/fonts";
 import { organizationSchema } from "@/lib/schema";
 import { SITE_URL, siteConfig } from "@/lib/site-config";
 import "./globals.css";
-
-const FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Archivo:ital,wght@0,100..900;1,100..900&display=swap";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -58,7 +56,7 @@ export const viewport: Viewport = {
 };
 
 /**
- * Root layout: fonts, global chrome (header, footer, chatbot, cursor) and
+ * Root layout: self-hosted fonts, global chrome (header, footer, chatbot, cursor) and
  * the Organization JSON-LD every page inherits.
  */
 export default function RootLayout({
@@ -67,12 +65,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }): React.ReactElement {
   return (
-    <html lang="en-ZA">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="stylesheet" href={FONTS_URL} />
-      </head>
+    <html lang="en-ZA" className={`${spaceGrotesk.variable} ${archivo.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

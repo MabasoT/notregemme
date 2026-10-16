@@ -15,7 +15,7 @@ catalogue, the story and the order funnel.
 | Framework | Next.js 16 (App Router), React 19 |
 | Language | TypeScript 5, strict + `noUncheckedIndexedAccess`, zero `any` |
 | Styling | Tailwind CSS 4 (CSS-first `@theme` tokens in `app/globals.css`) |
-| Fonts | Space Grotesk + Archivo via Google Fonts `<link>` |
+| Fonts | Space Grotesk + Archivo, self-hosted via `next/font/local` (`lib/fonts.ts`, `assets/fonts/`) |
 | Images | `next/image` — AVIF/WebP served by Vercel |
 | Hosting | Vercel (Git integration: default branch → production, other branches → previews) |
 | Forms | `/api/subscribe` → Google Apps Script → Google Sheet (zero cost) |

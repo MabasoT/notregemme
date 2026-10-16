@@ -18,8 +18,9 @@
   --color-whatsapp: #25d366;
   --color-whatsapp-hover: #20bf5b;
 
-  --font-heading: "Space Grotesk", sans-serif;
-  --font-body: "Archivo", sans-serif;
+  /* Variables come from next/font/local in lib/fonts.ts. */
+  --font-heading: var(--font-space-grotesk), "Space Grotesk", Arial, sans-serif;
+  --font-body: var(--font-archivo), "Archivo", Arial, sans-serif;
 
   --radius-card: 20px;
   --radius-pill: 100px;
@@ -142,6 +143,13 @@ textarea:focus-visible {
   border: 0;
 }
 
+/* Decorative oversized words ("GEMME", "NG."). Rendered as generated
+   content so they stay pure decoration: not page text, not an LCP
+   candidate, and not checked for contrast. */
+.ghost-text::before {
+  content: attr(data-text);
+}
+
 /* Keyboard users can jump past the header straight to <main>. */
 .skip-link {
   position: fixed;
@@ -212,18 +220,21 @@ textarea:focus-visible {
   transform: none;
 }
 
-/* ─── SCROLL REVEAL (Intersection Observer toggles .visible) ──────── */
+/* ─── SCROLL REVEAL (see components/ScrollReveal.tsx) ─────────────────
+   .reveal content is visible by default (fast first paint). JS adds
+   .reveal-pending only to below-the-fold elements; removing it as they
+   scroll into view plays the fade-up. Hiding has no transition, so it is
+   instant; showing uses the transition below. */
 .reveal {
-  opacity: 0;
-  transform: translateY(40px);
   transition:
     opacity 0.9s var(--ease-spring),
     transform 0.9s var(--ease-spring);
 }
 
-.reveal.visible {
-  opacity: 1;
-  transform: none;
+.reveal.reveal-pending {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: none;
 }
 
 .reveal-delay-1 {
@@ -240,7 +251,8 @@ textarea:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal,
+  .reveal.reveal-pending {
     opacity: 1;
     transform: none;
     transition: none;

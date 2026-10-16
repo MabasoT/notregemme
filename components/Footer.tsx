@@ -28,7 +28,8 @@ export function Footer(): React.ReactElement {
         <NewsletterBar />
 
         <div
-          className="mb-10 select-none font-bold leading-[0.85]"
+          data-text={footerCopy.giantGem}
+          className="ghost-text mb-10 select-none font-bold leading-[0.85]"
           style={{
             fontFamily: "var(--font-heading)",
             fontSize: "clamp(80px, 14vw, 200px)",
@@ -36,9 +37,7 @@ export function Footer(): React.ReactElement {
             color: "rgba(255,255,255,0.03)",
           }}
           aria-hidden="true"
-        >
-          {footerCopy.giantGem}
-        </div>
+        />
 
         <div className="mb-[60px] grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>

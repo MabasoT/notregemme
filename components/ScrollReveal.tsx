@@ -3,53 +3,46 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+/** Fraction of an element that must be visible before it animates in. */
+const REVEAL_THRESHOLD = 0.12;
+
 /**
- * Mounts an IntersectionObserver that adds `.visible` to all `.reveal`
- * elements once they cross the 0.12 threshold.
+ * Scroll-reveal for `.reveal` elements, without hurting first paint.
  *
- * Re-scans on every client-side navigation (pathname change) so pages
- * mounted after the initial load still animate in. Without this, links
- * from the header would render their content invisible.
+ * Everything renders visible from the server. On mount, only elements
+ * that start BELOW the fold get `.reveal-pending` (hidden, shifted down);
+ * an IntersectionObserver removes it as each one scrolls into view, which
+ * plays the fade-up transition. Content already on screen is never hidden,
+ * so the hero, product photo and page headings paint immediately — hiding
+ * them until hydration used to add ~1 s to LCP on mobile.
  *
- * If the user has prefers-reduced-motion, we skip observation and
- * unconditionally reveal everything immediately.
+ * Re-scans on every client-side navigation (pathname change). Skipped
+ * entirely for prefers-reduced-motion.
  */
 export function ScrollReveal(): null {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
     if (els.length === 0) return;
 
-    if (reduced) {
-      for (const el of els) el.classList.add("visible");
-      return;
-    }
-
-    // Reveal anything already in the viewport at mount (covers above-the-fold
-    // content on freshly-navigated pages) so users never see a blank page.
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
+            entry.target.classList.remove("reveal-pending");
             observer.unobserve(entry.target);
           }
         }
       },
-      { threshold: 0.12 },
+      { threshold: REVEAL_THRESHOLD },
     );
 
     for (const el of els) {
-      // Fast path: if it already intersects on mount, reveal synchronously.
-      const rect = el.getBoundingClientRect();
-      const inView =
-        rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth;
-      if (inView) {
-        el.classList.add("visible");
-      } else {
+      const belowFold = el.getBoundingClientRect().top >= window.innerHeight;
+      if (belowFold) {
+        el.classList.add("reveal-pending");
         observer.observe(el);
       }
     }

@@ -6,7 +6,7 @@ export const ASSETS = {
   logo: "/assets/logo-notregemme.png",
   /** White-on-transparent variant for dark surfaces (OG image, header). */
   logoWhite: "/assets/logo-notregemme-white.png",
-  heroBackground: "/assets/hero-background.png",
+  heroBackground: "/assets/hero-background.webp",
   hoodieFront: "/assets/evolution-hoodie-front.png",
   hoodieBack: "/assets/evolution-hoodie-back.png",
   queenOfHeartsTee: "/assets/queen-of-hearts-tee.jpg",
