@@ -6,7 +6,8 @@
   --color-bg-2: #0b0b0b;
   --color-bg-3: #161616;
   --color-fg: #f0ebe2;
-  --color-fg-muted: #7a7570;
+  /* ≥ 4.5:1 (WCAG AA) on every surface: bg, bg-2, bg-3 and glass cards. */
+  --color-fg-muted: #8f8a84;
   --color-green: oklch(68% 0.17 128);
   --color-green-bright: oklch(75% 0.17 128);
   --color-green-dim: oklch(50% 0.12 128);
@@ -99,13 +100,6 @@ select {
   cursor: text;
 }
 
-button,
-[role="button"],
-a {
-  /* Always show a focus ring for keyboard users even though hover uses
-     the custom diamond cursor. */
-}
-
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -140,9 +134,82 @@ textarea:focus-visible {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: -1px;
+  padding: 0;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
+  border: 0;
+}
+
+/* Keyboard users can jump past the header straight to <main>. */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10000;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--color-green);
+  color: var(--color-bg);
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* The diamond cursor only exists for mouse/trackpad users. */
+.cursor-layer {
+  display: none;
+}
+@media (pointer: fine) {
+  .cursor-layer {
+    display: block;
+  }
+}
+
+/* Spam honeypot: off-screen, never visible or announced. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* Sign-up form feedback. */
+.signup-message {
+  min-height: 1.25em;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-fg-muted);
+}
+.signup-message:empty {
+  min-height: 0;
+}
+.signup-success {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: var(--radius-pill);
+  background: oklch(68% 0.17 128 / 0.1);
+  border: 1px solid oklch(68% 0.17 128 / 0.3);
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  animation: fadeInUp 0.4s ease both;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
 }
 
 /* ─── SCROLL REVEAL (Intersection Observer toggles .visible) ──────── */
@@ -191,16 +258,6 @@ textarea:focus-visible {
 }
 
 /* ─── KEYFRAMES ────────────────────────────────────────────────────── */
-@keyframes hero-float {
-  0%,
-  100% {
-    transform: translate(-50%, -52%) translateY(0);
-  }
-  50% {
-    transform: translate(-50%, -52%) translateY(-18px);
-  }
-}
-
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -241,9 +298,6 @@ textarea:focus-visible {
   }
 }
 
-.animate-hero-float {
-  animation: hero-float 6s ease-in-out infinite;
-}
 .animate-marquee {
   animation: marquee 28s linear infinite;
 }
@@ -494,7 +548,7 @@ textarea:focus-visible {
    MOBILE RESPONSIVE IMPROVEMENTS
    ============================================================ */
 
-/* fadeInUp animation for subscription success message */
+/* fadeInUp animation for sign-up success message */
 @keyframes fadeInUp {
   from {
     opacity: 0;

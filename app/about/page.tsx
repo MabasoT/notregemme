@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { aboutPage, storyCopy } from "@/lib/content";
+import { JsonLd } from "@/components/JsonLd";
 import { ProductImage } from "@/components/ProductImage";
+import { ASSETS } from "@/lib/assets";
+import { aboutPage, pageMeta, storyCopy } from "@/lib/content";
+import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
-  title: "About | Notre Gemme",
-  description:
-    "Notre Gemme means 'Our Gem.' A fashion and art brand born in South Africa, Tembisa 1632 — built on emotion, memory, and real human experience.",
-};
+export const metadata: Metadata = pageMetadata("about", "/about");
 
 /**
  * About page — brand philosophy and the 1632 code.
@@ -14,6 +14,8 @@ export const metadata: Metadata = {
 export default function AboutPage(): React.ReactElement {
   return (
     <article className="pt-[140px] pb-[clamp(80px,10vw,140px)]">
+      <JsonLd data={webPageSchema("AboutPage", pageMeta.about.title, pageMeta.about.description, "/about")} />
+      <JsonLd data={breadcrumbSchema([{ name: "About", path: "/about" }])} />
       <div className="container-page">
         <header className="reveal mb-16 max-w-[820px]">
           <p className="section-label">{aboutPage.eyebrow}</p>
@@ -28,11 +30,12 @@ export default function AboutPage(): React.ReactElement {
               style={{ borderRadius: "var(--radius-card)" }}
             >
               <ProductImage
-                src="/assets/Hoodie back.png"
+                src={ASSETS.hoodieBack}
                 alt={storyCopy.imageAlt}
                 motif="heart"
                 aspect="4/5"
-                fit="cover"
+                fit="contain"
+                priority
               />
             </div>
           </div>

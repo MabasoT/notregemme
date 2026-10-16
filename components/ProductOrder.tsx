@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { whatsappOrderLink } from "@/lib/site-config";
-import type { ColorKey, ColorOption } from "@/lib/products";
+import { productCopy } from "@/lib/content";
+import { COLLECTION_LABELS, type Collection, type ColorKey, type ColorOption } from "@/lib/products";
 
 type ProductOrderProps = {
   productName: string;
   price: string;
   sizes: ReadonlyArray<string>;
   colors: ReadonlyArray<ColorOption>;
-  collection: "homme" | "femme" | "unisex";
+  collection: Collection;
   /** Controlled colour state (lifted so the gallery can swap its photo). */
   selectedColorKey: ColorKey;
   onSelectColor: (key: ColorKey) => void;
@@ -20,18 +21,6 @@ type ProductOrderProps = {
   soldOutColors: ReadonlyArray<ColorKey>;
   /** Whole product sold out (disables ordering). */
   soldOut: boolean;
-};
-
-const collectionLabel: Record<ProductOrderProps["collection"], string> = {
-  homme: "Homme",
-  femme: "Femme",
-  unisex: "Unisex",
-};
-
-const collectionHref: Record<ProductOrderProps["collection"], string> = {
-  homme: "/homme",
-  femme: "/femme",
-  unisex: "/unisex",
 };
 
 /**
@@ -78,7 +67,7 @@ export function ProductOrder({
               color: "var(--color-fg-muted)",
             }}
           >
-            <span>Colour</span>
+            <span>{productCopy.colourLabel}</span>
             <span
               className="normal-case"
               style={{
@@ -152,7 +141,7 @@ export function ProductOrder({
             color: "var(--color-fg-muted)",
           }}
         >
-          Select Size
+          {productCopy.sizeLabel}
         </div>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Select a size">
           {sizes.map((size) => {
@@ -221,8 +210,8 @@ export function ProductOrder({
               ? `Order ${selectedColor} / ${selectedSize} via WhatsApp`
               : "Order via WhatsApp"}
         </a>
-        <Link href={collectionHref[collection]} className="btn-ghost">
-          Back to {collectionLabel[collection]}
+        <Link href={`/${collection}`} className="btn-ghost">
+          Back to {COLLECTION_LABELS[collection]}
         </Link>
       </div>
     </div>

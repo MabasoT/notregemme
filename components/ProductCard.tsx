@@ -8,9 +8,13 @@ import { ProductImage } from "./ProductImage";
 type Props = {
   product: Product;
   revealDelay?: 1 | 2 | 3 | 4;
-  /** Override aspect ratio (e.g. the wide featured cell in Femme grid). */
-  aspectOverride?: string;
+  /** Load the image eagerly — only for cards visible above the fold. */
+  priority?: boolean;
 };
+
+/** Max card tilt in degrees on each axis. */
+const MAX_TILT_DEG = 10;
+const CARD_IMAGE_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 460px";
 
 /**
  * Glassmorphism product card with 3D magnetic tilt (±10deg max) and an
@@ -21,7 +25,7 @@ type Props = {
 export function ProductCard({
   product,
   revealDelay,
-  aspectOverride,
+  priority = false,
 }: Props): React.ReactElement {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [hovered, setHovered] = useState<boolean>(false);
@@ -30,8 +34,8 @@ export function ProductCard({
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * MAX_TILT_DEG;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * MAX_TILT_DEG;
     card.style.setProperty("--tilt-x", `${x}deg`);
     card.style.setProperty("--tilt-y", `${-y}deg`);
   };
@@ -49,7 +53,6 @@ export function ProductCard({
   const delayClass = revealDelay ? `reveal-delay-${revealDelay}` : "";
   const isLaunch = product.tag === "Launch";
   const isComing = product.comingSoon === true;
-  const aspect = aspectOverride ?? (product.featured ? "2/3" : "3/4");
   const fit: "cover" | "contain" = product.image.toLowerCase().endsWith(".png")
     ? "contain"
     : "cover";
@@ -115,8 +118,10 @@ export function ProductCard({
             src={product.image}
             alt={product.imageAlt}
             motif={product.motif}
-            aspect={aspect}
+            aspect="3/4"
             fit={fit}
+            priority={priority}
+            sizes={CARD_IMAGE_SIZES}
             className="h-full w-full"
           />
         </div>
@@ -166,6 +171,7 @@ export function ProductCard({
           {product.colors.length > 0 ? (
             <div
               className="mt-3 flex items-center gap-1.5"
+              role="img"
               aria-label={`Available in ${product.colors.map((c) => c.name).join(", ")}`}
             >
               {product.colors.map((color) => (

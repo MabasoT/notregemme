@@ -4,12 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { asset, siteConfig, whatsappOrderLink } from "@/lib/site-config";
+import { ASSETS, LOGO_SIZE } from "@/lib/assets";
+import { DEFAULT_ORDER_MESSAGE, siteConfig, whatsappOrderLink } from "@/lib/site-config";
+
+/** Scroll distance (px) after which the header gains its glass background. */
+const SCROLL_GLASS_THRESHOLD_PX = 60;
 
 /**
  * Fixed top header. Logo center, nav left/right, WhatsApp pill CTA right.
- * Adds glass blur after 60px of scroll. Mobile breakpoint replaces nav
- * links with a full-screen overlay toggled by the hamburger button.
+ * Adds glass blur after 60px of scroll. Below md, nav links move into a
+ * slide-in drawer toggled by the hamburger button (Escape closes it).
  *
  * Clicking the logo while on the home route smooth-scrolls to top
  * instead of triggering a no-op navigation. It also clears any hash
@@ -22,7 +26,7 @@ export function Header(): React.ReactElement {
   const router = useRouter();
 
   useEffect(() => {
-    const onScroll = (): void => setScrolled(window.scrollY > 60);
+    const onScroll = (): void => setScrolled(window.scrollY > SCROLL_GLASS_THRESHOLD_PX);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -35,6 +39,16 @@ export function Header(): React.ReactElement {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [mobileOpen]);
+
+  // Escape closes the drawer, as keyboard users expect from a dialog.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [mobileOpen]);
 
   const close = (): void => setMobileOpen(false);
@@ -119,17 +133,16 @@ export function Header(): React.ReactElement {
         <Link
           href="/"
           onClick={onLogoClick}
-          aria-label={siteConfig.brand.name}
           className="relative z-[101] flex items-center justify-center"
         >
           <Image
-            src={asset("/assets/logo notregemme.png")}
+            src={ASSETS.logoWhite}
             alt={siteConfig.brand.name}
-            width={200}
-            height={112}
+            width={LOGO_SIZE.width}
+            height={LOGO_SIZE.height}
             priority
-            className="h-[56px] w-auto select-none object-contain brightness-0 invert transition-transform duration-200 hover:scale-[1.04]"
-            style={{ filter: "brightness(0) invert(1) drop-shadow(0 4px 12px rgba(0,0,0,0.4))" }}
+            className="h-[56px] w-auto select-none object-contain transition-transform duration-200 hover:scale-[1.04]"
+            style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.4))" }}
           />
         </Link>
 
@@ -149,9 +162,7 @@ export function Header(): React.ReactElement {
             </Link>
           ))}
           <a
-            href={whatsappOrderLink(
-              "Hi Notre Gemme! I'd like to place an order.",
-            )}
+            href={whatsappOrderLink(DEFAULT_ORDER_MESSAGE)}
             target="_blank"
             rel="noopener noreferrer"
             className="nav-order-btn"
@@ -174,7 +185,7 @@ export function Header(): React.ReactElement {
             border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          {mobileOpen ? "✕" : "☰"}
+          <span aria-hidden="true">{mobileOpen ? "✕" : "☰"}</span>
         </button>
       </header>
 
@@ -203,8 +214,9 @@ export function Header(): React.ReactElement {
           paddingTop: "calc(var(--header-h, 72px) + 16px)",
         }}
         aria-hidden={!mobileOpen}
+        inert={!mobileOpen}
       >
-        <nav className="flex flex-col gap-1 overflow-y-auto px-6 pb-8">
+        <nav className="flex flex-col gap-1 overflow-y-auto px-6 pb-8" aria-label="Mobile">
           {[...siteConfig.nav.left, ...siteConfig.nav.right].map((link) => (
             <Link
               key={link.href}
@@ -217,9 +229,7 @@ export function Header(): React.ReactElement {
             </Link>
           ))}
           <a
-            href={whatsappOrderLink(
-              "Hi Notre Gemme! I'd like to place an order.",
-            )}
+            href={whatsappOrderLink(DEFAULT_ORDER_MESSAGE)}
             target="_blank"
             rel="noopener noreferrer"
             onClick={close}

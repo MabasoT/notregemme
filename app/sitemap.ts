@@ -1,58 +1,44 @@
 import type { MetadataRoute } from "next";
+import { products } from "@/lib/products";
+import { CONTENT_UPDATED, absoluteUrl } from "@/lib/site-config";
 
-// Required for Next.js static export (output: "export") — tells the
-// static export pipeline that this route is pre-renderable at build time.
-export const dynamic = "force-static";
+type Frequency = MetadataRoute.Sitemap[number]["changeFrequency"];
+
+/** Static routes with crawl hints, highest priority first. */
+const STATIC_ROUTES: ReadonlyArray<{
+  path: string;
+  changeFrequency: Frequency;
+  priority: number;
+}> = [
+  { path: "/", changeFrequency: "weekly", priority: 1.0 },
+  { path: "/collection", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/homme", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/femme", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/unisex", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/upcoming", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/story", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/about", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/contact", changeFrequency: "monthly", priority: 0.6 },
+];
 
 /**
- * Next.js sitemap generator — auto-produces /sitemap.xml
- * Google uses this to discover and crawl all pages.
+ * /sitemap.xml — every canonical 200 URL, including each product page.
+ * lastModified is the truthful CONTENT_UPDATED date, never "now".
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://notregemme.co.za";
-
+  const lastModified = new Date(CONTENT_UPDATED);
   return [
-    {
-      url: baseUrl + "/",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1.0,
-    },
-    {
-      url: baseUrl + "/story/",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
+    ...STATIC_ROUTES.map((route) => ({
+      url: absoluteUrl(route.path),
+      lastModified,
+      changeFrequency: route.changeFrequency,
+      priority: route.priority,
+    })),
+    ...products.map((product) => ({
+      url: absoluteUrl(`/product/${product.slug}`),
+      lastModified,
+      changeFrequency: "weekly" as const,
       priority: 0.8,
-    },
-    {
-      url: baseUrl + "/homme/",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: baseUrl + "/femme/",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: baseUrl + "/unisex/",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: baseUrl + "/upcoming/",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: baseUrl + "/contact/",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
+    })),
   ];
 }

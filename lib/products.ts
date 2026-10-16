@@ -36,6 +36,13 @@ export type ProductType = "hoodie" | "tee" | "cap";
 
 export type Collection = "homme" | "femme" | "unisex";
 
+/** Display name + route for each collection. */
+export const COLLECTION_LABELS: Record<Collection, string> = {
+  homme: "Homme",
+  femme: "Femme",
+  unisex: "Unisex",
+};
+
 /** Keys into the master swatch table below. */
 export type ColorKey =
   | "white"
@@ -177,10 +184,11 @@ function order(item: string): string {
  * WhatsApp order link and — for unisex pieces — a "Unisex" tag.
  */
 function defineProduct(draft: ProductDraft, collection: Collection): Product {
+  const { colorKeys: draftColorKeys, defaultColorKey: draftDefaultColor, ...rest } = draft;
   const defaults = TYPE_DEFAULTS[draft.type];
-  const colorKeys = draft.colorKeys ?? defaults.colors;
+  const colorKeys = draftColorKeys ?? defaults.colors;
   const colors = colorKeys.map((k) => COLORS[k]);
-  const defaultColorKey = draft.defaultColorKey ?? defaults.defaultColor;
+  const defaultColorKey = draftDefaultColor ?? defaults.defaultColor;
   const sizes = draft.sizes ?? defaults.sizes;
 
   // Auto-prepend the fabric line unless the product already states it.
@@ -192,7 +200,6 @@ function defineProduct(draft: ProductDraft, collection: Collection): Product {
   const tag =
     draft.tag ?? (collection === "unisex" && !draft.comingSoon ? "Unisex" : undefined);
 
-  const { colorKeys: _ck, defaultColorKey: _dk, ...rest } = draft;
   return {
     ...rest,
     collection,
@@ -229,7 +236,7 @@ const homme = inCollection("homme", [
     type: "tee",
     motif: "barcode",
     tag: "New",
-    image: "/assets/Product 1.jpg",
+    // No photo yet — the old "Product 1.jpg" was the Queen of Hearts tee.
     imageAlt:
       "Notre Gemme Barcode Tee I — heavyweight cotton with navy and acid-green barcode graphic",
     featured: true,
@@ -249,7 +256,7 @@ const homme = inCollection("homme", [
     priceValue: 500,
     type: "tee",
     motif: "barcode",
-    image: "/assets/Product 2.jpg",
+    // No photo yet — the old "Product 2.jpg" was the King of Hearts tee.
     imageAlt:
       "Notre Gemme Barcode Tee II — second iteration of the barcode graphic",
     description:
@@ -269,9 +276,11 @@ const homme = inCollection("homme", [
     type: "hoodie",
     motif: "heart",
     tag: "Launch",
-    image: "/assets/Hoodie front.png",
+    // Photos show the heather-grey colourway, so pre-select it.
+    defaultColorKey: "grey",
+    image: "/assets/evolution-hoodie-front.png",
     imageAlt: "Notre Gemme Evolution Hoodie — front view",
-    imageBack: "/assets/Hoodie back.png",
+    imageBack: "/assets/evolution-hoodie-back.png",
     imageBackAlt:
       "Notre Gemme Evolution Hoodie — back view with circular 'Love Doesn't Vanish, It Evolves' graphic and anatomical heart",
     description:
@@ -291,8 +300,9 @@ const homme = inCollection("homme", [
     type: "tee",
     motif: "suits",
     colorKeys: ["white"],
-    // No photo yet — branded placeholder shows until you add `image`.
-    imageAlt: "Notre Gemme King of Hearts Tee — white, playing-card suits motif",
+    image: "/assets/king-of-hearts-tee.jpg",
+    imageAlt:
+      "Notre Gemme King of Hearts Tee — white oversized tee, back view with red K♥ playing-card print",
     description:
       "The King. Playing-card motif on heavyweight white cotton — the masculine answer to the Queen across the deck.",
     sizes: ["S", "M", "L", "XL", "2XL"],
@@ -316,8 +326,9 @@ const femme = inCollection("femme", [
     motif: "suits",
     colorKeys: ["white"],
     featured: true,
-    // No photo yet — branded placeholder shows until you add `image`.
-    imageAlt: "Notre Gemme Queen of Hearts Tee — white, playing-card suits motif",
+    image: "/assets/queen-of-hearts-tee.jpg",
+    imageAlt:
+      "Notre Gemme Queen of Hearts Tee — white oversized tee, back view with red Q♥ playing-card print",
     description:
       "The Femme signature. Playing-card motif on heavyweight white cotton, cut for a softer drape. The Queen sits at centre — sovereign, calm, untouchable.",
     sizes: ["XS", "S", "M", "L", "XL"],
@@ -355,16 +366,29 @@ const unisex = inCollection("unisex", [
 
 export const products: ReadonlyArray<Product> = [...homme, ...femme, ...unisex];
 
+/**
+ * Looks up a product by its URL slug.
+ *
+ * @param slug - e.g. "evolution-hoodie"
+ * @returns the product, or undefined when no product has that slug
+ */
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
+/**
+ * Every product in one collection, in catalogue order.
+ *
+ * @param collection - "homme" | "femme" | "unisex"
+ * @returns products whose section in this file matches
+ */
 export function productsByCollection(
   collection: Collection,
 ): ReadonlyArray<Product> {
   return products.filter((p) => p.collection === collection);
 }
 
-export const upcomingProducts: ReadonlyArray<Product> = products.filter(
-  (p) => p.comingSoon === true,
+/** Products available to order now (excludes "coming soon" teasers). */
+export const liveProducts: ReadonlyArray<Product> = products.filter(
+  (p) => p.comingSoon !== true,
 );

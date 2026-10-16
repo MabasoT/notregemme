@@ -1,67 +1,31 @@
 import type { Metadata } from "next";
+import { BentoGrid } from "@/components/BentoGrid";
+import { BrandStory } from "@/components/BrandStory";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { Hero } from "@/components/Hero";
 import { JsonLd } from "@/components/JsonLd";
-import { ShippingStrip } from "@/components/ShippingStrip";
 import { Marquee } from "@/components/Marquee";
-import { BrandStory } from "@/components/BrandStory";
-import { ProductCard } from "@/components/ProductCard";
-import { BentoGrid } from "@/components/BentoGrid";
-import { products } from "@/lib/products";
+import { ProductGrid } from "@/components/ProductGrid";
+import { ShippingStrip } from "@/components/ShippingStrip";
+import { collectionCopy, pageMeta } from "@/lib/content";
+import { pageMetadata } from "@/lib/metadata";
+import { liveProducts } from "@/lib/products";
+import { websiteSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Notre Gemme — Humanity, Our Treasure.",
-  description:
-    "Notre Gemme — luxury minimalist streetwear born in South Africa. SS2026 collection: Homme, Femme, and Unisex. Shop now.",
-  alternates: {
-    canonical: "https://notregemme.co.za/",
-  },
-};
-
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Notre Gemme",
-  url: "https://notregemme.co.za",
-  logo: "https://notregemme.co.za/assets/logo.png",
-  description:
-    "Luxury minimalist streetwear from South Africa. Every piece is a translation of feeling into form.",
-  address: {
-    "@type": "PostalAddress",
-    addressCountry: "ZA",
-  },
-  contactPoint: {
-    "@type": "ContactPoint",
-    telephone: "+27-75-276-3672",
-    contactType: "customer service",
-    areaServed: "ZA",
-    availableLanguage: "English",
-  },
-  sameAs: [
-    "https://www.instagram.com/notregemme",
-    "https://www.tiktok.com/@notregemme",
-    "https://www.instagram.com/notregemme",
-  ],
-};
-
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "Notre Gemme",
-  url: "https://notregemme.co.za",
+  ...pageMetadata("home", "/"),
+  // The home title already carries the brand — skip the layout template.
+  title: { absolute: pageMeta.home.title },
 };
 
 /**
  * Home — single-page brand experience: hero → shipping → marquee → story →
- * unified collection grid (all in-season products) → upcoming bento.
+ * full in-season collection grid → upcoming bento.
  */
 export default function HomePage(): React.ReactElement {
-  const liveProducts = products.filter((p) => p.comingSoon !== true);
-
   return (
     <>
-      <JsonLd data={organizationSchema} />
-      <JsonLd data={websiteSchema} />
+      <JsonLd data={websiteSchema()} />
       <Hero />
       <ShippingStrip />
       <Marquee />
@@ -75,16 +39,13 @@ export default function HomePage(): React.ReactElement {
         style={{ background: "var(--color-bg)" }}
       >
         <div className="container-page">
-          <CollectionHeader eyebrow="SS 2026" title="Collection" />
-          <div className="grid grid-cols-1 gap-[clamp(16px,2vw,24px)] sm:grid-cols-2 lg:grid-cols-3">
-            {liveProducts.map((p, i) => (
-              <ProductCard
-                key={p.slug}
-                product={p}
-                revealDelay={((i % 4) + 1) as 1 | 2 | 3 | 4}
-              />
-            ))}
-          </div>
+          <CollectionHeader
+            eyebrow={collectionCopy.all.eyebrow}
+            title={collectionCopy.all.title}
+            viewAllLabel="View All"
+            viewAllHref="/collection"
+          />
+          <ProductGrid products={liveProducts} />
         </div>
       </section>
 

@@ -1,18 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { footerCopy, igPreviewCopy } from "@/lib/content";
-import { asset, siteConfig, whatsappOrderLink } from "@/lib/site-config";
+import { ASSETS, LOGO_SIZE } from "@/lib/assets";
+import { DEFAULT_ORDER_MESSAGE, siteConfig, whatsappOrderLink } from "@/lib/site-config";
 import { NewsletterBar } from "./NewsletterBar";
 
 /**
  * Footer with:
  * - Newsletter call-out card
  * - Giant ghost "NG." display gem
- * - 4-column link grid (brand, collections, brand, socials)
- * - IG / WhatsApp hover preview cards
- * - "Digital footprint by Mabaso Dev AI" pill linking to mabasodevai.co.za
+ * - Link grid (brand, shop, brand pages, order & follow)
+ * - IG hover preview card
+ * - Copyright line + "Built by Mabaso Dev & AI" digital footprint
  */
 export function Footer(): React.ReactElement {
+  const year = new Date().getFullYear();
   return (
     <footer
       id="footer"
@@ -41,18 +43,13 @@ export function Footer(): React.ReactElement {
         <div className="mb-[60px] grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
             {/* Footer logo — clicking takes user back to the home page */}
-            <Link
-              href="/"
-              className="inline-flex items-center"
-              aria-label={siteConfig.brand.name + " — go to home"}
-            >
+            <Link href="/" className="inline-flex items-center">
               <Image
-                src={asset("/assets/logo notregemme.png")}
-                alt={siteConfig.brand.name}
-                width={200}
-                height={112}
+                src={ASSETS.logoWhite}
+                alt={`${siteConfig.brand.name} — home`}
+                width={LOGO_SIZE.width}
+                height={LOGO_SIZE.height}
                 className="h-[64px] w-auto object-contain"
-                style={{ filter: "brightness(0) invert(1)" }}
               />
             </Link>
             <p
@@ -139,7 +136,7 @@ export function Footer(): React.ReactElement {
               letterSpacing: "0.05em",
             }}
           >
-            {footerCopy.copyright}
+            Copyright &copy; {year} {footerCopy.copyrightHolder}. All rights reserved.
           </span>
           <span
             style={{
@@ -178,8 +175,8 @@ function InstagramLink(): React.ReactElement {
           aria-hidden="true"
         >
           <Image
-            src={asset("/assets/icon-instagram.png")}
-            alt="Instagram"
+            src={ASSETS.iconInstagram}
+            alt=""
             width={32}
             height={32}
             className="h-8 w-8 object-cover"
@@ -189,7 +186,7 @@ function InstagramLink(): React.ReactElement {
       </a>
 
       <div
-        className="pointer-events-none absolute bottom-[calc(100%+12px)] left-0 z-[200] w-[240px] translate-y-2 rounded-2xl p-4 opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
+        className="pointer-events-none absolute bottom-[calc(100%+12px)] left-0 z-[200] w-[240px] translate-y-2 rounded-2xl p-4 opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100"
         style={{
           background: "rgba(15,15,15,0.97)",
           border: "1px solid rgba(255,255,255,0.1)",
@@ -208,12 +205,11 @@ function InstagramLink(): React.ReactElement {
             }}
           >
             <Image
-              src={asset("/assets/logo notregemme.png")}
+              src={ASSETS.logoWhite}
               alt=""
-              width={52}
-              height={52}
-              className="h-9 w-9 object-contain brightness-0 invert"
-              aria-hidden="true"
+              width={LOGO_SIZE.width}
+              height={LOGO_SIZE.height}
+              className="h-9 w-9 object-contain"
             />
           </span>
           <div>
@@ -250,12 +246,11 @@ function InstagramLink(): React.ReactElement {
             aria-hidden="true"
           >
             <Image
-              src={asset("/assets/Product 1.jpg")}
+              src={ASSETS.queenOfHeartsTee}
               alt=""
               fill
               sizes="80px"
               className="object-cover"
-              unoptimized
             />
           </span>
           <span
@@ -263,12 +258,11 @@ function InstagramLink(): React.ReactElement {
             aria-hidden="true"
           >
             <Image
-              src={asset("/assets/Hoodie back.png")}
+              src={ASSETS.hoodieBack}
               alt=""
               fill
               sizes="80px"
               className="object-contain"
-              unoptimized
             />
           </span>
           <span
@@ -276,12 +270,11 @@ function InstagramLink(): React.ReactElement {
             aria-hidden="true"
           >
             <Image
-              src={asset("/assets/Product 2.jpg")}
+              src={ASSETS.kingOfHeartsTee}
               alt=""
               fill
               sizes="80px"
               className="object-cover"
-              unoptimized
             />
           </span>
         </div>
@@ -312,9 +305,7 @@ function WhatsAppLink(): React.ReactElement {
   return (
     <div className="group relative inline-flex">
       <a
-        href={whatsappOrderLink(
-          "Hi Notre Gemme! I'd like to place an order.",
-        )}
+        href={whatsappOrderLink(DEFAULT_ORDER_MESSAGE)}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-2 transition-colors hover:text-fg"
@@ -330,8 +321,8 @@ function WhatsAppLink(): React.ReactElement {
           aria-hidden="true"
         >
           <Image
-            src={asset("/assets/icon-whatsapp.png")}
-            alt="WhatsApp"
+            src={ASSETS.iconWhatsapp}
+            alt=""
             width={32}
             height={32}
             className="h-8 w-8 object-cover"
@@ -343,107 +334,41 @@ function WhatsAppLink(): React.ReactElement {
   );
 }
 
+/**
+ * Digital footprint — required on every Mabaso Dev & AI client site.
+ * Do not remove: it credits the builder and links back to the agency.
+ */
 function DigitalFootprint(): React.ReactElement {
   return (
-    <div className="group relative">
-      <a
-        href={siteConfig.built.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-pill px-4 py-2 transition-[border-color,background,transform] duration-200 hover:scale-[1.02]"
-        style={{
-          border: "1px solid rgba(255,255,255,0.08)",
-          background: "rgba(255,255,255,0.03)",
-          borderRadius: "var(--radius-pill)",
-          textDecoration: "none",
-        }}
-        aria-label={"Digital footprint by " + siteConfig.built.name}
-      >
-        <Image
-          src={asset("/assets/logo-mabasodevai.png")}
-          alt=""
-          width={20}
-          height={20}
-          aria-hidden="true"
-          className="h-5 w-5 rounded-md object-contain"
-        />
-        <span
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 11,
-            color: "var(--color-fg-muted)",
-            letterSpacing: "0.08em",
-          }}
-        >
-          Digital footprint by
+    <a
+      href={siteConfig.built.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 rounded-pill px-4 py-2 transition-[border-color,background,transform] duration-200 hover:scale-[1.02]"
+      style={{
+        border: "1px solid rgba(255,255,255,0.08)",
+        background: "rgba(255,255,255,0.03)",
+        borderRadius: "var(--radius-pill)",
+        textDecoration: "none",
+        fontFamily: "var(--font-body)",
+        fontSize: 11,
+        letterSpacing: "0.06em",
+        color: "var(--color-fg-muted)",
+      }}
+    >
+      <Image
+        src={ASSETS.builderLogo}
+        alt=""
+        width={20}
+        height={20}
+        className="h-5 w-5 rounded-md object-contain"
+      />
+      <span>
+        {footerCopy.builtByPrefix}{" "}
+        <span className="font-semibold" style={{ color: "var(--color-gold)" }}>
+          {siteConfig.built.name} &ndash; {siteConfig.built.tagline}
         </span>
-        <span
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.12em",
-            color: "var(--color-gold)",
-            textTransform: "uppercase",
-          }}
-        >
-          {siteConfig.built.short}
-        </span>
-      </a>
-
-      <div
-        className="pointer-events-none absolute bottom-[calc(100%+10px)] right-0 z-50 w-[200px] translate-y-2 rounded-2xl p-4 text-center opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
-        style={{
-          background: "rgba(12,12,12,0.97)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-        }}
-      >
-        <Image
-          src={asset("/assets/logo-mabasodevai.png")}
-          alt="Mabaso Dev AI"
-          width={80}
-          height={80}
-          className="h-[72px] w-[72px] rounded-[12px] object-contain"
-        />
-        <div
-          className="mt-3"
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontSize: 12,
-            fontWeight: 700,
-            color: "var(--color-fg)",
-            letterSpacing: "0.05em",
-          }}
-        >
-          {siteConfig.built.name}
-        </div>
-        <div
-          className="mt-1"
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 10,
-            color: "var(--color-fg-muted)",
-            letterSpacing: "0.05em",
-          }}
-        >
-          {siteConfig.built.tagline}
-        </div>
-        <div
-          className="mt-2"
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontSize: 9,
-            color: "var(--color-gold)",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-          }}
-        >
-          mabasodevai.co.za &#x2197;
-        </div>
-      </div>
-    </div>
+      </span>
+    </a>
   );
-                                         }
+}

@@ -2,33 +2,35 @@
 
 import { useEffect, useRef } from "react";
 
+/** Ring easing per frame — lower trails further behind the pointer. */
+const RING_LERP = 0.12;
+/** Off-screen start so nothing flashes at (0,0) before the first move. */
+const OFFSCREEN_PX = -100;
+
 /**
  * Diamond-shaped custom cursor with a lerp-tracked outer ring.
  * - Inner: 12×12 acid green diamond, direct mouse follow.
  * - Outer ring: 36×36 diamond outline, lerp factor 0.12.
  * - Auto-expands on link/button hover (52×52, ring).
  * - Inner switches to fg colour + 16×16 on `.product-card` hover.
- * - Disabled on coarse pointer devices (touch).
+ * - Hidden on coarse pointers (touch) by CSS, not by skipping render —
+ *   rendering differently on server and client breaks hydration.
  */
-export function CustomCursor(): React.ReactElement | null {
+export function CustomCursor(): React.ReactElement {
   const innerRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
-  const supportedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    if (!fine) return;
-    supportedRef.current = true;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
 
     const inner = innerRef.current;
     const ring = ringRef.current;
     if (!inner || !ring) return;
 
-    let mx = -100;
-    let my = -100;
-    let rx = -100;
-    let ry = -100;
+    let mx = OFFSCREEN_PX;
+    let my = OFFSCREEN_PX;
+    let rx = OFFSCREEN_PX;
+    let ry = OFFSCREEN_PX;
     let raf = 0;
 
     const onMove = (e: MouseEvent): void => {
@@ -38,8 +40,8 @@ export function CustomCursor(): React.ReactElement | null {
 
     const tick = (): void => {
       inner.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
-      rx += (mx - rx) * 0.12;
-      ry += (my - ry) * 0.12;
+      rx += (mx - rx) * RING_LERP;
+      ry += (my - ry) * RING_LERP;
       ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
       raf = requestAnimationFrame(tick);
     };
@@ -53,16 +55,12 @@ export function CustomCursor(): React.ReactElement | null {
     };
   }, []);
 
-  if (typeof window !== "undefined" && !window.matchMedia("(pointer: fine)").matches) {
-    return null;
-  }
-
   return (
     <>
       <div
         ref={innerRef}
         aria-hidden="true"
-        className="diamond-clip pointer-events-none fixed left-0 top-0 z-[9999] h-3 w-3 will-change-transform"
+        className="cursor-layer diamond-clip pointer-events-none fixed left-0 top-0 z-[9999] h-3 w-3 will-change-transform"
         style={{
           background: "var(--color-green)",
           transition: "width 0.2s, height 0.2s, background 0.2s",
@@ -72,7 +70,7 @@ export function CustomCursor(): React.ReactElement | null {
       <div
         ref={ringRef}
         aria-hidden="true"
-        className="diamond-clip pointer-events-none fixed left-0 top-0 z-[9998] h-9 w-9 will-change-transform"
+        className="cursor-layer diamond-clip pointer-events-none fixed left-0 top-0 z-[9998] h-9 w-9 will-change-transform"
         style={{
           border: "1px solid var(--color-green)",
           opacity: 0.4,

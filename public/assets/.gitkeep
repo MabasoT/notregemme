@@ -1,10 +1,14 @@
-# Drop product images here:
-#   design-two.jpeg     — Barcode Tee I (front/back)
-#   design-latest.jpeg  — Barcode Tee II
-#   img-01.jpg          — Queen of Hearts Tee
-#   img-02.jpg          — Evolution Hoodie
-#   img-03.jpg          — Love Evolves emblem / Femme Hoodie teaser
-#   img-04.jpg          — King of Hearts Tee
+# Product + brand images. Lowercase, hyphenated names only.
 #
-# All product images render through <ProductImage>, which gracefully
-# falls back to a brand-styled SVG placeholder when an asset is missing.
+# In use:
+#   queen-of-hearts-tee.jpg        — Queen of Hearts Tee (back)
+#   king-of-hearts-tee.jpg         — King of Hearts Tee (back)
+#   evolution-hoodie-front.png     — Evolution Hoodie (front, grey)
+#   evolution-hoodie-back.png      — Evolution Hoodie (back, grey)
+#   logo-notregemme(-white).png    — brand logo, dark + light variants
+#
+# Still needed (placeholders show until added — then set `image` in
+# lib/products.ts):
+#   ng-barcode-tee-i.jpg           — NG Barcode Tee I
+#   ng-barcode-tee-ii.jpg          — NG Barcode Tee II
+#   rooted-in-humanity.jpg         — Rooted in Humanity (grey)

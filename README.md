@@ -1,144 +1,111 @@
 # Notre Gemme — SS2026
 
-A production-ready e-commerce site for Notre Gemme — a luxury minimalist
-South African streetwear house. Built on Next.js 16 (App Router), React 19,
-TypeScript 5 strict, and Tailwind CSS 4.
+The e-commerce site for **Notre Gemme**, a luxury minimalist streetwear house
+from Tembisa, South Africa. Orders are placed on WhatsApp; the site is the
+catalogue, the story and the order funnel.
 
 > "Humanity, Our Treasure."
 
+**Live:** https://notregemme.co.za (Vercel)
+
 ## Stack
 
-- **Framework** — Next.js 16.2.6 with the App Router and React 19
-- **Type system** — TypeScript 5 strict, `noUncheckedIndexedAccess`, zero `any`
-- **Styling** — Tailwind 4 (CSS-first `@theme` tokens in `app/globals.css`)
-- **Fonts** — Space Grotesk (headings), Archivo (body) — Google Fonts via `<link>`
-- **Security headers** — CSP, HSTS, X-Frame-Options, Permissions-Policy applied via `next.config.ts`
+| Layer | Tool |
+|---|---|
+| Framework | Next.js 16 (App Router), React 19 |
+| Language | TypeScript 5, strict + `noUncheckedIndexedAccess`, zero `any` |
+| Styling | Tailwind CSS 4 (CSS-first `@theme` tokens in `app/globals.css`) |
+| Fonts | Space Grotesk + Archivo via Google Fonts `<link>` |
+| Images | `next/image` — AVIF/WebP served by Vercel |
+| Hosting | Vercel (Git integration: `main` → production, branches → previews) |
+| Forms | `/api/subscribe` → Google Apps Script → Google Sheet (zero cost) |
 
 ## Project structure
 
 ```
 app/
-  globals.css           Design-system tokens + base styles
-  layout.tsx            Root layout: cursor, header, footer, floating actions
-  page.tsx              Home — full single-page brand experience
-  homme/                Homme collection grid
-  femme/                Femme collection grid
-  product/[slug]/       Product detail page (statically generated)
-  about/                Brand story / philosophy / 1632
-  contact/              Channel links
-  not-found.tsx         404
-components/             All UI components (cursor, hero, cards, etc.)
+  layout.tsx              Root layout, metadata defaults, Organization JSON-LD
+  page.tsx                Home
+  collection/ homme/ femme/ unisex/   Collection pages (shared CollectionListing)
+  product/[slug]/         Product detail (statically generated, Product JSON-LD)
+  story/ about/ contact/ upcoming/
+  api/subscribe/          Newsletter + drop-alert relay (rate-limited, honeypot)
+  sitemap.ts robots.ts llms.txt/ opengraph-image.tsx icon.png apple-icon.png
+components/               UI components (render only — no copy, no config)
 lib/
-  site-config.ts        Brand metadata, contact, navigation
-  content.ts            All user-facing copy (zero hardcoded strings in JSX)
-  products.ts           Product catalogue
-public/assets/          Drop product images here (see .gitkeep for filenames)
-next.config.ts          Security headers
+  site-config.ts          Brand, contact, nav, SITE_URL, drop date
+  content.ts              Every user-facing string + per-page SEO (pageMeta)
+  products.ts             Product catalogue
+  stock.ts / live-stock.ts  Stock + social proof (optional live Apps Script feed)
+  schema.ts               JSON-LD builders
+  metadata.ts             Route metadata helper
+  assets.ts               Shared image paths
+  chatbot.ts              Chat assistant answers (derived from products + stock)
+docs/                     Editing guide, stock feed, sign-up backend (.gs)
+scripts/security-check.sh Pre-deploy gate (also runs in CI)
 ```
+
+Non-developers: start with **[docs/EDITING-GUIDE.md](docs/EDITING-GUIDE.md)**.
 
 ## Develop
 
 ```bash
 npm install
-npm run dev
-# → http://localhost:3000
+cp .env.example .env.local   # optional — every variable has a safe default
+npm run dev                  # http://localhost:3000
 ```
 
-## Type-check & build
+## Quality gate
 
 ```bash
-npm run typecheck    # strict TS, no emit
-npm run build        # production build
-npm start            # serve the production build
+npm run security:check
 ```
 
-## Design system
+Runs, in order: no `any`, no `console.log` in UI code, safe `target="_blank"`
+links, secret scan, `.env` not tracked, dependency audit (high for production
+deps, critical for all), ESLint, type-check, production build. The same gate
+runs in GitHub Actions (`.github/workflows/ci.yml`) on every push and PR.
 
-All visual decisions are sourced from `design-system.md` (v1.0). Tokens live in
-`app/globals.css` under `@theme`:
+## Environment variables
 
-| Token | Value | Purpose |
-|---|---|---|
-| `--color-bg` | `#050505` | Page background |
-| `--color-fg` | `#f0ebe2` | Primary text |
-| `--color-green` | `oklch(68% 0.17 128)` | Acid green accent |
-| `--color-red` | `oklch(42% 0.20 25)` | Crimson — launch badges |
-| `--font-heading` | `Space Grotesk` | Display + product names |
-| `--font-body` | `Archivo` | Body + nav |
-| `--radius-card` | `20px` | Cards, bento cells |
-| `--radius-pill` | `100px` | Buttons, tags |
-| `--ease-spring` | `cubic-bezier(0.16,1,0.3,1)` | Default motion curve |
+| Variable | Scope | Required | Purpose |
+|---|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | public | no (defaults to `https://notregemme.co.za`) | Canonical origin for SEO tags, sitemap, JSON-LD |
+| `NEXT_PUBLIC_STOCK_URL` | public | no | Live stock JSON from Apps Script (`docs/STOCK-AND-SOCIAL-PROOF.md`) |
+| `SUBSCRIBE_SCRIPT_URL` | server | no | Sign-up backend (`docs/subscribe-backend.gs`). Unset → forms offer WhatsApp |
 
-## Interaction layer
+## Deploy (Vercel)
 
-- **Custom cursor** — `components/CustomCursor.tsx`. Diamond clip-path,
-  12×12 inner + 36×36 outer ring with lerp factor `0.12`. Auto-disabled on
-  coarse pointers via `matchMedia('(pointer: coarse)')`.
-- **Magnetic tilt** — `components/ProductCard.tsx`. Local `mousemove` handler,
-  max ±10deg rotateX/Y, reset on `mouseleave` with a spring transition.
-- **Scroll reveal** — `components/ScrollReveal.tsx`. Single
-  `IntersectionObserver` (threshold `0.12`) toggles `.visible` on all
-  `.reveal` elements; stagger via `.reveal-delay-{1..4}`.
-- **Marquee** — `components/Marquee.tsx`. 28s linear infinite loop, ♦ gem
-  separators via CSS `clip-path`.
+Vercel's GitHub integration deploys automatically:
 
-## Orders
+- push / merge to `main` → **production** (notregemme.co.za)
+- any other branch or PR → **preview URL**
 
-Every product card and order CTA links to a pre-filled WhatsApp deeplink
-(`whatsappOrderLink()` in `lib/site-config.ts`). The brand confirms sizing,
-pricing, and nationwide courier on WhatsApp.
+Custom domain: Vercel → Project → Settings → Domains → add
+`notregemme.co.za` and `www.notregemme.co.za` (www → apex, 308). Point DNS
+at Vercel as the dashboard instructs. If Cloudflare proxies the domain, set
+SSL to **Full (Strict)** and do **not** add a second www redirect there.
+
+Post-deploy checks:
+
+```bash
+curl -sI https://notregemme.co.za | grep -iE "strict-transport|content-security|x-frame"
+curl -s https://notregemme.co.za/robots.txt
+curl -s https://notregemme.co.za/llms.txt | head
+```
+
+Then submit `https://notregemme.co.za/sitemap.xml` in Google Search Console.
+
+## Security
+
+CSP (whitelist), HSTS (2 years, preload), `X-Frame-Options: DENY`,
+`nosniff`, strict referrer policy and a locked-down Permissions-Policy are set
+in `next.config.ts`. `/api/subscribe` validates input, rate-limits per IP,
+uses a honeypot, and keeps its upstream URL server-side.
 
 ## Credits
 
 Built by **Mabaso Dev & AI – The Digital Alchemist** — [mabasodevai.co.za](https://mabasodevai.co.za)
 
-
----
-
-## Changelog
-
-### SS2026 — Patch 1 (2026-05-26)
-
-#### Bug Fixes
-
-**`fix: wrap base reset in @layer base to fix all Tailwind spacing utilities`**
-_File: `app/globals.css`_
-
-- **Root cause**: The universal selector CSS reset (`*, *::before, *::after { margin: 0; padding: 0 }`) was written as a top-level rule outside any `@layer` directive. In Tailwind CSS v4 (which uses cascade layers via `@layer utilities`), an unlayered rule has _higher_ cascade priority than any `@layer utilities` rule. This silently overrode every Tailwind spacing utility on every element in the app.
-- **Symptom**: All sub-pages (Homme, Femme, Unisex, Contact, About) loaded with their content partially or fully hidden behind the fixed header because `pt-[140px]` had no effect. Section-to-section spacing (e.g. `py-[clamp(80px,10vw,140px)]`) was zero, making all sections run together. Card grid gaps and component interior padding (e.g. `px-7 py-6` on stat boxes and contact cards) were also absent.
-- **Fix**: The reset block is now wrapped inside `@layer base { }`, placing it in the base layer and allowing `@layer utilities` to correctly override it.
-- **Effect**: All Tailwind `pt-*`, `pb-*`, `py-*`, `px-*`, `mt-*`, `mb-*`, `my-*`, `mx-*`, `gap-*` utilities now apply as intended across the entire site.
-
-**Pages fixed (header-overlap)**
-
-| Page | Route | Fix |
-|------|-------|-----|
-| Homme collection | `/homme` | Content now starts 140 px below the fixed header |
-| Femme collection | `/femme` | Content now starts 140 px below the fixed header |
-| Unisex / Upcoming | `/unisex` | Content now starts 140 px below the fixed header |
-| Contact | `/contact` | Content now starts 140 px below the fixed header |
-| About / Story | `/about` | Content now starts 140 px below the fixed header |
-
-**Components fixed (interior padding)**
-
-| Component | Class fixed | Visual result |
-|-----------|-------------|---------------|
-| BrandStory stat boxes | `px-7 py-6` (28 px / 24 px) | Numbers and labels no longer touch box edges |
-| Contact channel cards | `p-8` (32 px) | Channel name, note, and CTA have proper breathing room |
-| Unisex countdown card | `p-10` (40 px) | Countdown and notify form correctly padded |
-| Collection grids | `gap-[clamp(16px,2vw,24px)]` | Cards have correct gutters on all viewports |
-| BentoGrid cells | `p-9` / `p-8` | Text and CTAs inside bento cells are no longer flush with edges |
-| Newsletter bar | various `p-*` | Input field and subscribe button correctly padded |
-
-**Section spacing fixed**
-
-All `py-[clamp(80px,10vw,140px)]` section wrappers on the home page now produce 80–140 px of vertical breathing room, preventing sections from running into each other.
-
----
-
-**`fix(ci): add enablement:true to configure-pages to fix Setup Pages failure`**
-_File: `.github/workflows/pages.yml`_
-
-- **Root cause**: The `actions/configure-pages@v5` action was failing with _"Get Pages site failed. Please verify that the repository has Pages enabled"_ because GitHub Pages had not been enabled for the repository via Settings.
-- **Fix**: Added `enablement: true` to the `with:` block of the `Setup Pages` step. This instructs the action to programmatically enable GitHub Pages if it is not already active.
-- **Note**: If Pages is later enabled manually via the repository Settings UI, the `enablement: true` parameter becomes a no-op and can be safely left in place or removed.
+Change history: [docs/CHANGES-SS2026-PATCH3.md](docs/CHANGES-SS2026-PATCH3.md)
+(Patch 1 and 2 notes are in git history and `docs/CHANGES-SS2026-PATCH2.md`).

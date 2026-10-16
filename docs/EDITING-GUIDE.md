@@ -27,11 +27,14 @@ the map: "I want to change X → go here."
 | Add a product photo | `public/assets/` (then reference it in `lib/products.ts`) |
 | Change WhatsApp number / Instagram / email | `lib/site-config.ts` → `contact` |
 | Change the top / footer menu links | `lib/site-config.ts` → `nav` |
-| Change the next drop date / countdown | `lib/site-config.ts` → `drop.nextDropDate` |
+| Change the next drop date / countdown | `lib/site-config.ts` → `drop.nextDropDate` (empty = "Date announced soon") |
 | Change headlines, descriptions, section copy | `lib/content.ts` |
+| Change a page's Google title / description | `lib/content.ts` → `pageMeta` |
+| Swap a shared image (hero, logo, teasers) | `lib/assets.ts` |
+| Connect newsletter / drop-alert sign-ups | `docs/subscribe-backend.gs` → `SUBSCRIBE_SCRIPT_URL` |
 | What the bottom-left chatbot knows | auto — reads `lib/products.ts` + `lib/stock.ts` |
 | Change brand colours / fonts / radii (site-wide) | `app/globals.css` → `@theme` |
-| Swap the logo | `public/assets/logo notregemme.png` |
+| Swap the logo | `public/assets/logo-notregemme.png` (+ white variant `logo-notregemme-white.png`) |
 
 ---
 
@@ -190,7 +193,9 @@ All in `lib/site-config.ts`:
   (E164 is digits only, no `+` or spaces — used to build wa.me links).
 - `contact.instagram` / `instagramUrl`, `contact.email`.
 - `nav.left` / `nav.right` — the header + footer menu items.
-- `drop.nextDropDate` — ISO date powering the countdown timer.
+- `drop.nextDropDate` — ISO date powering the countdown timer, e.g.
+  `"2027-03-01T00:00:00+02:00"`. Leave it `""` until the date is confirmed:
+  the countdown then reads "Date announced soon" instead of a fake timer.
 
 ---
 
@@ -219,18 +224,23 @@ border radii. Changing a token here cascades everywhere.
   product's `image` (and optional `imageBack`) at `/assets/yourfile.jpg`.
 - If a product has no photo yet, leave `image: ""` — a branded
   "Photography in progress" placeholder renders automatically.
-- Logo: replace `public/assets/logo notregemme.png`. It's rendered in
-  white across the site (header + footer) so a dark, transparent-PNG
-  logo works best.
+- Use lowercase, hyphenated file names (`queen-of-hearts-tee.jpg`, not
+  `Product 1.jpg`) — they become part of the image URL Google indexes.
+- **Check the photo matches the product.** The page, Google Shopping and
+  the chatbot all describe the product by its `name` and `description`.
+- Logo: replace `public/assets/logo-notregemme.png` (black on transparent)
+  and `logo-notregemme-white.png` (white on transparent, used on the dark
+  header, footer and social share image).
 
 ---
 
 ## 7. Publish your changes
 
 ```bash
-npm run typecheck   # catch mistakes early
-npm run build       # produces the static site
+npm run security:check   # lint, types, audit, link safety, build — all must pass
 ```
 
-Commit and push — the deploy pipeline rebuilds the static site. No
-server, no database; just data in, fast static pages out.
+Commit and push to `main` — Vercel rebuilds and deploys automatically
+(every other branch / pull request gets its own preview URL). After a
+content change, bump `CONTENT_UPDATED` in `lib/site-config.ts` so the
+sitemap tells Google the pages changed.

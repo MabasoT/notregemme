@@ -1,3 +1,4 @@
+import { ASSETS } from "@/lib/assets";
 import { storyCopy } from "@/lib/content";
 import { ProductImage } from "./ProductImage";
 
@@ -8,7 +9,12 @@ import { ProductImage } from "./ProductImage";
  *
  * The brand quote sits directly below the hoodie image — not overlaid on it.
  */
-export function BrandStory(): React.ReactElement {
+export function BrandStory({
+  headingLevel: Heading = "h2",
+}: {
+  /** "h1" when the story is the page's main content (/story). */
+  headingLevel?: "h1" | "h2";
+}): React.ReactElement {
   return (
     <section id="story" className="py-[clamp(80px,10vw,140px)]">
       <div className="container-page">
@@ -21,11 +27,11 @@ export function BrandStory(): React.ReactElement {
               style={{ aspectRatio: "4/5" }}
             >
               <ProductImage
-                src="/assets/Hoodie back.png"
+                src={ASSETS.hoodieBack}
                 alt={storyCopy.imageAlt}
                 motif="heart"
                 aspect="4/5"
-                fit="cover"
+                fit="contain"
                 className="h-full w-full"
               />
             </div>
@@ -64,7 +70,7 @@ export function BrandStory(): React.ReactElement {
                   lineHeight: 1.35,
                 }}
               >
-                &ldquo;Love doesn&rsquo;t vanish &mdash; It Evolves. Ves.&rdquo;
+                &ldquo;{storyCopy.quote}&rdquo;
               </p>
               {/* Sub-caption */}
               <p
@@ -79,7 +85,7 @@ export function BrandStory(): React.ReactElement {
                 }}
               >
                 <span aria-hidden="true">&#x2666;</span>
-                SS 2026
+                {storyCopy.quoteCaption}
               </p>
             </div>
           </div>
@@ -88,13 +94,13 @@ export function BrandStory(): React.ReactElement {
           <div className="flex flex-col gap-7">
             <div className="reveal reveal-delay-1">
               <p className="section-label">{storyCopy.eyebrow}</p>
-              <h2 className="section-title">
+              <Heading className="section-title">
                 {storyCopy.titleLines.map((line) => (
                   <span key={line} className="block">
                     {line}
                   </span>
                 ))}
-              </h2>
+              </Heading>
             </div>
             {storyCopy.paragraphs.map((p, i) => (
               <p
